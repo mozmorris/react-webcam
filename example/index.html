@@ -10,12 +10,28 @@
 <script src="../dist/react-webcam.js"></script>
 <script type="text/jsx">
   var App = React.createClass({
+    getInitialState: function() {
+      return {
+        screenshots: []
+      };
+    },
     render: function () {
+      var screenshots = this.state.screenshots.map(function(screenshot) {
+        return <img src={screenshot}></img>;
+      });
+
       return (
         <div>
-          <Webcam/>
+          <Webcam ref='webcam'/>
+          <button onClick={this.screenshot}>screenshot</button>
+          {screenshots}
         </div>
       );
+    },
+    screenshot: function() {
+      var screenshots = this.state.screenshots;
+      screenshots.push(this.refs.webcam.getScreenshot());
+      this.setState({screenshots: screenshots});
     }
   });
 

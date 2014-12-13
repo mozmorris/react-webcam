@@ -71,6 +71,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = React.createClass({
 	  displayName: 'Webcam',
 	
+	  getInitialState: function() {
+	    return {
+	      on: false
+	    };
+	  },
+	
 	  render: function () {
 	    return (
 	      React.createElement("video", {autoPlay: true, ref: "video"})
@@ -78,7 +84,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 	
 	  componentDidMount: function() {
-	    var self = this;
+	    self = this;
 	    var video = this.refs.video.getDOMNode();
 	
 	    if (!hasGetUserMedia()) return;
@@ -127,12 +133,28 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	
 	    function successCallback(stream) {
+	      self.setState({on:true});
 	      video.src = window.URL.createObjectURL(stream);
 	    };
 	
 	    function errorCallback(e) {
 	      video.src = self.props.fallbackURL;
 	    };
+	  },
+	
+	  getScreenshot: function() {
+	    if (!this.state.on) return;
+	
+	    var video = this.refs.video.getDOMNode();
+	
+	    var canvas = document.createElement('canvas');
+	    canvas.height = video.clientHeight;
+	    canvas.width = video.clientWidth;
+	
+	    var ctx = canvas.getContext('2d');
+	    ctx.drawImage(video, 0, 0);
+	
+	    return canvas.toDataURL('image/webp');
 	  }
 	});
 
