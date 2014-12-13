@@ -1,0 +1,8 @@
+#!/bin/sh
+webpack --devtool source-map
+
+node_modules/.bin/uglifyjs dist/react-webcam.js \
+  --output dist/react-webcam.min.js \
+  --source-map dist/react-webcam.min.map \
+  --source-map-url react-webcam.min.map \
+  --compress warnings=false

@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>React Webcam</title>
+</head>
+<body>
+<script src="//fb.me/react-with-addons-0.12.1.js"></script>
+<script src="//fb.me/JSXTransformer-0.12.1.js"></script>
+<script src="../dist/react-webcam.js"></script>
+<script type="text/jsx">
+  var App = React.createClass({
+    render: function () {
+      return (
+        <div>
+          <Webcam/>
+        </div>
+      );
+    }
+  });
+
+  React.render(<App/>, document.body);
+</script>
+</body>
+</html>
