@@ -71,19 +71,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = React.createClass({
 	  displayName: 'Webcam',
 	
+	  getDefaultProps: function() {
+	    return {
+	      audio: true,
+	      height: 480,
+	      width: 640
+	    };
+	  },
+	
 	  getInitialState: function() {
 	    return {
 	      on: false
 	    };
-	  },
-	
-	  render: function () {
-	    var width = this.props.width || 640;
-	    var height = this.props.height || 480;
-	
-	    return (
-	      React.createElement("video", {autoPlay: true, width: width, height: height, ref: "video"})
-	    );
 	  },
 	
 	  componentDidMount: function() {
@@ -123,16 +122,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	
 	    function sourceSelected(audioSource, videoSource) {
-	      var audio = this.props.getAudio || 'yes';
-	
 	      var constraints = {
 	        video: {
 	          optional: [{sourceId: videoSource}]
 	        }
 	      };
 	
-	      if(audio == 'yes')
-	        constrains.audio = {
+	      if (self.props.audio)
+	        constraints.audio = {
 	          optional: [{sourceId: audioSource}]
 	        }
 	
@@ -168,6 +165,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    ctx.drawImage(video, 0, 0);
 	
 	    return canvas.toDataURL('image/webp');
+	  },
+	
+	  render: function () {
+	    return (
+	      React.createElement("video", {autoPlay: true, width: this.props.width, height: this.props.height, ref: "video"})
+	    );
 	  }
 	});
 
