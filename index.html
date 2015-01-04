@@ -41,14 +41,16 @@
         <div>
           <h1>react-webcam</h1>
           <Webcam ref='webcam'/>
-          <button onClick={this.screenshot}>screenshot</button>
+          <div className='controls'>
+            <button onClick={this.screenshot}>screenshot</button>
+          </div>
           {screenshots}
         </div>
       );
     },
     screenshot: function() {
       var screenshots = this.state.screenshots;
-      screenshots.push(this.refs.webcam.getScreenshot());
+      screenshots.unshift(this.refs.webcam.getScreenshot());
       this.setState({screenshots: screenshots});
     }
   });
