@@ -78,8 +78,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 	
 	  render: function () {
+	    var width = this.props.width || 640;
+	    var height = this.props.height || 480;
+	
 	    return (
-	      React.createElement("video", {autoPlay: true, ref: "video"})
+	      React.createElement("video", {autoPlay: true, width: width, height: height, ref: "video"})
 	    );
 	  },
 	
@@ -120,14 +123,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	
 	    function sourceSelected(audioSource, videoSource) {
+	      var audio = this.props.getAudio || 'yes';
+	
 	      var constraints = {
-	        audio: {
-	          optional: [{sourceId: audioSource}]
-	        },
 	        video: {
 	          optional: [{sourceId: videoSource}]
 	        }
 	      };
+	
+	      if(audio == 'yes')
+	        constrains.audio = {
+	          optional: [{sourceId: audioSource}]
+	        }
 	
 	      navigator.getUserMedia(constraints, successCallback, errorCallback);
 	    }
@@ -140,6 +147,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    function errorCallback(e) {
 	      video.src = self.props.fallbackURL;
 	    };
+	  },
+	
+	  componentWillUnmount: function() {
+	    var url = video.src;
+	    var video = this.refs.video.getDOMNode();
+	    window.URL.revokeObjectUrl(url);
 	  },
 	
 	  getScreenshot: function() {
