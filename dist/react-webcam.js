@@ -85,11 +85,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	  },
 	
+	  statics: {
+	    mountedInstances: [],
+	    userMediaRequested: false,
+	  },
+	
+	  componentWillMount: function() {
+	    Webcam.mountedInstances.push(this);
+	  },
+	
 	  componentDidMount: function() {
 	    self = this;
-	    var video = this.refs.video.getDOMNode();
 	
 	    if (!hasGetUserMedia()) return;
+	    if (Webcam.userMediaRequested) return;
 	
 	    navigator.getUserMedia = navigator.getUserMedia ||
 	                          navigator.webkitGetUserMedia ||
@@ -105,15 +114,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	        sourceInfos.forEach(function(sourceInfo) {
 	          if (sourceInfo.kind === 'audio') {
-	            console.log(sourceInfo.id, sourceInfo.label || 'microphone');
+	            //console.log(sourceInfo.id, sourceInfo.label || 'microphone');
 	
 	            audioSource = sourceInfo.id;
 	          } else if (sourceInfo.kind === 'video') {
-	            console.log(sourceInfo.id, sourceInfo.label || 'camera');
+	            //console.log(sourceInfo.id, sourceInfo.label || 'camera');
 	
 	            videoSource = sourceInfo.id;
 	          } else {
-	            console.log('Some other kind of source: ', sourceInfo);
+	            //console.log('Some other kind of source: ', sourceInfo);
 	          }
 	        });
 	
@@ -133,17 +142,28 @@ return /******/ (function(modules) { // webpackBootstrap
 	          optional: [{sourceId: audioSource}]
 	        }
 	
-	      navigator.getUserMedia(constraints, successCallback, errorCallback);
+	      navigator.getUserMedia(constraints, function(stream) {
+	        Webcam.mountedInstances.forEach(function(instance) {
+	          instance._successCallback(stream);
+	        });
+	      }, function(e) {
+	        Webcam.mountedInstances.forEach(function(instance) {
+	          instance._errorCallback(e);
+	        });
+	      });
 	    }
 	
-	    function successCallback(stream) {
-	      self.setState({on:true});
-	      video.src = window.URL.createObjectURL(stream);
-	    };
+	    Webcam.userMediaRequested = true;
+	  },
 	
-	    function errorCallback(e) {
-	      video.src = self.props.fallbackURL;
-	    };
+	  _successCallback: function(stream) {
+	    var video = this.refs.video.getDOMNode();
+	    this.setState({on:true});
+	    video.src = window.URL.createObjectURL(stream);
+	  },
+	
+	  _errorCallback:function(e) {
+	    video.src = self.props.fallbackURL;
 	  },
 	
 	  componentWillUnmount: function() {
@@ -162,7 +182,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    canvas.width = video.clientWidth;
 	
 	    var ctx = canvas.getContext('2d');
-	    ctx.drawImage(video, 0, 0);
+	    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 	
 	    return canvas.toDataURL('image/webp');
 	  },
