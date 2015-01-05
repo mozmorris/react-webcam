@@ -163,6 +163,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 	
 	  _errorCallback:function(e) {
+	    var video = this.refs.video.getDOMNode();
 	    video.src = self.props.fallbackURL;
 	  },
 	
