@@ -7,7 +7,7 @@
     body {
       font-family: "Helvetica Neue", Helvetica, sans-serif;
       font-weight: 200;
-      margin: 0 auto;
+      margin: 0 auto 50px;
       width: 750px;
     }
     textarea {
@@ -19,6 +19,41 @@
     pre {
       white-space: pre-wrap;
     }
+    .controls {
+      margin: 10px 0;
+    }
+    .webcams > video:nth-of-type(1) {
+      -webkit-filter: grayscale(1);
+      filter: grayscale(1);
+    }
+    .webcams > video:nth-of-type(2) {
+      -webkit-filter: sepia(1);
+      filter: sepia(1);
+    }
+    .webcams > video:nth-of-type(3) {
+      -webkit-filter: saturate(8);
+      filter: saturate(8);
+    }
+    .webcams > video:nth-of-type(4) {
+      -webkit-filter: hue-rotate(90deg);
+      filter: hue-rotate(90deg);
+    }
+    .webcams > video:nth-of-type(6) {
+      -webkit-filter: invert(1);
+      filter: invert(1);
+    }
+    .webcams > video:nth-of-type(7) {
+      -webkit-filter: brightness(3);
+      filter: brightness(3);
+    }
+    .webcams > video:nth-of-type(8) {
+      -webkit-filter: contrast(4);
+      filter: contrast(4);
+    }
+    .webcams > video:nth-of-type(9) {
+      -webkit-filter: blur(1px);
+      filter: blur(1px);
+    }
   </style>
 </head>
 <body>
@@ -29,29 +64,41 @@
   var App = React.createClass({
     getInitialState: function() {
       return {
-        screenshots: []
+        screenshot: null
       };
     },
     render: function () {
-      var screenshots = this.state.screenshots.map(function(screenshot) {
-        return <img src={screenshot}></img>;
-      });
-
       return (
         <div>
           <h1>react-webcam</h1>
-          <Webcam ref='webcam'/>
-          <div className='controls'>
-            <button onClick={this.screenshot}>screenshot</button>
+          <div>
+            <Webcam ref='webcam'/>
           </div>
-          {screenshots}
+          <h2>Screenshots</h2>
+          <div className='screenshots'>
+            <div className='controls'>
+              <button onClick={this.screenshot}>capture</button>
+            </div>
+            { this.state.screenshot ? <img src={this.state.screenshot} /> : null }
+          </div>
+          <h2>CSS Filters</h2>
+          <div className='webcams'>
+            <Webcam width='212' height='160'/>
+            <Webcam width='212' height='160'/>
+            <Webcam width='212' height='160'/>
+            <Webcam width='212' height='160'/>
+            <Webcam width='212' height='160'/>
+            <Webcam width='212' height='160'/>
+            <Webcam width='212' height='160'/>
+            <Webcam width='212' height='160'/>
+            <Webcam width='212' height='160'/>
+          </div>
         </div>
       );
     },
     screenshot: function() {
-      var screenshots = this.state.screenshots;
-      screenshots.unshift(this.refs.webcam.getScreenshot());
-      this.setState({screenshots: screenshots});
+      var screenshot = this.refs.webcam.getScreenshot();
+      this.setState({screenshot: screenshot});
     }
   });
 
