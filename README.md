@@ -5,7 +5,7 @@ Webcam component for React
 ## Installation
 
 ```
-npm install react-webacm
+npm install react-webcam
 ```
 
 ## Demo
