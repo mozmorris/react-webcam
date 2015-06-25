@@ -1,11 +1,10 @@
 {
   "name": "react-webcam",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "React webcam component",
-  "main": "lib/react-webcam.js",
+  "main": "dist/react-webcam.js",
   "scripts": {
-    "test": "script/test --browsers Firefox --single-run",
-    "start": "script/build"
+    "build": "./node_modules/.bin/babel lib --out-dir dist"
   },
   "browserify": {
     "transform": [
@@ -28,19 +27,9 @@
   },
   "homepage": "https://github.com/cezary/react-webcam",
   "peerDependencies": {
-    "react": "^0.12.1"
+    "react": ">=0.13.0"
   },
   "devDependencies": {
-    "jsx-loader": "^0.12.2",
-    "karma": "^0.12.19",
-    "karma-chrome-launcher": "^0.1.4",
-    "karma-cli": "0.0.4",
-    "karma-firefox-launcher": "^0.1.3",
-    "karma-jasmine": "^0.1.5",
-    "karma-webpack": "^1.2.1",
-    "reactify": "^0.17.1",
-    "uglify-js": "^2.4.15",
-    "webpack": "^1.4.13",
-    "webpack-dev-server": "^1.6.6"
+    "babel": "^5.6.7"
   }
 }
