@@ -36,7 +36,7 @@ module.exports = {
     }]
   },
   output: {
-    library: 'react-webcam',
+    library: 'Webcam',
     libraryTarget: 'umd'
   },
   plugins: plugins

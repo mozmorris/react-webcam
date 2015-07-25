@@ -1,43 +1,82 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 function hasGetUserMedia() {
   return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||
             navigator.mozGetUserMedia || navigator.msGetUserMedia);
 }
 
-class Webcam extends Component {
-  displayName: 'Webcam'
+export default class Webcam extends Component {
+  static defaultProps = {
+    audio: true,
+    height: 480,
+    width: 640
+  };
+  static propTypes = {
+    audio: PropTypes.bool,
+    height: PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.string
+    ]),
+    width: PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.string
+    ])
+  };
+  static mountedInstances = [];
+  static userMediaRequested = false;
+
 
   constructor() {
     super();
     this.state = {
-      on: false
+      hasUserMedia: false
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
+    if (!hasGetUserMedia()) return;
+
     Webcam.mountedInstances.push(this);
+
+    if (!this.state.hasUserMedia && !Webcam.userMediaRequested) {
+      this.requestUserMedia();
+    }
   }
 
-  componentDidMount() {
-    self = this;
-
-    if (!hasGetUserMedia()) return;
-    if (Webcam.userMediaRequested) return;
-
+  requestUserMedia() {
     navigator.getUserMedia = navigator.getUserMedia ||
                           navigator.webkitGetUserMedia ||
                           navigator.mozGetUserMedia ||
                           navigator.msGetUserMedia;
 
+    let sourceSelected = (audioSource, videoSource) => {
+      let constraints = {
+        video: {
+          optional: [{sourceId: videoSource}]
+        }
+      };
+
+      if (this.props.audio) {
+        constraints.audio = {
+          optional: [{sourceId: audioSource}]
+        };
+      }
+
+      navigator.getUserMedia(constraints, (stream) => {
+        Webcam.mountedInstances.forEach((instance) => instance.handleUserMedia(null, stream));
+      }, (e) => {
+        Webcam.mountedInstances.forEach((instance) => instance.handleUserMedia(error));
+      });
+    };
+
     if (this.props.audioSource && this.props.videoSource) {
       sourceSelected(this.props.audioSource, this.props.videoSource);
     } else {
-      MediaStreamTrack.getSources(function(sourceInfos) {
-        var audioSource = null;
-        var videoSource = null;
+      MediaStreamTrack.getSources((sourceInfos) => {
+        let audioSource = null;
+        let videoSource = null;
 
-        sourceInfos.forEach(function(sourceInfo) {
+        sourceInfos.forEach((sourceInfo) => {
           if (sourceInfo.kind === 'audio') {
             audioSource = sourceInfo.id;
           } else if (sourceInfo.kind === 'video') {
@@ -49,33 +88,18 @@ class Webcam extends Component {
       });
     }
 
-    function sourceSelected(audioSource, videoSource) {
-      var constraints = {
-        video: {
-          optional: [{sourceId: videoSource}]
-        }
-      };
-
-      if (self.props.audio)
-        constraints.audio = {
-          optional: [{sourceId: audioSource}]
-        }
-
-      navigator.getUserMedia(constraints, function(stream) {
-        Webcam.mountedInstances.forEach(function(instance) {
-          instance._successCallback(stream);
-        });
-      }, function(e) {
-        Webcam.mountedInstances.forEach(function(instance) {
-          instance._errorCallback(e);
-        });
-      });
-    }
-
     Webcam.userMediaRequested = true;
   }
 
-  _successCallback(stream) {
+  handleUserMedia(error, stream) {
+    if (error) {
+      this.setState({
+        hasUserMedia: false
+      });
+
+      return;
+    }
+
     let src = window.URL.createObjectURL(stream);
 
     this.setState({
@@ -84,14 +108,11 @@ class Webcam extends Component {
     });
   }
 
-  _errorCallback(e) {
-    this.setState({
-      src: this.state.src
-    });
-  }
-
   componentWillUnmount() {
-    if (this.state.hasUserMedia) {
+    let index = Webcam.mountedInstances.indexOf(this);
+    Webcam.mountedInstances.splice(index, 1);
+
+    if (Webcam.mountedInstances.length === 0 && this.state.hasUserMedia) {
       window.URL.revokeObjectURL(this.state.src);
     }
   }
@@ -99,11 +120,12 @@ class Webcam extends Component {
   getScreenshot() {
     if (!this.state.hasUserMedia) return;
 
-    var canvas = document.createElement('canvas');
+    let canvas = document.createElement('canvas');
+    let video = React.findDOMNode(this.refs.video);
     canvas.height = video.clientHeight;
     canvas.width = video.clientWidth;
 
-    var ctx = canvas.getContext('2d');
+    let ctx = canvas.getContext('2d');
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
     return canvas.toDataURL('image/webp');
@@ -116,17 +138,8 @@ class Webcam extends Component {
         width={this.props.width}
         height={this.props.height}
         src={this.state.src}
+        ref='video'
       ></video>
     );
   }
 }
-Webcam.defaultProps = {
-  audio: true,
-  height: 480,
-  width: 640
-};
-Webcam.mountedInstances = [];
-Webcam.userMediaRequested = false;
-
-
-export default Webcam;
