@@ -1,6 +1,7 @@
 # react-webcam
 
-Webcam component for React
+Webcam component for React. See [this](http://caniuse.com/#feat=stream)
+for browser compatibility.
 
 ## Installation
 
@@ -10,21 +11,21 @@ npm install react-webcam
 
 ## Demo
 
-http://cezary.github.io/react-webcam/
+http://cezary.github.io/react-webcam/examples
 
 ## Example
 
 ```javascript
-var React = require('react');
-var Webcam = require('react-webcam');
+import React from 'react';
+import Webcam from 'react-webcam';
 
-var Component = React.createClass({
+class Component extends React.Component {
   render: function() {
     return (
       <Webcam/>
     );
   }
-});
+}
 ```
 
 ### License
