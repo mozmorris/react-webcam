@@ -1,18 +1,43 @@
+'use strict';
+
+var webpack = require('webpack');
+
+var plugins = [
+  new webpack.optimize.OccurenceOrderPlugin(),
+  new webpack.DefinePlugin({
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+  })
+];
+
+if (process.env.NODE_ENV === 'production') {
+  plugins.push(
+    new webpack.optimize.UglifyJsPlugin({
+      compressor: {
+        screw_ie8: true,
+        warnings: false
+      }
+    })
+  );
+}
+
 module.exports = {
-  entry: './index.js',
+  externals: [{
+    react: {
+      root: 'React',
+      commonjs2: 'react',
+      commonjs: 'react',
+      amd: 'react'
+    }
+  }],
+  module: {
+    loaders: [{
+      test: /\.js$/,
+      loader: 'babel-loader'
+    }]
+  },
   output: {
-    filename: './dist/react-webcam.js',
-    sourceMapFilename: './dist/react-webcam.map',
-    library: 'Webcam',
+    library: 'react-webcam',
     libraryTarget: 'umd'
   },
-  externals: {
-    'react': 'React',
-    'react/addons': 'React'
-  },
-  module: {
-    loaders: [
-      {test: /\.js$/, loader: 'jsx-loader'}
-    ]
-  }
+  plugins: plugins
 };
