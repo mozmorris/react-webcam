@@ -13,6 +13,7 @@ export default class Webcam extends Component {
   };
   static propTypes = {
     audio: PropTypes.bool,
+    onUserMedia: PropTypes.func,
     height: PropTypes.oneOfType([
       PropTypes.number,
       PropTypes.string
@@ -106,6 +107,10 @@ export default class Webcam extends Component {
       hasUserMedia: true,
       src
     });
+
+    if (this.props.onUserMedia) {
+      this.props.onUserMedia();
+    }
   }
 
   componentWillUnmount() {
