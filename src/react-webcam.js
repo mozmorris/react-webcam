@@ -66,7 +66,7 @@ export default class Webcam extends Component {
       navigator.getUserMedia(constraints, (stream) => {
         Webcam.mountedInstances.forEach((instance) => instance.handleUserMedia(null, stream));
       }, (e) => {
-        Webcam.mountedInstances.forEach((instance) => instance.handleUserMedia(error));
+        Webcam.mountedInstances.forEach((instance) => instance.handleUserMedia(e));
       });
     };
 
