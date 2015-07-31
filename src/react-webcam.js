@@ -121,7 +121,8 @@ export default class Webcam extends Component {
     if (!this.state.hasUserMedia) return;
 
     let canvas = document.createElement('canvas');
-    let video = React.findDOMNode(this.refs.video);
+    let video = React.findDOMNode(this);
+    console.log(video);
     canvas.height = video.clientHeight;
     canvas.width = video.clientWidth;
 
@@ -138,8 +139,7 @@ export default class Webcam extends Component {
         width={this.props.width}
         height={this.props.height}
         src={this.state.src}
-        ref='video'
-      ></video>
+      />
     );
   }
 }
