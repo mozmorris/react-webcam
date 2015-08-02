@@ -103,6 +103,7 @@ export default class Webcam extends Component {
 
     let src = window.URL.createObjectURL(stream);
 
+    this.stream = stream;
     this.setState({
       hasUserMedia: true,
       src
@@ -118,6 +119,8 @@ export default class Webcam extends Component {
     Webcam.mountedInstances.splice(index, 1);
 
     if (Webcam.mountedInstances.length === 0 && this.state.hasUserMedia) {
+      this.stream.stop();
+      Webcam.userMediaRequested = false;
       window.URL.revokeObjectURL(this.state.src);
     }
   }
