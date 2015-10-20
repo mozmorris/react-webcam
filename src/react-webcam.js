@@ -83,20 +83,21 @@ export default class Webcam extends Component {
     if (this.props.audioSource && this.props.videoSource) {
       sourceSelected(this.props.audioSource, this.props.videoSource);
     } else {
-      MediaStreamTrack.getSources((sourceInfos) => {
+      navigator.mediaDevices.enumerateDevices().then((devices) => {
         let audioSource = null;
         let videoSource = null;
 
-        sourceInfos.forEach((sourceInfo) => {
-          if (sourceInfo.kind === 'audio') {
-            audioSource = sourceInfo.id;
-          } else if (sourceInfo.kind === 'video') {
-            videoSource = sourceInfo.id;
+        devices.forEach((device) => {
+          if (device.kind === 'audio') {
+            audioSource = device.id;
+          } else if (device.kind === 'video') {
+            videoSource = device.id;
           }
         });
 
         sourceSelected(audioSource, videoSource);
       });
+      // .catch((error) => console.log(error.name + ": " + error.message));
     }
 
     Webcam.userMediaRequested = true;
@@ -136,14 +137,14 @@ export default class Webcam extends Component {
   }
 
   getScreenshot() {
-    if (!this.state.hasUserMedia) return;
+    if (!this.state.hasUserMedia) return null;
 
     let canvas = this.getCanvas();
     return canvas.toDataURL(this.props.screenshotFormat);
   }
 
   getCanvas() {
-    if (!this.state.hasUserMedia) return;
+    if (!this.state.hasUserMedia) return null;
 
     const video = React.findDOMNode(this);
     if (!this.ctx) {
