@@ -21,11 +21,21 @@ export default class Webcam extends Component {
     width: PropTypes.oneOfType([
       PropTypes.number,
       PropTypes.string
+    ]),
+    screenshotFormat: PropTypes.oneOf([
+      'image/webp',
+      'image/png',
+      'image/jpeg'
     ])
   };
   static mountedInstances = [];
   static userMediaRequested = false;
 
+  getDefaultProps() {
+    return {
+      screenshotFormat: 'image/webp'
+    };
+  }
 
   constructor() {
     super();
@@ -129,7 +139,7 @@ export default class Webcam extends Component {
     if (!this.state.hasUserMedia) return;
 
     let canvas = this.getCanvas();
-    return canvas.toDataURL('image/webp');
+    return canvas.toDataURL(this.props.screenshotFormat);
   }
 
   getCanvas() {
