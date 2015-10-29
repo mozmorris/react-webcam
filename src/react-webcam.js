@@ -83,21 +83,38 @@ export default class Webcam extends Component {
     if (this.props.audioSource && this.props.videoSource) {
       sourceSelected(this.props.audioSource, this.props.videoSource);
     } else {
-      navigator.mediaDevices.enumerateDevices().then((devices) => {
-        let audioSource = null;
-        let videoSource = null;
+      if ('mediaDevices' in navigator) {
+        navigator.mediaDevices.enumerateDevices().then((devices) => {
+          let audioSource = null;
+          let videoSource = null;
 
-        devices.forEach((device) => {
-          if (device.kind === 'audio') {
-            audioSource = device.id;
-          } else if (device.kind === 'video') {
-            videoSource = device.id;
-          }
+          devices.forEach((device) => {
+            if (device.kind === 'audio') {
+              audioSource = device.id;
+            } else if (device.kind === 'video') {
+              videoSource = device.id;
+            }
+          });
+
+          sourceSelected(audioSource, videoSource);
+        })
+        .catch((error) => console.log(error.name + ": " + error.message));
+      } else {
+        MediaStreamTrack.getSources((sources) => {
+          let audioSource = null;
+          let videoSource = null;
+
+          sources.forEach((source) => {
+            if (source.kind === 'audio') {
+              audioSource = source.id;
+            } else if (source.kind === 'video') {
+              videoSource = source.id;
+            }
+          });
+
+          sourceSelected(audioSource, videoSource);
         });
-
-        sourceSelected(audioSource, videoSource);
-      });
-      // .catch((error) => console.log(error.name + ": " + error.message));
+      }
     }
 
     Webcam.userMediaRequested = true;
