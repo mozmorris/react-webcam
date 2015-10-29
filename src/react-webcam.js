@@ -9,7 +9,8 @@ export default class Webcam extends Component {
   static defaultProps = {
     audio: true,
     height: 480,
-    width: 640
+    width: 640,
+    screenshotFormat: 'image/webp'
   };
   static propTypes = {
     audio: PropTypes.bool,
@@ -30,12 +31,6 @@ export default class Webcam extends Component {
   };
   static mountedInstances = [];
   static userMediaRequested = false;
-
-  getDefaultProps() {
-    return {
-      screenshotFormat: 'image/webp'
-    };
-  }
 
   constructor() {
     super();
