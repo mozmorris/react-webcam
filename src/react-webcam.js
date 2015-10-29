@@ -10,8 +10,10 @@ export default class Webcam extends Component {
     audio: true,
     height: 480,
     width: 640,
-    screenshotFormat: 'image/webp'
+    screenshotFormat: 'image/webp',
+    onUserMedia: function() {}
   };
+
   static propTypes = {
     audio: PropTypes.bool,
     onUserMedia: PropTypes.func,
@@ -29,7 +31,9 @@ export default class Webcam extends Component {
       'image/jpeg'
     ])
   };
+
   static mountedInstances = [];
+
   static userMediaRequested = false;
 
   constructor() {
@@ -132,9 +136,7 @@ export default class Webcam extends Component {
       src
     });
 
-    if (this.props.onUserMedia) {
-      this.props.onUserMedia();
-    }
+    this.props.onUserMedia();
   }
 
   componentWillUnmount() {

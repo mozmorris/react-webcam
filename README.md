@@ -13,21 +13,29 @@ npm install react-webcam
 
 http://cezary.github.io/react-webcam/examples
 
-## Example
+## Usage
 
 ```javascript
 import React from 'react';
 import Webcam from 'react-webcam';
 
 class Component extends React.Component {
-  render: function() {
-    return (
-      <Webcam/>
-    );
+  render() {
+    return <Webcam/>;
   }
 }
 ```
 
-### License
+### Props
+
+* audio: boolean | Set to enable/disable audio. Default is true.
+* height: number | Height of video element. Default is 480.
+* width: number | Width of video element. Default is 640.
+* screenshotFormat: 'string' | Format of screenshot. Default is
+  'image/webp'.
+* onUserMedia: function | Callback when component receives a media
+  stream.
+
+## License
 
 MIT
