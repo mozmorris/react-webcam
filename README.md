@@ -35,6 +35,7 @@ class Component extends React.Component {
   'image/webp'.
 * onUserMedia: function | Callback when component receives a media
   stream.
+* className: 'string' | CSS class of video element. Default is empty.
 
 ## License
 
