@@ -11,7 +11,7 @@ npm install react-webcam
 
 ## Demo
 
-http://cezary.github.io/react-webcam/examples
+https://cezary.github.io/react-webcam/examples (if demo doesn't work, check browser compatibility and verify browser is using https)
 
 ## Usage
 
