@@ -29,7 +29,8 @@ export default class Webcam extends Component {
       'image/webp',
       'image/png',
       'image/jpeg'
-    ])
+    ]),
+    className: PropTypes.string
   };
 
   static mountedInstances = [];
@@ -182,6 +183,7 @@ export default class Webcam extends Component {
         width={this.props.width}
         height={this.props.height}
         src={this.state.src}
+        className={this.props.className}
       />
     );
   }
