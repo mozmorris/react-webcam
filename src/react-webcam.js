@@ -11,7 +11,7 @@ export default class Webcam extends Component {
     height: 480,
     width: 640,
     screenshotFormat: 'image/webp',
-    onUserMedia: function() {}
+    onUserMedia: () => {}
   };
 
   static propTypes = {
@@ -97,7 +97,9 @@ export default class Webcam extends Component {
 
           sourceSelected(audioSource, videoSource);
         })
-        .catch((error) => console.log(error.name + ": " + error.message));
+        .catch((error) => {
+          console.log(`${error.name}: ${error.message}`); // eslint-disable-line no-console
+        });
       } else {
         MediaStreamTrack.getSources((sources) => {
           let audioSource = null;
