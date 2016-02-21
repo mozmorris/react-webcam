@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { findDOMNode } from 'react-dom';
 
 function hasGetUserMedia() {
   return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||
@@ -163,7 +164,7 @@ export default class Webcam extends Component {
   getCanvas() {
     if (!this.state.hasUserMedia) return null;
 
-    const video = React.findDOMNode(this);
+    const video = findDOMNode(this);
     if (!this.ctx) {
       let canvas = document.createElement('canvas');
       canvas.height = video.clientHeight;
