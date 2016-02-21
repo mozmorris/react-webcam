@@ -28,14 +28,14 @@ class Component extends React.Component {
 
 ### Props
 
-* audio: boolean | Set to enable/disable audio. Default is true.
-* height: number | Height of video element. Default is 480.
-* width: number | Width of video element. Default is 640.
-* screenshotFormat: 'string' | Format of screenshot. Default is
-  'image/webp'.
-* onUserMedia: function | Callback when component receives a media
-  stream.
-* className: 'string' | CSS class of video element. Default is empty.
+prop             | type     | default      | notes
+-----------------|----------|--------------|----------
+className        | string   | ''           | CSS class of video element
+audio            | boolean  | true         | enable/disable audio
+height           | number   | 480          | height of video element
+width            | number   | 640          | width of video element
+screenshotFormat | string   | 'image/webp' | format of screenshot
+onUserMedia      | function | noop         | callback when component receives a media stream
 
 ## License
 
