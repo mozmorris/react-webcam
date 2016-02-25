@@ -148,7 +148,20 @@ export default class Webcam extends Component {
     Webcam.mountedInstances.splice(index, 1);
 
     if (Webcam.mountedInstances.length === 0 && this.state.hasUserMedia) {
-      if (this.stream.stop) this.stream.stop();
+      if (this.stream.stop) {
+        this.stream.stop();
+      } else {
+        if (this.stream.getVideoTracks) {
+          for (let track of this.stream.getVideoTracks()) {
+            track.stop();
+          }
+        }
+        if (this.stream.getAudioTracks) {
+          for (let track of this.stream.getAudioTracks()) {
+            track.stop();
+          }
+        }
+      }
       Webcam.userMediaRequested = false;
       window.URL.revokeObjectURL(this.state.src);
     }
