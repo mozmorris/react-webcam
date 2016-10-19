@@ -91,10 +91,10 @@ export default class Webcam extends Component {
           let videoSource = null;
 
           devices.forEach((device) => {
-            if (device.kind === 'audio') {
-              audioSource = device.id;
-            } else if (device.kind === 'video') {
-              videoSource = device.id;
+            if (device.kind === 'audioinput') {
+              audioSource = device.deviceId;
+            } else if (device.kind === 'videoinput') {
+              videoSource = device.deviceId;
             }
           });
 
