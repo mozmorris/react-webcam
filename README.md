@@ -6,7 +6,7 @@ for browser compatibility.
 ## Installation
 
 ```
-npm install react-webcam
+npm install git+https://github.com/smronju/react-webcam.git
 ```
 
 ## Demo
