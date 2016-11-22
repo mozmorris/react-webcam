@@ -186,11 +186,9 @@ export default class Webcam extends Component {
     if (!this.ctx) this.ctx = canvas.getContext('2d');
     const {ctx} = this;
 
-    const aspectRatio = video.videoWidth / video.videoHeight;
-
     //This is set every time incase the video element has resized
-    canvas.width = video.clientWidth;
-    canvas.height = video.clientWidth / aspectRatio;
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
 
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
