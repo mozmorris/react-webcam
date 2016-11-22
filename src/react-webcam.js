@@ -63,22 +63,52 @@ export default class Webcam extends Component {
                           navigator.msGetUserMedia;
 
     let sourceSelected = (audioSource, videoSource) => {
+      const {width, height} = this.props;
+
       let constraints = {
         video: {
-          optional: [{sourceId: videoSource}]
+          sourceId: videoSource,
+          width: {exact:width}, height:{exact:height}
         }
       };
 
       if (this.props.audio) {
         constraints.audio = {
-          optional: [{sourceId: audioSource}]
+          sourceId: audioSource
         };
       }
 
-      navigator.getUserMedia(constraints, (stream) => {
+      const logError = e => console.log("error", e, typeof e)
+
+      const onSuccess = stream => {
         Webcam.mountedInstances.forEach((instance) => instance.handleUserMedia(null, stream));
-      }, (e) => {
+      }
+
+      const onError = e => {
+        logError(e)
         Webcam.mountedInstances.forEach((instance) => instance.handleUserMedia(e));
+      }
+
+      const getUserMediaOnSuccessBound = (constraints, onError) => {
+        navigator.getUserMedia(constraints, onSuccess , onError);
+      }
+
+      getUserMediaOnSuccessBound(constraints, (e) => {
+        logError(e)
+        if (e.name === "ConstraintNotSatisfiedError"){
+          /* this is the fallback for Chrome,
+          since chrome does not accept the contrains defined as width: {exact:width}, height:{exact:height},
+          however firefox does not work without them.
+           */
+          constraints.video = {
+            sourceId: videoSource,
+            width, height
+          }
+          getUserMediaOnSuccessBound(constraints, onError)
+        }
+        else{
+          onError(e)
+        }
       });
     };
 
