@@ -68,7 +68,7 @@ export default class Webcam extends Component {
       let constraints = {
         video: {
           sourceId: videoSource,
-          width: {exact: width}, height: {exact: height}
+          width: {exact:width}, height:{exact:height}
         }
       };
 
@@ -78,10 +78,31 @@ export default class Webcam extends Component {
         };
       }
 
-      navigator.getUserMedia(constraints, (stream) => {
+      const success = stream => {
         Webcam.mountedInstances.forEach((instance) => instance.handleUserMedia(null, stream));
-      }, (e) => {
+      }
+
+      const error = e => {
+        console.log("error",e, typeof e)
         Webcam.mountedInstances.forEach((instance) => instance.handleUserMedia(e));
+      }
+
+      const getUserMedia = (constraints, error) => {
+        navigator.getUserMedia(constraints, success , error);
+      }
+
+      getUserMedia(constraints, (e) => {
+        console.log("error",e, typeof e)
+        if (e.name === "ConstraintNotSatisfiedError"){
+          constraints.video = {
+            sourceId: videoSource,
+            width, height
+          }
+          getUserMedia(constraints, error)
+        }
+        else{
+          error(e)
+        }
       });
     };
 
@@ -129,6 +150,7 @@ export default class Webcam extends Component {
 
   handleUserMedia(error, stream) {
     if (error) {
+      console.log("error", error)
       this.setState({
         hasUserMedia: false
       });
