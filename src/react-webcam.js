@@ -63,15 +63,18 @@ export default class Webcam extends Component {
                           navigator.msGetUserMedia;
 
     let sourceSelected = (audioSource, videoSource) => {
+      const {width, height} = this.props;
+
       let constraints = {
         video: {
-          optional: [{sourceId: videoSource}]
+          sourceId: videoSource,
+          width: {exact: width}, height: {exact: height}
         }
       };
 
       if (this.props.audio) {
         constraints.audio = {
-          optional: [{sourceId: audioSource}]
+          sourceId: audioSource
         };
       }
 
