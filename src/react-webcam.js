@@ -78,30 +78,36 @@ export default class Webcam extends Component {
         };
       }
 
-      const success = stream => {
+      const logError = e => console.log("error", e, typeof e)
+
+      const onSuccess = stream => {
         Webcam.mountedInstances.forEach((instance) => instance.handleUserMedia(null, stream));
       }
 
-      const error = e => {
-        console.log("error",e, typeof e)
+      const onError = e => {
+        logError(e)
         Webcam.mountedInstances.forEach((instance) => instance.handleUserMedia(e));
       }
 
-      const getUserMedia = (constraints, error) => {
-        navigator.getUserMedia(constraints, success , error);
+      const getUserMediaOnSuccessBound = (constraints, onError) => {
+        navigator.getUserMedia(constraints, onSuccess , onError);
       }
 
-      getUserMedia(constraints, (e) => {
-        console.log("error",e, typeof e)
+      getUserMediaOnSuccessBound(constraints, (e) => {
+        logError(e)
         if (e.name === "ConstraintNotSatisfiedError"){
+          /* this is the fallback for Chrome,
+          since chrome does not accept the contrains defined as width: {exact:width}, height:{exact:height},
+          however firefox does not work without them.
+           */
           constraints.video = {
             sourceId: videoSource,
             width, height
           }
-          getUserMedia(constraints, error)
+          getUserMediaOnSuccessBound(constraints, onError)
         }
         else{
-          error(e)
+          onError(e)
         }
       });
     };
@@ -150,7 +156,6 @@ export default class Webcam extends Component {
 
   handleUserMedia(error, stream) {
     if (error) {
-      console.log("error", error)
       this.setState({
         hasUserMedia: false
       });
