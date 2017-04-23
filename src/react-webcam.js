@@ -175,6 +175,11 @@ export default class Webcam extends Component {
     return canvas.toDataURL(this.props.screenshotFormat);
   }
 
+  getBase64Screenshot() {
+    let screenShot = this.getScreenshot();
+    return screenShot.replace(/^data:image\/(png|jpg);base64,/, "");
+  }
+  
   getCanvas() {
     if (!this.state.hasUserMedia) return null;
 
