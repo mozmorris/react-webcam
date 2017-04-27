@@ -2,8 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
 
 function hasGetUserMedia() {
-  return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||
-            navigator.mozGetUserMedia || navigator.msGetUserMedia);
+  return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)
 }
 
 export default class Webcam extends Component {
@@ -57,11 +56,6 @@ export default class Webcam extends Component {
   }
 
   requestUserMedia() {
-    navigator.getUserMedia = navigator.getUserMedia ||
-                          navigator.webkitGetUserMedia ||
-                          navigator.mozGetUserMedia ||
-                          navigator.msGetUserMedia;
-
     let sourceSelected = (audioSource, videoSource) => {
       const {width, height} = this.props;
 
@@ -90,7 +84,7 @@ export default class Webcam extends Component {
       }
 
       const getUserMediaOnSuccessBound = (constraints, onError) => {
-        navigator.getUserMedia(constraints, onSuccess , onError);
+        navigator.mediaDevices.getUserMedia(constraints).then(onSuccess).catch(onError)
       }
 
       getUserMediaOnSuccessBound(constraints, (e) => {
