@@ -37,5 +37,8 @@
     "eslint-config-airbnb": "0.0.6",
     "eslint-plugin-react": "^2.3.0",
     "webpack": "^1.9.6"
+  },
+  "dependencies": {
+    "prop-types": "^15.5.8"
   }
 }
