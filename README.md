@@ -11,7 +11,7 @@ npm install react-webcam
 
 ## Demo
 
-https://cezary.github.io/react-webcam/examples (if demo doesn't work, check browser compatibility and verify browser is using https)
+https://www.mozmorris.com/react-webcam/examples/ (if demo doesn't work, check browser compatibility and verify browser is using https)
 
 ## Usage
 
@@ -40,3 +40,7 @@ onUserMedia      | function | noop         | callback when component receives a 
 ## License
 
 MIT
+
+## Credits
+
+Many thanks to @cezary for his work on this component.

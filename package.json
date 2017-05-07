@@ -1,6 +1,6 @@
 {
   "name": "react-webcam",
-  "version": "0.0.14",
+  "version": "0.1.0",
   "description": "React webcam component",
   "main": "dist/react-webcam.js",
   "scripts": {
@@ -11,19 +11,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/cezary/react-webcam.git"
+    "url": "https://github.com/mozmorris/react-webcam.git"
   },
   "keywords": [
     "react",
     "react-component",
     "webcam"
   ],
-  "author": "Cezary Wojtkowski <cezary@gmail.com>",
+  "author": "Moz Morris <mozmorris@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/cezary/react-webcam/issues"
+    "url": "https://github.com/mozmorris/react-webcam/issues"
   },
-  "homepage": "https://github.com/cezary/react-webcam",
+  "homepage": "https://github.com/mozmorris/react-webcam",
   "peerDependencies": {
     "react": ">=0.14.0",
     "react-dom": ">=0.14.0"
