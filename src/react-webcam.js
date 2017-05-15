@@ -13,6 +13,7 @@ export default class Webcam extends Component {
     height: 480,
     width: 640,
     screenshotFormat: 'image/webp',
+    mirror: false,
     onUserMedia: () => {}
   };
 
@@ -33,7 +34,8 @@ export default class Webcam extends Component {
       'image/png',
       'image/jpeg'
     ]),
-    className: PropTypes.string
+    className: PropTypes.string,
+    mirror: PropTypes.bool
   };
 
   static mountedInstances = [];
@@ -188,7 +190,15 @@ export default class Webcam extends Component {
       canvas.height = video.clientWidth / aspectRatio;
 
       this.canvas = canvas;
-      this.ctx = canvas.getContext('2d');
+
+      if (this.props.mirror) {
+        let context = canvas.getContext('2d');
+        context.translate(canvas.width, 0);
+        context.scale(-1, 1);
+        this.ctx = context;
+      } else {
+        this.ctx = canvas.getContext('2d');
+      }
     }
 
     const {ctx, canvas} = this;
@@ -198,6 +208,16 @@ export default class Webcam extends Component {
   }
 
   render() {
+    let style = {
+        mirror: {
+            MozTransform: 'scale(-1, 1)',
+            WebkitTransform: 'scale(-1, 1)',
+            OTransform: 'scale(-1, 1)',
+            transform: 'scale(-1, 1)',
+            filter: 'FlipH'
+        }
+    };
+
     return (
       <video
         autoPlay
@@ -206,6 +226,7 @@ export default class Webcam extends Component {
         src={this.state.src}
         muted={this.props.muted}
         className={this.props.className}
+        style={(this.props.mirror) ? style.mirror : null}
       />
     );
   }

@@ -6,7 +6,7 @@ for browser compatibility.
 ## Installation
 
 ```
-npm install react-webcam
+npm install git+https://github.com/smronju/react-webcam.git
 ```
 
 ## Demo
@@ -32,6 +32,7 @@ prop             | type     | default      | notes
 -----------------|----------|--------------|----------
 className        | string   | ''           | CSS class of video element
 audio            | boolean  | true         | enable/disable audio
+mirror           | boolean  | true         | enable/disable mirror view
 height           | number   | 480          | height of video element
 width            | number   | 640          | width of video element
 screenshotFormat | string   | 'image/webp' | format of screenshot
