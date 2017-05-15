@@ -37,6 +37,37 @@ width            | number   | 640          | width of video element
 screenshotFormat | string   | 'image/webp' | format of screenshot
 onUserMedia      | function | noop         | callback when component receives a media stream
 
+### Methods
+
+`getScreenshot` - Returns a base64 encoded string of the current webcam image. Example:
+
+```javascript
+class WebcamCapture extends React.Component {
+  setRef = (webcam) => {
+    this.webcam = webcam;
+  }
+
+  capture = () => {
+    const imageSrc = this.webcam.getScreenshot();
+  };
+
+  render() {
+    return (
+      <div>
+        <Webcam
+          audio={false}
+          height={350}
+          ref={this.setRef}
+          screenshotFormat="image/jpeg"
+          width={350}
+        />
+        <button onClick={this.capture}>Capture photo</button>
+      </div>
+    );
+  }
+}
+```
+
 ## License
 
 MIT
