@@ -180,18 +180,17 @@ export default class Webcam extends Component {
     if (!this.state.hasUserMedia) return null;
 
     const video = findDOMNode(this);
-    if (!this.ctx) {
-      let canvas = document.createElement('canvas');
-      const aspectRatio = video.videoWidth / video.videoHeight;
 
-      canvas.width = video.clientWidth;
-      canvas.height = video.clientWidth / aspectRatio;
+    if (!this.canvas) this.canvas = document.createElement('canvas');
+    const {canvas} = this;
 
-      this.canvas = canvas;
-      this.ctx = canvas.getContext('2d');
-    }
+    if (!this.ctx) this.ctx = canvas.getContext('2d');
+    const {ctx} = this;
 
-    const {ctx, canvas} = this;
+    //This is set every time incase the video element has resized
+    canvas.width = video.clientWidth;
+    canvas.height = video.videoHeight;
+
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
     return canvas;
