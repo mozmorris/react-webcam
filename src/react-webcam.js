@@ -33,6 +33,7 @@ export default class Webcam extends Component {
       'image/png',
       'image/jpeg'
     ]),
+    style: PropTypes.object,
     className: PropTypes.string
   };
 
