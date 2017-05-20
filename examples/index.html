@@ -58,9 +58,9 @@
 </head>
 <body>
   <div id="root"></div>
-  <script src="//fb.me/react-with-addons-0.14.7.js"></script>
-  <script src="//fb.me/react-dom-0.14.7.js"></script>
-  <script src="//unpkg.com/babel-transform-in-browser@6.4.6/dist/btib.min.js"></script>
+  <script src="https://unpkg.com/react@15.5.4/dist/react.min.js"></script>
+  <script src="https://unpkg.com/react-dom@15.5.4/dist/react-dom.min.js"></script>
+  <script src="https://unpkg.com/babel-transform-in-browser@6.4.6/dist/btib.min.js"></script>
   <script src="../dist/react-webcam.js"></script>
   <script type="text/es2015">
     // getUserMedia only works for secure pages
@@ -79,20 +79,60 @@
           <div>
             <h1>react-webcam</h1>
             <Webcam
+              audio={false}
               ref='webcam'
             />
             <div>
-              <h2>CSS Filters</h2>
+              <h2>CSS Filters & style prop</h2>
               <div className='webcams'>
-                <Webcam width='212' height='160'/>
-                <Webcam width='212' height='160'/>
-                <Webcam width='212' height='160'/>
-                <Webcam width='212' height='160'/>
-                <Webcam width='212' height='160'/>
-                <Webcam width='212' height='160'/>
-                <Webcam width='212' height='160'/>
-                <Webcam width='212' height='160'/>
-                <Webcam width='212' height='160'/>
+                <Webcam
+                  audio={false}
+                  width='212'
+                  height='160'
+                />
+                <Webcam
+                  audio={false}
+                  width='212'
+                  height='160'
+                  style={{ transform: 'rotate(180deg)' }}
+                />
+                <Webcam
+                  audio={false}
+                  width='212'
+                  height='160'
+                />
+                <Webcam
+                  audio={false}
+                  width='212'
+                  height='160'
+                  style={{ transform: 'rotate(180deg)' }}
+                />
+                <Webcam
+                  audio={false}
+                  width='212'
+                  height='160'
+                />
+                <Webcam
+                  audio={false}
+                  width='212'
+                  height='160'
+                  style={{ transform: 'rotate(180deg)' }}
+                />
+                <Webcam
+                  audio={false}
+                  width='212'
+                  height='160'
+                />
+                <Webcam
+                  audio={false}
+                  width='212'
+                  height='160'
+                  style={{ transform: 'rotate(180deg)' }}/>
+                <Webcam
+                  audio={false}
+                  width='212'
+                  height='160'
+                />
               </div>
             </div>
             <div>
