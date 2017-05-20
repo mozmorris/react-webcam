@@ -1,16 +1,15 @@
 {
-  "extends": "eslint-config-airbnb",
+  "parser": "babel-eslint",
+  "extends": "airbnb",
   "env": {
     "browser": true,
     "mocha": true,
     "node": true
   },
   "rules": {
-    "react/jsx-uses-react": 2,
-    "react/jsx-uses-vars": 2,
-    "react/react-in-jsx-scope": 2
-  },
-  "plugins": [
-    "react"
-  ]
+    "jsx-a11y/media-has-caption": 0,
+    "react/forbid-prop-types": 0,
+    "react/jsx-filename-extension": 0,
+    "react/require-default-props": 0
+  }
 }
