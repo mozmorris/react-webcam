@@ -206,6 +206,7 @@ export default class Webcam extends Component {
         src={this.state.src}
         muted={this.props.muted}
         className={this.props.className}
+        style={this.props.style}
       />
     );
   }
