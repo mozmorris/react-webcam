@@ -46,12 +46,17 @@ export default class Webcam extends Component {
     this.state = {
       hasUserMedia: false
     };
+    this.video = null;
+    this.webcamAspectRatio = null;
   }
 
   componentDidMount() {
     if (!hasGetUserMedia()) return;
 
     Webcam.mountedInstances.push(this);
+
+    this.video = findDOMNode(this);
+    this.video.addEventListener('playing', this.handleVideoPlaying.bind(this));
 
     if (!this.state.hasUserMedia && !Webcam.userMediaRequested) {
       this.requestUserMedia();
@@ -146,6 +151,11 @@ export default class Webcam extends Component {
     this.props.onUserMedia();
   }
 
+  handleVideoPlaying() {
+    this.webcamAspectRatio = this.video.videoWidth / this.video.videoHeight;
+    this.video.removeEventListener('playing', this.handleVideoPlaying);
+  }
+
   componentWillUnmount() {
     let index = Webcam.mountedInstances.indexOf(this);
     Webcam.mountedInstances.splice(index, 1);
@@ -171,29 +181,30 @@ export default class Webcam extends Component {
   }
 
   getScreenshot() {
-    if (!this.state.hasUserMedia) return null;
+    if (!this.state.hasUserMedia || this.webcamAspectRatio === null) {
+      return null;
+    }
 
     let canvas = this.getCanvas();
     return canvas.toDataURL(this.props.screenshotFormat);
   }
 
   getCanvas() {
-    if (!this.state.hasUserMedia) return null;
+    if (!this.state.hasUserMedia || this.webcamAspectRatio === null) {
+      return null;
+    }
 
-    const video = findDOMNode(this);
     if (!this.ctx) {
       let canvas = document.createElement('canvas');
-      const aspectRatio = video.videoWidth / video.videoHeight;
-
-      canvas.width = video.clientWidth;
-      canvas.height = video.clientWidth / aspectRatio;
+      canvas.width = this.video.clientWidth;
+      canvas.height = this.video.clientWidth / this.webcamAspectRatio;
 
       this.canvas = canvas;
       this.ctx = canvas.getContext('2d');
     }
 
     const {ctx, canvas} = this;
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    ctx.drawImage(this.video, 0, 0, canvas.width, canvas.height);
 
     return canvas;
   }
