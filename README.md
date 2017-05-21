@@ -11,7 +11,7 @@ npm install react-webcam
 
 ## Demo
 
-https://cezary.github.io/react-webcam/examples (if demo doesn't work, check browser compatibility and verify browser is using https)
+https://www.mozmorris.com/react-webcam/examples/ (if demo doesn't work, check browser compatibility and verify browser is using https)
 
 ## Usage
 
@@ -28,15 +28,53 @@ class Component extends React.Component {
 
 ### Props
 
-* audio: boolean | Set to enable/disable audio. Default is true.
-* height: number | Height of video element. Default is 480.
-* width: number | Width of video element. Default is 640.
-* screenshotFormat: 'string' | Format of screenshot. Default is
-  'image/webp'.
-* onUserMedia: function | Callback when component receives a media
-  stream.
-* className: 'string' | CSS class of video element. Default is empty.
+prop             | type     | default      | notes
+-----------------|----------|--------------|----------
+className        | string   | ''           | CSS class of video element
+audio            | boolean  | true         | enable/disable audio
+height           | number   | 480          | height of video element
+width            | number   | 640          | width of video element
+style            | object   |              | style prop passed to video element
+screenshotFormat | string   | 'image/webp' | format of screenshot
+onUserMedia      | function | noop         | callback when component receives a media stream
+audioSource      | string   |              | an array or single ConstrainDOMString(s) specifying the device id
+videoSource      | string   |              | an array or single ConstrainDOMString(s) specifying the device id
+
+### Methods
+
+`getScreenshot` - Returns a base64 encoded string of the current webcam image. Example:
+
+```javascript
+class WebcamCapture extends React.Component {
+  setRef = (webcam) => {
+    this.webcam = webcam;
+  }
+
+  capture = () => {
+    const imageSrc = this.webcam.getScreenshot();
+  };
+
+  render() {
+    return (
+      <div>
+        <Webcam
+          audio={false}
+          height={350}
+          ref={this.setRef}
+          screenshotFormat="image/jpeg"
+          width={350}
+        />
+        <button onClick={this.capture}>Capture photo</button>
+      </div>
+    );
+  }
+}
+```
 
 ## License
 
 MIT
+
+## Credits
+
+Many thanks to @cezary for his work on this component.

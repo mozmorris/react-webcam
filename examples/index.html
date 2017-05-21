@@ -57,62 +57,105 @@
   </style>
 </head>
 <body>
-<script src="//fb.me/react-0.13.3.js"></script>
-<script src="//fb.me/JSXTransformer-0.13.3.js"></script>
-<script src="../dist/react-webcam.js"></script>
-<script type="text/jsx">
-  // getUserMedia only works for secure pages
-  if (!/https/.test(window.location.protocol)) window.location.protocol = 'https://';
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@15.5.4/dist/react.js"></script>
+  <script src="https://unpkg.com/react-dom@15.5.4/dist/react-dom.js"></script>
+  <script src="https://unpkg.com/babel-transform-in-browser@6.4.6/dist/btib.min.js"></script>
+  <script src="../dist/react-webcam.js"></script>
+  <script type="text/es2015">
+    // getUserMedia only works for secure pages
+    if (!/https/.test(window.location.protocol)) window.location.protocol = 'https://';
 
-  var App = React.createClass({
-    getInitialState: function() {
-      return {
-        screenshot: null,
-        tab: 0
-      };
-    },
+    class App extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = {
+          screenshot: null,
+          tab: 0
+        };
+      }
 
-    render: function() {
-      return (
-        <div>
-          <h1>react-webcam</h1>
-          <Webcam
-            ref='webcam'
-          />
+      handleClick = () => {
+        const screenshot = this.webcam.getScreenshot();
+        this.setState({ screenshot });
+      }
+
+      render() {
+        return (
           <div>
-            <h2>CSS Filters</h2>
-            <div className='webcams'>
-              <Webcam width='212' height='160'/>
-              <Webcam width='212' height='160'/>
-              <Webcam width='212' height='160'/>
-              <Webcam width='212' height='160'/>
-              <Webcam width='212' height='160'/>
-              <Webcam width='212' height='160'/>
-              <Webcam width='212' height='160'/>
-              <Webcam width='212' height='160'/>
-              <Webcam width='212' height='160'/>
-            </div>
-          </div>
-          <div>
-            <h2>Screenshots</h2>
-            <div className='screenshots'>
-              <div className='controls'>
-                <button onClick={this.screenshot}>capture</button>
+            <h1>react-webcam</h1>
+            <Webcam
+              audio={false}
+              ref={node => this.webcam = node}
+            />
+            <div>
+              <h2>CSS Filters & style prop</h2>
+              <div className='webcams'>
+                <Webcam
+                  audio={false}
+                  width='212'
+                  height='160'
+                />
+                <Webcam
+                  audio={false}
+                  width='212'
+                  height='160'
+                  style={{ transform: 'rotate(180deg)' }}
+                />
+                <Webcam
+                  audio={false}
+                  width='212'
+                  height='160'
+                />
+                <Webcam
+                  audio={false}
+                  width='212'
+                  height='160'
+                  style={{ transform: 'rotate(180deg)' }}
+                />
+                <Webcam
+                  audio={false}
+                  width='212'
+                  height='160'
+                />
+                <Webcam
+                  audio={false}
+                  width='212'
+                  height='160'
+                  style={{ transform: 'rotate(180deg)' }}
+                />
+                <Webcam
+                  audio={false}
+                  width='212'
+                  height='160'
+                />
+                <Webcam
+                  audio={false}
+                  width='212'
+                  height='160'
+                  style={{ transform: 'rotate(180deg)' }}/>
+                <Webcam
+                  audio={false}
+                  width='212'
+                  height='160'
+                />
               </div>
-              { this.state.screenshot ? <img src={this.state.screenshot} /> : null }
+            </div>
+            <div>
+              <h2>Screenshots</h2>
+              <div className='screenshots'>
+                <div className='controls'>
+                  <button onClick={this.handleClick}>capture</button>
+                </div>
+                {this.state.screenshot ? <img src={this.state.screenshot} /> : null}
+              </div>
             </div>
           </div>
-        </div>
-      );
-    },
-
-    screenshot: function() {
-      var screenshot = this.refs.webcam.getScreenshot();
-      this.setState({screenshot: screenshot});
+        );
+      }
     }
-  });
 
-  React.render(<App/>, document.body);
-</script>
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
 </body>
 </html>

@@ -1,4 +1,10 @@
 {
-  "stage": 0,
-  "loose": "all"
+  "presets": [
+    "env",
+    "react"
+  ],
+  "plugins": [
+    "babel-plugin-transform-class-properties",
+    "babel-plugin-add-module-exports"
+  ]
 }
