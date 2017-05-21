@@ -3,9 +3,8 @@
 var webpack = require('webpack');
 
 var plugins = [
-  new webpack.optimize.OccurenceOrderPlugin(),
-  new webpack.DefinePlugin({
-    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+  new webpack.EnvironmentPlugin({
+    NODE_ENV: 'development'
   })
 ];
 
@@ -14,8 +13,11 @@ if (process.env.NODE_ENV === 'production') {
     new webpack.optimize.UglifyJsPlugin({
       compressor: {
         screw_ie8: true,
-        warnings: false
-      }
+      },
+      sourceMap: true
+    }),
+    new webpack.LoaderOptionsPlugin({
+      minimize: true
     })
   );
 }
@@ -36,9 +38,9 @@ module.exports = {
     }
   }],
   module: {
-    loaders: [{
+    rules: [{
       test: /\.js$/,
-      loader: 'babel-loader'
+      use: 'babel-loader'
     }]
   },
   output: {
