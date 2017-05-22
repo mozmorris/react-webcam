@@ -11,7 +11,8 @@ export default class Webcam extends Component {
     height: 480,
     width: 640,
     screenshotFormat: 'image/webp',
-    onUserMedia: () => {}
+    onUserMedia: () => {},
+    onFailure: () => {}
   };
 
   static propTypes = {
@@ -46,7 +47,10 @@ export default class Webcam extends Component {
   }
 
   componentDidMount() {
-    if (!hasGetUserMedia()) return;
+    if (!hasGetUserMedia()) {
+      this.props.onFailure()
+      return
+    }
 
     Webcam.mountedInstances.push(this);
 
@@ -153,7 +157,7 @@ export default class Webcam extends Component {
       this.setState({
         hasUserMedia: false
       });
-
+      this.props.onFailure()
       return;
     }
 
