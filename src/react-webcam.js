@@ -65,8 +65,8 @@ export default class Webcam extends Component {
 
   static userMediaRequested = false;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     getUserMediaPolyfill()
     this.state = {
       hasUserMedia: false
