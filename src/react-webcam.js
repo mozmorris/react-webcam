@@ -1,9 +1,33 @@
 import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
 
-function hasGetUserMedia() {
-  return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||
-            navigator.mozGetUserMedia || navigator.msGetUserMedia);
+
+
+const navigatorGetUserMedia = (navigator.getUserMedia ||
+                               navigator.webkitGetUserMedia ||
+                               navigator.mozGetUserMedia)
+const mediaDevices = navigator.mediaDevices && navigator.mediaDevices.getUserMedia
+
+const hasGetUserMedia = !!(getUserMediaPonyfill())
+
+// Adapted from https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
+// Use a pony fill to avoid editing global objects
+function getUserMediaPonyfill() {
+  let getUserMedia
+  if (mediaDevices) {
+    getUserMedia = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices)
+  }
+  else if (navigatorGetUserMedia) {
+    getUserMedia = (constraints) => {
+      return new Promise(function(resolve, reject) {
+        navigatorGetUserMedia.call(navigator, constraints, resolve, reject)
+      })
+    }
+  }
+  else {
+    getUserMedia = null
+  }
+  return getUserMedia
 }
 
 export default class Webcam extends Component {
@@ -12,7 +36,8 @@ export default class Webcam extends Component {
     height: 480,
     width: 640,
     screenshotFormat: 'image/webp',
-    onUserMedia: () => {}
+    onUserMedia: () => {},
+    onFailure: (error) => {}
   };
 
   static propTypes = {
@@ -39,29 +64,27 @@ export default class Webcam extends Component {
 
   static userMediaRequested = false;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       hasUserMedia: false
     };
+
+    if (!hasGetUserMedia) {
+      const error = new Error('getUserMedia is not supported by this browser')
+      this.props.onFailure(error)
+    }
   }
 
   componentDidMount() {
-    if (!hasGetUserMedia()) return;
-
     Webcam.mountedInstances.push(this);
 
-    if (!this.state.hasUserMedia && !Webcam.userMediaRequested) {
+    if (!Webcam.userMediaRequested) {
       this.requestUserMedia();
     }
   }
 
   requestUserMedia() {
-    navigator.getUserMedia = navigator.getUserMedia ||
-                          navigator.webkitGetUserMedia ||
-                          navigator.mozGetUserMedia ||
-                          navigator.msGetUserMedia;
-
     let sourceSelected = (audioSource, videoSource) => {
       const {width, height} = this.props;
 
@@ -90,14 +113,14 @@ export default class Webcam extends Component {
       }
 
       const getUserMediaOnSuccessBound = (constraints, onError) => {
-        navigator.getUserMedia(constraints, onSuccess , onError);
+        const getUserMedia = getUserMediaPonyfill()
+        getUserMedia(constraints).then(onSuccess).catch(onError)
       }
 
       getUserMediaOnSuccessBound(constraints, (e) => {
-        logError(e)
         if (e.name === "ConstraintNotSatisfiedError"){
           /* this is the fallback for Chrome,
-          since chrome does not accept the contrains defined as width: {exact:width}, height:{exact:height},
+          since chrome does not accept the constraints defined as width: {exact:width}, height:{exact:height},
           however firefox does not work without them.
            */
           constraints.video = {
@@ -159,7 +182,7 @@ export default class Webcam extends Component {
       this.setState({
         hasUserMedia: false
       });
-
+      this.props.onFailure(error)
       return;
     }
 
