@@ -8,7 +8,7 @@ const navigatorGetUserMedia = (navigator.getUserMedia ||
                                navigator.mozGetUserMedia)
 const mediaDevices = navigator.mediaDevices && navigator.mediaDevices.getUserMedia
 
-export const hasGetUserMedia = !!(navigatorGetUserMedia || mediaDevices)
+const hasGetUserMedia = !!(getUserMediaPonyfill())
 
 // Adapted from https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
 // Use a pony fill to avoid editing global objects
@@ -25,8 +25,7 @@ function getUserMediaPonyfill() {
     }
   }
   else {
-    getUserMedia = () =>
-      Promise.reject(new Error('getUserMedia is not implemented in this browser'))
+    getUserMedia = null
   }
   return getUserMedia
 }
@@ -70,6 +69,11 @@ export default class Webcam extends Component {
     this.state = {
       hasUserMedia: false
     };
+
+    if (!hasGetUserMedia) {
+      const error = new Error('getUserMedia is not supported by this browser')
+      this.props.onFailure(error)
+    }
   }
 
   componentDidMount() {
@@ -114,7 +118,6 @@ export default class Webcam extends Component {
       }
 
       getUserMediaOnSuccessBound(constraints, (e) => {
-        logError(e)
         if (e.name === "ConstraintNotSatisfiedError"){
           /* this is the fallback for Chrome,
           since chrome does not accept the constraints defined as width: {exact:width}, height:{exact:height},
