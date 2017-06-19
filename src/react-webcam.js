@@ -75,12 +75,37 @@ export default class Webcam extends Component {
   requestUserMedia() {
     let sourceSelected = (audioSource, videoSource) => {
       const {width, height} = this.props;
+      /* There is an inconsistency between Chrome v58 and Firefox
+      Exact works in a different way to firefox, tf the requested exact resolution
+      is higher than the supported webcam resolution then Chrome will upscale,
+      however Firefox will trigger an OverConstraintError. I suspect Firefox is
+      following the standard
 
+      In case a non exact resolution is requested, instead an ideal is, Firefox
+      will handle all cases gracefully and prepare a resolution which is
+      as close as possible to the requested one.
+      If the supported webcam resolution is higher than the requested one, then it downscales;
+      if it's lower, then it gives the highest available.
+      However, Chrome will just give the lowest resolution of the webcam, this seems like a bug.
+
+      Therefore, if one wants the ideal constraint functionality,
+      the exact constraint works best on Chrome and the ideal one best on Firefox.
+
+      This lead us to use advanced to create a list of potential fallbacks.
+      The weird thing is, that Chrome seems to work consistently with Firefox if advanced is used.
+      Which means that the fallback list is not necessary, but setting
+      the one constraint on advanced is necessary to get Chrome to act consistently.
+
+      ref: https://webrtchacks.com/getusermedia-resolutions-3/
+      ref: https://w3c.github.io/mediacapture-main/getusermedia.html#constrainable-interface
+      ref: https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
+      ref: https://github.com/webrtc/adapter/issues/408 They discuss the Chrome bug
+      ref: https://bugs.chromium.org/p/chromium/issues/detail?id=682887 the actual chrome bug
+       */
       let constraints = {
         video: {
           sourceId: videoSource,
-          width: { exact: width },
-          height: { exact: height }
+          advanced: [{width, height}]
         }
       };
 
@@ -102,36 +127,7 @@ export default class Webcam extends Component {
       }
 
       const getUserMedia = getUserMediaPonyfill()
-      getUserMedia(constraints).then(onSuccess).catch((e) => {
-        if (e.name.toLowerCase().includes("constrain") ){
-          /* This is a fallback for Firefox due to an inconsistency with Chrome
-          If the requested exact resolution is higher than the supported webcam resolution
-          Chrome will upscale, however Firefox will trigger an OverConstraintError.
-
-          In case a non exact resolution is requested, Firefox will handle all cases gracefully
-          and prepare a resolution which is as close as possible to the requested one.
-          If the supported webcam resolution is higher than the requested one, then it downscales;
-          if it's lower, then it gives the highest available.
-
-          However, if no exact resolution is set, then Chrome will give the lowest resolution
-          of the webcam, this seems like a bug.
-
-          Therefore, the exact constrainst works best on Chrome and the ideal one best on Firefox.
-
-          ref: https://webrtchacks.com/getusermedia-resolutions-3/
-          ref: https://w3c.github.io/mediacapture-main/getusermedia.html#constrainable-interface
-          ref: https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
-           */
-          constraints.video = {
-            sourceId: videoSource,
-            width, height//this is the same as using ìdeal
-          }
-          getUserMedia(constraints).then(onSuccess).catch(onError)
-        }
-        else{
-          onError(e)
-        }
-      });
+      getUserMedia(constraints).then(onSuccess).catch(onError)
     };
 
     if (this.props.audioSource && this.props.videoSource) {
