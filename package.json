@@ -7,7 +7,8 @@
     "prepublish": "npm run build:umd",
     "build": "webpack src/react-webcam.js dist/react-webcam.js",
     "build:umd": "npm run build && NODE_ENV=production webpack src/react-webcam.js dist/react-webcam.min.js",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "dev": "webpack-dev-server --inline --hot --progress --https"
   },
   "repository": {
     "type": "git",
@@ -36,6 +37,8 @@
     "eslint": "^0.23",
     "eslint-config-airbnb": "0.0.6",
     "eslint-plugin-react": "^2.3.0",
-    "webpack": "^1.9.6"
+    "html-webpack-plugin": "^2.23.0",
+    "webpack": "^1.9.6",
+    "webpack-dev-server": "^1.16.4"
   }
 }
