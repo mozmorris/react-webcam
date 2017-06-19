@@ -118,12 +118,12 @@ export default class Webcam extends Component {
       const logError = e => console.log("error", e, typeof e)
 
       const onSuccess = stream => {
-        this.handleUserMedia(stream);
+        Webcam.mountedInstances.forEach((instance) => instance.handleUserMedia(stream));
       }
 
       const onError = e => {
         logError(e)
-        this.handleError(e);
+        Webcam.mountedInstances.forEach((instance) => instance.handleError(e));
       }
 
       const getUserMedia = getUserMediaPonyfill()
