@@ -1,33 +1,21 @@
 import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
 
-
-
-const navigatorGetUserMedia = (navigator.getUserMedia ||
-                               navigator.webkitGetUserMedia ||
-                               navigator.mozGetUserMedia)
-const mediaDevices = navigator.mediaDevices && navigator.mediaDevices.getUserMedia
-
 const hasGetUserMedia = !!(getUserMediaPonyfill())
 
 // Adapted from https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
 // Use a pony fill to avoid editing global objects
 function getUserMediaPonyfill() {
-  let getUserMedia
+  const mediaDevices = navigator.mediaDevices && navigator.mediaDevices.getUserMedia
   if (mediaDevices) {
-    getUserMedia = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices)
+    return navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices)
   }
-  else if (navigatorGetUserMedia) {
-    getUserMedia = (constraints) => {
-      return new Promise(function(resolve, reject) {
-        navigatorGetUserMedia.call(navigator, constraints, resolve, reject)
-      })
-    }
-  }
+  /*
+  Ignoring the old api, due to inconsistent behaviours
+  */
   else {
-    getUserMedia = null
+    return null
   }
-  return getUserMedia
 }
 
 export default class Webcam extends Component {
@@ -91,7 +79,8 @@ export default class Webcam extends Component {
       let constraints = {
         video: {
           sourceId: videoSource,
-          width: {exact:width}, height:{exact:height}
+          width: { exact: width },
+          height: { exact: height }
         }
       };
 
@@ -104,30 +93,26 @@ export default class Webcam extends Component {
       const logError = e => console.log("error", e, typeof e)
 
       const onSuccess = stream => {
-        Webcam.mountedInstances.forEach((instance) => instance.handleUserMedia(null, stream));
+        this.handleUserMedia(stream);
       }
 
       const onError = e => {
         logError(e)
-        Webcam.mountedInstances.forEach((instance) => instance.handleUserMedia(e));
+        this.handleError(e);
       }
 
-      const getUserMediaOnSuccessBound = (constraints, onError) => {
-        const getUserMedia = getUserMediaPonyfill()
-        getUserMedia(constraints).then(onSuccess).catch(onError)
-      }
-
-      getUserMediaOnSuccessBound(constraints, (e) => {
-        if (e.name === "ConstraintNotSatisfiedError"){
-          /* this is the fallback for Chrome,
-          since chrome does not accept the constraints defined as width: {exact:width}, height:{exact:height},
-          however firefox does not work without them.
+      const getUserMedia = getUserMediaPonyfill()
+      getUserMedia(constraints).then(onSuccess).catch((e) => {
+        if (e.name.toLowerCase().includes("constrain") ){
+          /* this is the fallback for Firefox due to a Chrome problem,
+          since chrome does not work with ideal resolutions, only `exact` seems to work,
+          however firefox respects `exact` too much and will fail if the webcam does not have the `exact` resolution
            */
           constraints.video = {
             sourceId: videoSource,
             width, height
           }
-          getUserMediaOnSuccessBound(constraints, onError)
+          getUserMedia(constraints).then(onSuccess).catch(onError)
         }
         else{
           onError(e)
@@ -177,16 +162,16 @@ export default class Webcam extends Component {
     Webcam.userMediaRequested = true;
   }
 
-  handleUserMedia(error, stream) {
-    if (error) {
-      this.setState({
-        hasUserMedia: false
-      });
-      this.props.onFailure(error)
-      return;
-    }
+  handleError (error) {
+    this.setState({
+      hasUserMedia: false
+    });
+    this.props.onFailure(error)
+  }
 
+  handleUserMedia(stream) {
     let src = window.URL.createObjectURL(stream);
+    if (this.state.src) window.URL.revokeObjectURL(src);
 
     this.stream = stream;
     this.setState({
