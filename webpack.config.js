@@ -51,7 +51,7 @@ module.exports = {
     library: 'Webcam',
     libraryTarget: 'umd',
     path: `./dist`,
-    filename: 'react-webcam.js'
+    filename: process.env.NODE_ENV === 'production' ? 'react-webcam.min.js' : 'react-webcam.js'
   },
   devServer: {
     port: process.env.PORT || 3333,

@@ -5,8 +5,8 @@
   "main": "dist/react-webcam.js",
   "scripts": {
     "prepublish": "npm run build:umd",
-    "build": "webpack src/react-webcam.js dist/react-webcam.js",
-    "build:umd": "npm run build && NODE_ENV=production webpack src/react-webcam.js dist/react-webcam.min.js",
+    "build": "webpack",
+    "build:umd": "npm run build && NODE_ENV=production webpack",
     "lint": "eslint src",
     "dev": "webpack-dev-server --inline --hot --progress --https"
   },
