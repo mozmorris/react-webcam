@@ -1,8 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
 
-const hasGetUserMedia = !!(getUserMediaPonyfill());
-
 // Adapted from https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
 // Use a pony fill to avoid editing global objects
 function getUserMediaPonyfill() {
@@ -13,25 +11,17 @@ function getUserMediaPonyfill() {
   /*
   Ignoring the old api, due to inconsistent behaviours
   */
-  else {
-    return null;
-  }
+  return null;
 }
 
-export default class Webcam extends Component {
-  static defaultProps = {
-    audio: true,
-    height: 480,
-    width: 640,
-    screenshotFormat: 'image/webp',
-    onUserMedia: () => {},
-    onFailure: (error) => {}
-  };
+const hasGetUserMedia = !!(getUserMediaPonyfill());
 
+export default class Webcam extends Component {
   static propTypes = {
     audio: PropTypes.bool,
     muted: PropTypes.bool,
     onUserMedia: PropTypes.func,
+    onFailure: PropTypes.func,
     height: PropTypes.oneOfType([
       PropTypes.number,
       PropTypes.string
@@ -45,7 +35,18 @@ export default class Webcam extends Component {
       'image/png',
       'image/jpeg'
     ]),
-    className: PropTypes.string
+    className: PropTypes.string,
+    audioSource: PropTypes.string,
+    videoSource: PropTypes.string
+  };
+
+  static defaultProps = {
+    audio: true,
+    height: 480,
+    width: 640,
+    screenshotFormat: 'image/webp',
+    onUserMedia: () => {},
+    onFailure: () => {}
   };
 
   static mountedInstances = [];
@@ -73,7 +74,7 @@ export default class Webcam extends Component {
   }
 
   requestUserMedia() {
-    let sourceSelected = (audioSource, videoSource) => {
+    const sourceSelected = (audioSource, videoSource) => {
       const { width, height } = this.props;
       /* There is an inconsistency between Chrome v58 and Firefox
       Exact works in a different way to firefox, tf the requested exact resolution
@@ -102,7 +103,7 @@ export default class Webcam extends Component {
       ref: https://github.com/webrtc/adapter/issues/408 They discuss the Chrome bug
       ref: https://bugs.chromium.org/p/chromium/issues/detail?id=682887 the actual chrome bug
        */
-      let constraints = {
+      const constraints = {
         video: {
           sourceId: videoSource,
           advanced: [{ width, height }]
@@ -180,7 +181,7 @@ export default class Webcam extends Component {
   }
 
   handleUserMedia(stream) {
-    let src = window.URL.createObjectURL(stream);
+    const src = window.URL.createObjectURL(stream);
     if (this.state.src) window.URL.revokeObjectURL(src);
 
     this.stream = stream;
@@ -193,7 +194,7 @@ export default class Webcam extends Component {
   }
 
   componentWillUnmount() {
-    let index = Webcam.mountedInstances.indexOf(this);
+    const index = Webcam.mountedInstances.indexOf(this);
     Webcam.mountedInstances.splice(index, 1);
 
     if (Webcam.mountedInstances.length === 0 && this.state.hasUserMedia) {
@@ -219,7 +220,7 @@ export default class Webcam extends Component {
   getScreenshot() {
     if (!this.state.hasUserMedia) return null;
 
-    let canvas = this.getCanvas();
+    const canvas = this.getCanvas();
     return canvas.toDataURL(this.props.screenshotFormat);
   }
 
@@ -234,7 +235,7 @@ export default class Webcam extends Component {
     if (!this.ctx) this.ctx = canvas.getContext('2d');
     const { ctx } = this;
 
-    //This is set every time incase the video element has resized
+    // This is set every time incase the video element has resized
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
 
