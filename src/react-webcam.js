@@ -77,25 +77,22 @@ export default class Webcam extends Component {
     const sourceSelected = (audioSource, videoSource) => {
       const { width, height } = this.props;
       /* There is an inconsistency between Chrome v58 and Firefox
-      Exact works in a different way to firefox, tf the requested exact resolution
-      is higher than the supported webcam resolution then Chrome will upscale,
-      however Firefox will trigger an OverConstraintError. I suspect Firefox is
-      following the standard
+      `exact` resolution constraint works in a different way to firefox. If the requested `exact` resolution is higher than the supported webcam resolution then Chrome will upscale.
+      However Firefox will trigger an OverConstraintError. I suspect Firefox is following the standard
 
-      In case a non exact resolution is requested, instead an ideal is, Firefox
-      will handle all cases gracefully and prepare a resolution which is
-      as close as possible to the requested one.
+      In case a non exact resolution is requested, instead an `ideal` is, Firefox will handle all cases gracefully and prepare a resolution which is as close as possible to the requested one.
       If the supported webcam resolution is higher than the requested one, then it downscales;
       if it's lower, then it gives the highest available.
       However, Chrome will just give the lowest resolution of the webcam, this seems like a bug.
 
-      Therefore, if one wants the ideal constraint functionality,
-      the exact constraint works best on Chrome and the ideal one best on Firefox.
+      Therefore, if one wants the ideal constraint functionality, the `exact` constraint works best on Chrome and the ideal one best on Firefox.
 
-      This lead us to use advanced to create a list of potential fallbacks.
-      The weird thing is, that Chrome seems to work consistently with Firefox if advanced is used.
-      Which means that the fallback list is not necessary, but setting
-      the one constraint on advanced is necessary to get Chrome to act consistently.
+      This lead us to use the `advanced` constraint to create a list of potential constraint fallbacks.
+      The weird thing is, that Chrome seems to work well with `ideal` if the constraint is defined as list element in `advanced`.
+      Which means that setting a list with multiple fallbacks is not necessary, but setting the one constaint in `advance` is.
+
+      The problem is that Firefox does not work with ideal well if advanced is used,
+      which means the ideal needs to go on the parent constraint, together with advanced for Chome.
 
       ref: https://webrtchacks.com/getusermedia-resolutions-3/
       ref: https://w3c.github.io/mediacapture-main/getusermedia.html#constrainable-interface
@@ -106,7 +103,8 @@ export default class Webcam extends Component {
       const constraints = {
         video: {
           sourceId: videoSource,
-          advanced: [{ width, height }]
+          width, height,//Necessary to get Firefox to work with ideal resolutions
+          advanced: [{ width, height }]//Necessary to get Chrome to work with ideal resolutions
         }
       };
 
