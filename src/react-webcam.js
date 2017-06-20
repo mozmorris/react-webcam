@@ -1,20 +1,20 @@
 import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
 
-const hasGetUserMedia = !!(getUserMediaPonyfill())
+const hasGetUserMedia = !!(getUserMediaPonyfill());
 
 // Adapted from https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
 // Use a pony fill to avoid editing global objects
 function getUserMediaPonyfill() {
-  const mediaDevices = navigator.mediaDevices && navigator.mediaDevices.getUserMedia
+  const mediaDevices = navigator.mediaDevices && navigator.mediaDevices.getUserMedia;
   if (mediaDevices) {
-    return navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices)
+    return navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
   }
   /*
   Ignoring the old api, due to inconsistent behaviours
   */
   else {
-    return null
+    return null;
   }
 }
 
@@ -59,8 +59,8 @@ export default class Webcam extends Component {
     };
 
     if (!hasGetUserMedia) {
-      const error = new Error('getUserMedia is not supported by this browser')
-      this.props.onFailure(error)
+      const error = new Error('getUserMedia is not supported by this browser');
+      this.props.onFailure(error);
     }
   }
 
@@ -74,7 +74,7 @@ export default class Webcam extends Component {
 
   requestUserMedia() {
     let sourceSelected = (audioSource, videoSource) => {
-      const {width, height} = this.props;
+      const { width, height } = this.props;
       /* There is an inconsistency between Chrome v58 and Firefox
       Exact works in a different way to firefox, tf the requested exact resolution
       is higher than the supported webcam resolution then Chrome will upscale,
@@ -105,7 +105,7 @@ export default class Webcam extends Component {
       let constraints = {
         video: {
           sourceId: videoSource,
-          advanced: [{width, height}]
+          advanced: [{ width, height }]
         }
       };
 
@@ -115,19 +115,19 @@ export default class Webcam extends Component {
         };
       }
 
-      const logError = e => console.log("error", e, typeof e)
+      const logError = e => console.log('error', e, typeof e);
 
       const onSuccess = stream => {
         Webcam.mountedInstances.forEach((instance) => instance.handleUserMedia(stream));
-      }
+      };
 
       const onError = e => {
-        logError(e)
+        logError(e);
         Webcam.mountedInstances.forEach((instance) => instance.handleError(e));
-      }
+      };
 
-      const getUserMedia = getUserMediaPonyfill()
-      getUserMedia(constraints).then(onSuccess).catch(onError)
+      const getUserMedia = getUserMediaPonyfill();
+      getUserMedia(constraints).then(onSuccess).catch(onError);
     };
 
     if (this.props.audioSource && this.props.videoSource) {
@@ -172,11 +172,11 @@ export default class Webcam extends Component {
     Webcam.userMediaRequested = true;
   }
 
-  handleError (error) {
+  handleError(error) {
     this.setState({
       hasUserMedia: false
     });
-    this.props.onFailure(error)
+    this.props.onFailure(error);
   }
 
   handleUserMedia(stream) {
@@ -229,10 +229,10 @@ export default class Webcam extends Component {
     const video = findDOMNode(this);
 
     if (!this.canvas) this.canvas = document.createElement('canvas');
-    const {canvas} = this;
+    const { canvas } = this;
 
     if (!this.ctx) this.ctx = canvas.getContext('2d');
-    const {ctx} = this;
+    const { ctx } = this;
 
     //This is set every time incase the video element has resized
     canvas.width = video.videoWidth;
