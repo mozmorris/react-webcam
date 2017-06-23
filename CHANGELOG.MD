@@ -1,3 +1,10 @@
+## 0.0.19
+
+### Fixed
+- Fix for firefox when requested resolution is higher than available resolution
+
+### Removed
+- Removed support for `navigator.getUserMedia`, only `navigator.mediaDevices.getUserMedia` is supported. This is due to too many inconsistencies in the `getUserMedia` api.
 
 
 ## 0.0.18
