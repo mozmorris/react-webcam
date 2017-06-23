@@ -1,20 +1,12 @@
 import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
 
-// Adapted from https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
-// Use a pony fill to avoid editing global objects
-function getUserMediaPonyfill() {
-  const mediaDevices = navigator.mediaDevices && navigator.mediaDevices.getUserMedia;
-  if (mediaDevices) {
-    return navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
-  }
-  /*
-  Ignoring the old api, due to inconsistent behaviours
-  */
-  return null;
-}
-
-const hasGetUserMedia = !!(getUserMediaPonyfill());
+/*
+Deliberatly ignoring the old api, due to very inconsistent behaviours
+*/
+const mediaDevices = navigator.mediaDevices;
+const getUserMedia = mediaDevices && mediaDevices.getUserMedia && mediaDevices.getUserMedia.bind(mediaDevices);
+const hasGetUserMedia = !!(getUserMedia);
 
 export default class Webcam extends Component {
   static propTypes = {
@@ -103,8 +95,8 @@ export default class Webcam extends Component {
       const constraints = {
         video: {
           sourceId: videoSource,
-          width, height,//Necessary to get Firefox to work with ideal resolutions
-          advanced: [{ width, height }]//Necessary to get Chrome to work with ideal resolutions
+          width, height, // Necessary to get Firefox to work with ideal resolutions
+          advanced: [{ width, height }] // Necessary to get Chrome to work with ideal resolutions
         }
       };
 
@@ -125,47 +117,29 @@ export default class Webcam extends Component {
         Webcam.mountedInstances.forEach((instance) => instance.handleError(e));
       };
 
-      const getUserMedia = getUserMediaPonyfill();
       getUserMedia(constraints).then(onSuccess).catch(onError);
     };
 
     if (this.props.audioSource && this.props.videoSource) {
       sourceSelected(this.props.audioSource, this.props.videoSource);
     } else {
-      if ('mediaDevices' in navigator) {
-        navigator.mediaDevices.enumerateDevices().then((devices) => {
-          let audioSource = null;
-          let videoSource = null;
+      mediaDevices.enumerateDevices().then((devices) => {
+        let audioSource = null;
+        let videoSource = null;
 
-          devices.forEach((device) => {
-            if (device.kind === 'audio') {
-              audioSource = device.id;
-            } else if (device.kind === 'video') {
-              videoSource = device.id;
-            }
-          });
-
-          sourceSelected(audioSource, videoSource);
-        })
-        .catch((error) => {
-          console.log(`${error.name}: ${error.message}`); // eslint-disable-line no-console
+        devices.forEach((device) => {
+          if (device.kind === 'audio') {
+            audioSource = device.id;
+          } else if (device.kind === 'video') {
+            videoSource = device.id;
+          }
         });
-      } else {
-        MediaStreamTrack.getSources((sources) => {
-          let audioSource = null;
-          let videoSource = null;
 
-          sources.forEach((source) => {
-            if (source.kind === 'audio') {
-              audioSource = source.id;
-            } else if (source.kind === 'video') {
-              videoSource = source.id;
-            }
-          });
-
-          sourceSelected(audioSource, videoSource);
-        });
-      }
+        sourceSelected(audioSource, videoSource);
+      })
+      .catch((error) => {
+        console.log(`${error.name}: ${error.message}`); // eslint-disable-line no-console
+      });
     }
 
     Webcam.userMediaRequested = true;
