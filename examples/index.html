@@ -61,7 +61,6 @@
   <script src="//fb.me/react-with-addons-0.14.7.js"></script>
   <script src="//fb.me/react-dom-0.14.7.js"></script>
   <script src="//npmcdn.com/babel-transform-in-browser@6.4.6/dist/btib.min.js"></script>
-  <script src="../dist/react-webcam.js"></script>
   <script type="text/es2015">
     // getUserMedia only works for secure pages
     if (!/https/.test(window.location.protocol)) window.location.protocol = 'https://';
@@ -80,6 +79,7 @@
             <h1>react-webcam</h1>
             <Webcam
               ref='webcam'
+              width='960' height='640'
             />
             <div>
               <h2>CSS Filters</h2>

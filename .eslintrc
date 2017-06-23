@@ -1,5 +1,6 @@
 {
   "extends": "eslint-config-airbnb",
+  "parser": "babel-eslint",
   "env": {
     "browser": true,
     "mocha": true,
@@ -8,9 +9,16 @@
   "rules": {
     "react/jsx-uses-react": 2,
     "react/jsx-uses-vars": 2,
-    "react/react-in-jsx-scope": 2
+    "react/react-in-jsx-scope": 2,
+    "no-console": 0,
+    "comma-dangle": 0,
+    "react/sort-comp": 0,
+    "prefer-const": 0
   },
   "plugins": [
     "react"
-  ]
+  ],
+  "ecmaFeatures": {
+    "jsx": true
+  }
 }
