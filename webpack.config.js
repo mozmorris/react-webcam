@@ -56,8 +56,7 @@ module.exports = {
   devServer: {
     port: process.env.PORT || 3333,
     host: '0.0.0.0',
-    publicPath: '/',
-    contentBase: './dist'
+    publicPath: '/'
   },
   plugins: plugins
 };
