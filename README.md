@@ -36,6 +36,7 @@ height           | number   | 480          | height of video element
 width            | number   | 640          | width of video element
 screenshotFormat | string   | 'image/webp' | format of screenshot
 onUserMedia      | function | noop         | callback when component receives a media stream
+onFailure        | function | noop         | Callback in case an error happens, no getUserMedia for example
 
 ## License
 
