@@ -5,7 +5,7 @@ import { findDOMNode } from 'react-dom';
 Deliberatly ignoring the old api, due to very inconsistent behaviours
 */
 const mediaDevices = navigator.mediaDevices;
-const getUserMedia = mediaDevices && mediaDevices.getUserMedia && mediaDevices.getUserMedia.bind(mediaDevices);
+const getUserMedia = mediaDevices && mediaDevices.getUserMedia ? mediaDevices.getUserMedia.bind(mediaDevices) : null;
 const hasGetUserMedia = !!(getUserMedia);
 
 export default class Webcam extends Component {
