@@ -20,7 +20,6 @@ export default class Webcam extends Component {
 
   static propTypes = {
     audio: PropTypes.bool,
-    muted: PropTypes.bool,
     onUserMedia: PropTypes.func,
     height: PropTypes.oneOfType([
       PropTypes.number,
@@ -212,7 +211,7 @@ export default class Webcam extends Component {
         width={this.props.width}
         height={this.props.height}
         src={this.state.src}
-        muted={this.props.muted}
+        muted={this.props.audio}
         className={this.props.className}
         style={this.props.style}
       />
