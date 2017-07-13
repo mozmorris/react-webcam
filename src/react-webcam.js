@@ -60,7 +60,7 @@ export default class Webcam extends Component {
     }
   }
 
-  componentWillUpdate(nextProps, nextState) {
+  componentWillUpdate(nextProps, nextState) { // eslint-disable-line no-unused-vars
     if (
       nextProps.videoSource !== this.props.videoSource ||
       nextProps.audioSource !== this.props.audioSource
