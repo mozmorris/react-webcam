@@ -62,6 +62,15 @@ export default class Webcam extends Component {
     }
   }
 
+  componentWillUpdate(nextProps, nextState) {
+    if (
+      nextProps.videoSource !== this.props.videoSource ||
+      nextProps.audioSource !== this.props.audioSource
+    ) {
+      this.requestUserMedia();
+    }
+  }
+
   componentWillUnmount() {
     const index = Webcam.mountedInstances.indexOf(this);
     Webcam.mountedInstances.splice(index, 1);
@@ -144,9 +153,9 @@ export default class Webcam extends Component {
         let videoSource = null;
 
         devices.forEach((device) => {
-          if (device.kind === 'audio') {
+          if (device.kind === 'audioinput') {
             audioSource = device.id;
-          } else if (device.kind === 'video') {
+          } else if (device.kind === 'videoinput') {
             videoSource = device.id;
           }
         });
