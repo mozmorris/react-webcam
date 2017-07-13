@@ -12,7 +12,6 @@ export default class Webcam extends Component {
     audio: true,
     className: '',
     height: 480,
-    muted: false,
     onUserMedia: () => {},
     screenshotFormat: 'image/webp',
     width: 640,
@@ -159,6 +158,9 @@ export default class Webcam extends Component {
           }
         });
 
+        if (this.props.audioSource) { audioSource = this.props.audioSource; }
+        if (this.props.videoSource) { videoSource = this.props.videoSource; }
+
         sourceSelected(audioSource, videoSource);
       })
         .catch((error) => {
@@ -176,6 +178,9 @@ export default class Webcam extends Component {
             videoSource = source.id;
           }
         });
+
+        if (this.props.audioSource) { audioSource = this.props.audioSource; }
+        if (this.props.videoSource) { videoSource = this.props.videoSource; }
 
         sourceSelected(audioSource, videoSource);
       });
