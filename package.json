@@ -1,5 +1,5 @@
 {
-  "name": "react-webcam",
+  "name": "@cliener/react-webcam",
   "version": "0.3.0",
   "description": "React webcam component",
   "main": "dist/react-webcam.js",
