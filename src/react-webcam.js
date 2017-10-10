@@ -185,16 +185,23 @@ export default class Webcam extends Component {
 
       return;
     }
-
-    const src = window.URL.createObjectURL(stream);
-
-    this.stream = stream;
-    this.setState({
-      hasUserMedia: true,
-      src,
-    });
-
-    this.props.onUserMedia();
+    try {
+      const src = window.URL.createObjectURL(stream);
+  
+      this.stream = stream;
+      this.setState({
+        hasUserMedia: true,
+        src,
+      });
+  
+      this.props.onUserMedia();
+    } catch(error) {
+      this.stream = stream;
+      this.video.srcObject = stream;
+      this.setState({
+        hasUserMedia: true
+      });
+    }
   }
 
   render() {
@@ -207,6 +214,7 @@ export default class Webcam extends Component {
         muted={this.props.muted}
         className={this.props.className}
         style={this.props.style}
+        ref={ref => this.video = ref}
       />
     );
   }
