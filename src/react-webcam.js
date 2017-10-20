@@ -18,6 +18,7 @@ export default class Webcam extends Component {
     onUserMedia: () => {},
     onFailure: () => {},
     className: "",
+    facingMode: "user",
   };
 
   static mountedInstances = [];
@@ -66,38 +67,13 @@ export default class Webcam extends Component {
 
   requestUserMedia() {
     const sourceSelected = (audioSource, videoSource) => {
-      const { width, height } = this.props;
-
-      /* There is an inconsistency between Chrome v58 and Firefox
-      `exact` resolution constraint works in a different way to firefox. If the requested `exact` resolution is higher than the supported webcam resolution then Chrome will upscale.
-      However Firefox will trigger an OverConstraintError. I suspect Firefox is following the standard
-
-      In case a non exact resolution is requested, instead an `ideal` is, Firefox will handle all cases gracefully and prepare a resolution which is as close as possible to the requested one.
-      If the supported webcam resolution is higher than the requested one, then it downscales;
-      if it's lower, then it gives the highest available.
-      However, Chrome will just give the lowest resolution of the webcam, this seems like a bug.
-
-      Therefore, if one wants the ideal constraint functionality, the `exact` constraint works best on Chrome and the ideal one best on Firefox.
-
-      This lead us to use the `advanced` constraint to create a list of potential constraint fallbacks.
-      The weird thing is, that Chrome seems to work well with `ideal` if the constraint is defined as list element in `advanced`.
-      Which means that setting a list with multiple fallbacks is not necessary, but setting the one constaint in `advance` is.
-
-      The problem is that Firefox does not work with ideal well if advanced is used,
-      which means the ideal needs to go on the parent constraint, together with advanced for Chome.
-
-      ref: https://webrtchacks.com/getusermedia-resolutions-3/
-      ref: https://w3c.github.io/mediacapture-main/getusermedia.html#constrainable-interface
-      ref: https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
-      ref: https://github.com/webrtc/adapter/issues/408 They discuss the Chrome bug
-      ref: https://bugs.chromium.org/p/chromium/issues/detail?id=682887 the actual chrome bug
-       */
+      const { width, height, facingMode } = this.props;
       const constraints = {
         video: {
           sourceId: videoSource,
+          facingMode,
           width,
-          height, // Necessary to get Firefox to work with ideal resolutions
-          advanced: [{ width, height }], // Necessary to get Chrome to work with ideal resolutions
+          height,
         },
       };
 
@@ -213,6 +189,7 @@ export default class Webcam extends Component {
     return (
       <video
         autoPlay
+        playsInline
         ref={video => {
           this.videoElement = video;
         }}
@@ -231,9 +208,11 @@ Webcam.propTypes = {
   muted: PropTypes.bool,
   onUserMedia: PropTypes.func,
   onFailure: PropTypes.func,
+  // Safari iOS and some Android Chrome seem to ignore width and height
   height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   screenshotFormat: PropTypes.oneOf(["image/webp", "image/png", "image/jpeg"]),
+  facingMode: PropTypes.oneOf(["user", "environment", "left", "right"]),
   style: PropTypes.object,
   className: PropTypes.string,
   audioSource: PropTypes.string,
