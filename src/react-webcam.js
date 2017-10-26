@@ -4,7 +4,7 @@ import { findDOMNode } from 'react-dom';
 
 function hasGetUserMedia() {
   return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||
-            navigator.mozGetUserMedia || navigator.msGetUserMedia);
+            navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.mediaDevices.getUserMedia);
 }
 
 export default class Webcam extends Component {
@@ -114,7 +114,8 @@ export default class Webcam extends Component {
     navigator.getUserMedia = navigator.getUserMedia ||
                           navigator.webkitGetUserMedia ||
                           navigator.mozGetUserMedia ||
-                          navigator.msGetUserMedia;
+                          navigator.msGetUserMedia || 
+                          navigator.mediaDevices.getUserMedia;
 
     const sourceSelected = (audioSource, videoSource) => {
       const constraints = {
