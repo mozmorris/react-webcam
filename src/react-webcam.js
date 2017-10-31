@@ -21,6 +21,22 @@ export default class Webcam extends Component {
     facingMode: "user",
   };
 
+  static propTypes = {
+    audio: PropTypes.bool,
+    muted: PropTypes.bool,
+    onUserMedia: PropTypes.func,
+    onFailure: PropTypes.func,
+    // Safari iOS and some Android Chrome seem to ignore width and height
+    height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    screenshotFormat: PropTypes.oneOf(["image/webp", "image/png", "image/jpeg"]),
+    facingMode: PropTypes.oneOf(["user", "environment", "left", "right"]),
+    style: PropTypes.object,
+    className: PropTypes.string,
+    audioSource: PropTypes.string,
+    videoSource: PropTypes.string,
+  };
+
   static mountedInstances = [];
 
   static userMediaRequested = false;
@@ -202,19 +218,3 @@ export default class Webcam extends Component {
     );
   }
 }
-
-Webcam.propTypes = {
-  audio: PropTypes.bool,
-  muted: PropTypes.bool,
-  onUserMedia: PropTypes.func,
-  onFailure: PropTypes.func,
-  // Safari iOS and some Android Chrome seem to ignore width and height
-  height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  screenshotFormat: PropTypes.oneOf(["image/webp", "image/png", "image/jpeg"]),
-  facingMode: PropTypes.oneOf(["user", "environment", "left", "right"]),
-  style: PropTypes.object,
-  className: PropTypes.string,
-  audioSource: PropTypes.string,
-  videoSource: PropTypes.string,
-};

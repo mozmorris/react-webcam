@@ -1,5 +1,5 @@
 {
-  "name": "@cliener/react-webcam",
+  "name": "react-webcam",
   "version": "0.3.2",
   "description": "React webcam component",
   "main": "dist/react-webcam.js",
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/cliener/react-webcam.git"
+    "url": "https://github.com/mozmorris/react-webcam.git"
   },
   "keywords": [
     "react",
@@ -27,9 +27,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/cliener/react-webcam/issues"
+    "url": "https://github.com/mozmorris/react-webcam/issues"
   },
-  "homepage": "https://github.com/cliener/react-webcam",
+  "homepage": "https://github.com/mozmorris/react-webcam",
   "peerDependencies": {
     "react": ">=0.14.0",
     "react-dom": ">=0.14.0"

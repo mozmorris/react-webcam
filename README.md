@@ -6,7 +6,7 @@ for browser compatibility.
 ## Installation
 
 ```
-npm install @cliener/react-webcam
+npm install react-webcam
 ```
 
 ## Demo
