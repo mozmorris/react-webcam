@@ -214,6 +214,7 @@ export default class Webcam extends Component {
         muted={this.props.muted}
         className={this.props.className}
         style={this.props.style}
+        ref={ref => this.video = ref}
       />
     );
   }
