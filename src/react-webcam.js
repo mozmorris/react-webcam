@@ -1,40 +1,36 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { findDOMNode } from 'react-dom';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
-function hasGetUserMedia() {
-  return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||
-            navigator.mozGetUserMedia || navigator.msGetUserMedia);
-}
+const getUserMedia =
+  navigator.mediaDevices &&
+  navigator.mediaDevices.getUserMedia &&
+  navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
+
+export const SupportsWebcam = !!getUserMedia;
 
 export default class Webcam extends Component {
   static defaultProps = {
     audio: true,
-    className: '',
+    width: 640,
     height: 480,
     muted: false,
+    screenshotFormat: "image/webp",
     onUserMedia: () => {},
-    screenshotFormat: 'image/webp',
-    width: 640,
+    onFailure: () => {},
+    className: "",
+    facingMode: "user",
   };
 
   static propTypes = {
     audio: PropTypes.bool,
     muted: PropTypes.bool,
     onUserMedia: PropTypes.func,
-    height: PropTypes.oneOfType([
-      PropTypes.number,
-      PropTypes.string,
-    ]),
-    width: PropTypes.oneOfType([
-      PropTypes.number,
-      PropTypes.string,
-    ]),
-    screenshotFormat: PropTypes.oneOf([
-      'image/webp',
-      'image/png',
-      'image/jpeg',
-    ]),
+    onFailure: PropTypes.func,
+    // Safari iOS and some Android Chrome seem to ignore width and height
+    height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    screenshotFormat: PropTypes.oneOf(["image/webp", "image/png", "image/jpeg"]),
+    facingMode: PropTypes.oneOf(["user", "environment", "left", "right"]),
     style: PropTypes.object,
     className: PropTypes.string,
     audioSource: PropTypes.string,
@@ -45,16 +41,19 @@ export default class Webcam extends Component {
 
   static userMediaRequested = false;
 
-  constructor() {
-    super();
-    this.state = {
-      hasUserMedia: false,
-    };
+  constructor(props) {
+    super(props);
+    if (!SupportsWebcam) {
+      const error = new Error("getUserMedia is not supported by this browser");
+      this.props.onFailure(error);
+    }
   }
 
-  componentDidMount() {
-    if (!hasGetUserMedia()) return;
+  state = {
+    hasUserMedia: false,
+  };
 
+  componentDidMount() {
     Webcam.mountedInstances.push(this);
 
     if (!this.state.hasUserMedia && !Webcam.userMediaRequested) {
@@ -78,139 +77,140 @@ export default class Webcam extends Component {
         }
       }
       Webcam.userMediaRequested = false;
-      window.URL.revokeObjectURL(this.state.src);
+      this.videoElement.srcObject = null;
     }
-  }
-
-  getScreenshot() {
-    if (!this.state.hasUserMedia) return null;
-
-    const canvas = this.getCanvas();
-    return canvas && canvas.toDataURL(this.props.screenshotFormat);
-  }
-
-  getCanvas() {
-    const video = findDOMNode(this);
-
-    if (!this.state.hasUserMedia || !video.videoHeight) return null;
-
-    if (!this.ctx) {
-      const canvas = document.createElement('canvas');
-      const aspectRatio = video.videoWidth / video.videoHeight;
-
-      canvas.width = video.clientWidth;
-      canvas.height = video.clientWidth / aspectRatio;
-
-      this.canvas = canvas;
-      this.ctx = canvas.getContext('2d');
-    }
-
-    const { ctx, canvas } = this;
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-    return canvas;
   }
 
   requestUserMedia() {
-    navigator.getUserMedia = navigator.getUserMedia ||
-                          navigator.webkitGetUserMedia ||
-                          navigator.mozGetUserMedia ||
-                          navigator.msGetUserMedia;
-
     const sourceSelected = (audioSource, videoSource) => {
+      const { width, height, facingMode } = this.props;
       const constraints = {
         video: {
-          optional: [{ sourceId: videoSource }],
+          sourceId: videoSource,
+          facingMode,
+          width,
+          height,
         },
       };
 
       if (this.props.audio) {
         constraints.audio = {
-          optional: [{ sourceId: audioSource }],
+          sourceId: audioSource,
         };
       }
 
-      navigator.getUserMedia(constraints, (stream) => {
-        Webcam.mountedInstances.forEach(instance => instance.handleUserMedia(null, stream));
-      }, (e) => {
-        Webcam.mountedInstances.forEach(instance => instance.handleUserMedia(e));
-      });
+      const logError = e => console.log("error", e, typeof e); // eslint-disable-line no-console
+
+      const onSuccess = stream => {
+        Webcam.mountedInstances.forEach(instance =>
+          instance.handleUserMedia(stream)
+        );
+      };
+
+      const onError = e => {
+        logError(e);
+        Webcam.mountedInstances.forEach(instance => instance.handleError(e));
+      };
+
+      getUserMedia(constraints)
+        .then(onSuccess)
+        .catch(onError);
     };
 
     if (this.props.audioSource && this.props.videoSource) {
       sourceSelected(this.props.audioSource, this.props.videoSource);
-    } else if ('mediaDevices' in navigator) {
-      navigator.mediaDevices.enumerateDevices().then((devices) => {
-        let audioSource = null;
-        let videoSource = null;
+    } else if ("mediaDevices" in navigator) {
+      navigator.mediaDevices
+        .enumerateDevices()
+        .then(devices => {
+          let audioSource = null;
+          let videoSource = null;
 
-        devices.forEach((device) => {
-          if (device.kind === 'audio') {
-            audioSource = device.id;
-          } else if (device.kind === 'video') {
-            videoSource = device.id;
-          }
-        });
+          devices.forEach(device => {
+            if (device.kind === "audio") {
+              audioSource = device.id;
+            } else if (device.kind === "video") {
+              videoSource = device.id;
+            }
+          });
 
-        sourceSelected(audioSource, videoSource);
-      })
-        .catch((error) => {
+          sourceSelected(audioSource, videoSource);
+        })
+        .catch(error => {
           console.log(`${error.name}: ${error.message}`); // eslint-disable-line no-console
         });
-    } else {
-      MediaStreamTrack.getSources((sources) => {
-        let audioSource = null;
-        let videoSource = null;
-
-        sources.forEach((source) => {
-          if (source.kind === 'audio') {
-            audioSource = source.id;
-          } else if (source.kind === 'video') {
-            videoSource = source.id;
-          }
-        });
-
-        sourceSelected(audioSource, videoSource);
-      });
     }
 
     Webcam.userMediaRequested = true;
   }
 
-  handleUserMedia(error, stream) {
-    if (error) {
-      this.setState({
-        hasUserMedia: false,
-      });
+  handleError(error) {
+    this.setState({
+      hasUserMedia: false,
+    });
+    this.props.onFailure(error);
+  }
 
-      return;
+  handleUserMedia(stream) {
+    this.stream = stream;
+    // Theoretically, this should be handled by setting the stream in state however
+    // HTMLMediaElement.srcObject can only be set by JS proprerty and not as a HTML attribute
+    // see https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/srcObject
+    this.videoElement.srcObject = stream;
+    this.setState({
+      hasUserMedia: true,
+    });
+
+    this.props.onUserMedia();
+  }
+
+  getScreenshot() {
+    if (!this.state.hasUserMedia) {
+      return null;
     }
-    try {
-      const src = window.URL.createObjectURL(stream);
-  
-      this.stream = stream;
-      this.setState({
-        hasUserMedia: true,
-        src,
-      });
-  
-      this.props.onUserMedia();
-    } catch(error) {
-      this.stream = stream;
-      this.video.srcObject = stream;
-      this.setState({
-        hasUserMedia: true
-      });
+
+    const canvas = this.getCanvas();
+    return canvas.toDataURL(this.props.screenshotFormat);
+  }
+
+  getCanvas() {
+    if (!this.state.hasUserMedia) {
+      return null;
     }
+
+    const video = this.videoElement;
+
+    if (!this.canvas) {
+      this.canvas = document.createElement("canvas");
+    }
+
+    const { canvas } = this;
+
+    if (!this.ctx) {
+      this.ctx = canvas.getContext("2d");
+    }
+
+    const { ctx } = this;
+
+    // This is set every time in case the video element has resized
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    return canvas;
   }
 
   render() {
     return (
       <video
         autoPlay
+        playsInline
+        ref={video => {
+          this.videoElement = video;
+        }}
         width={this.props.width}
         height={this.props.height}
-        src={this.state.src}
         muted={this.props.muted}
         className={this.props.className}
         style={this.props.style}

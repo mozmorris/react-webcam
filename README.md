@@ -37,8 +37,7 @@ width            | number   | 640          | width of video element
 style            | object   |              | style prop passed to video element
 screenshotFormat | string   | 'image/webp' | format of screenshot
 onUserMedia      | function | noop         | callback when component receives a media stream
-audioSource      | string   |              | an array or single ConstrainDOMString(s) specifying the device id
-videoSource      | string   |              | an array or single ConstrainDOMString(s) specifying the device id
+onFailure        | function | noop         | callback in case an error happens, no getUserMedia for example
 
 ### Methods
 
