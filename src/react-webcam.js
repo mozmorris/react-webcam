@@ -2,11 +2,13 @@ import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
 
 /*
-Deliberatly ignoring the old api, due to very inconsistent behaviours
+Deliberately ignoring the old api, due to very inconsistent behaviour
 */
 const mediaDevices = navigator.mediaDevices;
 const getUserMedia = mediaDevices && mediaDevices.getUserMedia ? mediaDevices.getUserMedia.bind(mediaDevices) : null;
 const hasGetUserMedia = !!(getUserMedia);
+
+const constraintTypes = PropTypes.oneOfType([PropTypes.number, PropTypes.object]);
 
 export default class Webcam extends Component {
   static propTypes = {
@@ -14,14 +16,8 @@ export default class Webcam extends Component {
     muted: PropTypes.bool,
     onUserMedia: PropTypes.func,
     onFailure: PropTypes.func,
-    height: PropTypes.oneOfType([
-      PropTypes.number,
-      PropTypes.string
-    ]),
-    width: PropTypes.oneOfType([
-      PropTypes.number,
-      PropTypes.string
-    ]),
+    height: constraintTypes,
+    width: constraintTypes,
     screenshotFormat: PropTypes.oneOf([
       'image/webp',
       'image/png',
@@ -34,8 +30,6 @@ export default class Webcam extends Component {
 
   static defaultProps = {
     audio: true,
-    height: 480,
-    width: 640,
     screenshotFormat: 'image/webp',
     onUserMedia: () => {},
     onFailure: () => {}
@@ -67,36 +61,23 @@ export default class Webcam extends Component {
 
   requestUserMedia() {
     const sourceSelected = (audioSource, videoSource) => {
-      const { width, height } = this.props;
-      /* There is an inconsistency between Chrome v58 and Firefox
-      `exact` resolution constraint works in a different way to firefox. If the requested `exact` resolution is higher than the supported webcam resolution then Chrome will upscale.
-      However Firefox will trigger an OverConstraintError. I suspect Firefox is following the standard
+      const { height, width } = this.props;
+      /*
+      Safari 11 has a bug where if you specify both the height and width
+      constraints you must chose a resolution supported by the web cam. If an
+      unsupported resolution is used getUserMedia(constraints) will hit a
+      OverconstrainedError complaining that width is an invalid constraint.
+      This bug exists for ideal constraints as well as min and max.
 
-      In case a non exact resolution is requested, instead an `ideal` is, Firefox will handle all cases gracefully and prepare a resolution which is as close as possible to the requested one.
-      If the supported webcam resolution is higher than the requested one, then it downscales;
-      if it's lower, then it gives the highest available.
-      However, Chrome will just give the lowest resolution of the webcam, this seems like a bug.
+      However if only a height is specified safari will correctly chose the
+      nearest resolution supported by the web cam.
 
-      Therefore, if one wants the ideal constraint functionality, the `exact` constraint works best on Chrome and the ideal one best on Firefox.
-
-      This lead us to use the `advanced` constraint to create a list of potential constraint fallbacks.
-      The weird thing is, that Chrome seems to work well with `ideal` if the constraint is defined as list element in `advanced`.
-      Which means that setting a list with multiple fallbacks is not necessary, but setting the one constaint in `advance` is.
-
-      The problem is that Firefox does not work with ideal well if advanced is used,
-      which means the ideal needs to go on the parent constraint, together with advanced for Chome.
-
-      ref: https://webrtchacks.com/getusermedia-resolutions-3/
-      ref: https://w3c.github.io/mediacapture-main/getusermedia.html#constrainable-interface
-      ref: https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
-      ref: https://github.com/webrtc/adapter/issues/408 They discuss the Chrome bug
-      ref: https://bugs.chromium.org/p/chromium/issues/detail?id=682887 the actual chrome bug
-       */
+      Reference: https://developer.mozilla.org/en-US/docs/Web/API/Media_Streams_API/Constraints
+      */
       const constraints = {
         video: {
           sourceId: videoSource,
-          width, height, // Necessary to get Firefox to work with ideal resolutions
-          advanced: [{ width, height }] // Necessary to get Chrome to work with ideal resolutions
+          width, height
         }
       };
 
@@ -116,7 +97,6 @@ export default class Webcam extends Component {
         logError(e);
         Webcam.mountedInstances.forEach((instance) => instance.handleError(e));
       };
-
       getUserMedia(constraints).then(onSuccess).catch(onError);
     };
 
@@ -153,13 +133,9 @@ export default class Webcam extends Component {
   }
 
   handleUserMedia(stream) {
-    const src = window.URL.createObjectURL(stream);
-    if (this.state.src) window.URL.revokeObjectURL(src);
-
     this.stream = stream;
     this.setState({
       hasUserMedia: true,
-      src
     });
 
     this.props.onUserMedia();
@@ -185,7 +161,6 @@ export default class Webcam extends Component {
         }
       }
       Webcam.userMediaRequested = false;
-      window.URL.revokeObjectURL(this.state.src);
     }
   }
 
@@ -220,9 +195,7 @@ export default class Webcam extends Component {
     return (
       <video
         autoPlay
-        width={this.props.width}
-        height={this.props.height}
-        src={this.state.src}
+        srcObject={this.stream}
         muted={this.props.muted}
         className={this.props.className}
       />
