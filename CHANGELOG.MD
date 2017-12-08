@@ -1,3 +1,11 @@
+## 0.0.20
+
+### Changed
+- height and width props now only apply to the getUserMedia constraints i.e. camera resolution. Setting the size of the video element should be done through CSS.
+
+### Fixed
+- Support Safari 11. Use video.srcObject rather than video.src
+
 ## 0.0.19
 
 ### Fixed
