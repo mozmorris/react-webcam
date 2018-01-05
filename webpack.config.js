@@ -1,10 +1,8 @@
-'use strict';
 
-var webpack = require('webpack');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-var plugins = [
-  new webpack.optimize.OccurenceOrderPlugin(),
+const plugins = [
   new webpack.DefinePlugin({
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
   }),
@@ -36,15 +34,15 @@ module.exports = {
     }
   }],
   module: {
-    loaders: [{
+    rules: [{
       test: /\.js$/,
-      loader: 'babel-loader'
+      use: 'babel-loader'
     }]
   },
   output: {
     library: 'Webcam',
     libraryTarget: 'umd',
-    path: `./dist`,
+    path: `${__dirname}/dist`,
     filename: process.env.NODE_ENV === 'production' ? 'react-webcam.min.js' : 'react-webcam.js'
   },
   devServer: {
