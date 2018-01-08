@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import { findDOMNode } from 'react-dom';
 
 /*
 Deliberately ignoring the old api, due to very inconsistent behaviour
@@ -174,7 +173,7 @@ export default class Webcam extends Component {
   getCanvas() {
     if (!this.state.hasUserMedia) return null;
 
-    const video = findDOMNode(this);
+    const video = this.video;
 
     if (!this.canvas) this.canvas = document.createElement('canvas');
     const { canvas } = this;
@@ -194,7 +193,9 @@ export default class Webcam extends Component {
   render() {
     return (
       <video
+        ref={(el)=>this.video = el}
         autoPlay
+        playsinline//necessary for iOS, see https://github.com/webrtc/samples/issues/929
         srcObject={this.stream}
         muted={this.props.muted}
         className={this.props.className}
