@@ -36,6 +36,9 @@ module.exports = {
   module: {
     rules: [{
       test: /\.js$/,
+      include: [
+        `${__dirname}/src`
+      ],
       use: 'babel-loader'
     }]
   },
