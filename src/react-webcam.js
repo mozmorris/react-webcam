@@ -17,6 +17,7 @@ export default class Webcam extends Component {
     onFailure: PropTypes.func,
     height: constraintTypes,
     width: constraintTypes,
+    facingMode: PropTypes.string,
     screenshotFormat: PropTypes.oneOf([
       'image/webp',
       'image/png',
@@ -60,7 +61,7 @@ export default class Webcam extends Component {
 
   requestUserMedia() {
     const sourceSelected = (audioSource, videoSource) => {
-      const { height, width } = this.props;
+      const { height, width, facingMode } = this.props;
       /*
       Safari 11 has a bug where if you specify both the height and width
       constraints you must chose a resolution supported by the web cam. If an
@@ -76,7 +77,7 @@ export default class Webcam extends Component {
       const constraints = {
         video: {
           sourceId: videoSource,
-          width, height
+          width, height, facingMode
         }
       };
 
@@ -133,8 +134,14 @@ export default class Webcam extends Component {
 
   handleUserMedia(stream) {
     this.stream = stream;
+    const videoSettings = stream.getVideoTracks()[0].getSettings();
+    console.log('video track settings', videoSettings);
     this.setState({
       hasUserMedia: true,
+      mirrored: videoSettings.facingMode === 'user'
+                /* #HACK desktop cameras seem to have `facingMode` undefined,
+                therefore we are assuming all desktop cameras are user facing*/
+                || !videoSettings.facingMode
     });
 
     this.props.onUserMedia();
@@ -167,6 +174,7 @@ export default class Webcam extends Component {
     if (!this.state.hasUserMedia) return null;
 
     const canvas = this.getCanvas();
+    console.log(`screenshot: ${canvas.width}x${canvas.height}`);
     return canvas.toDataURL(this.props.screenshotFormat);
   }
 
@@ -186,16 +194,21 @@ export default class Webcam extends Component {
     canvas.height = video.videoHeight;
 
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
+    console.log(`drawn image to canvas: ${canvas.width}x${canvas.height}`);
     return canvas;
   }
 
   render() {
     return (
       <video
-        ref={(el)=>this.video = el}
+        style={{
+          // not necessary to add prefixes, since all browsers that support camera
+          // support transform
+          transform: this.state.mirrored ? 'scaleX(-1)' : ''
+        }}
+        ref={(el) => this.video = el}
         autoPlay
-        playsinline//necessary for iOS, see https://github.com/webrtc/samples/issues/929
+        playsinline// necessary for iOS, see https://github.com/webrtc/samples/issues/929
         srcObject={this.stream}
         muted={this.props.muted}
         className={this.props.className}
