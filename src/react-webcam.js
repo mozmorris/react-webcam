@@ -11,20 +11,20 @@ const hasGetUserMedia = !!(getUserMedia);
 type constraintTypes = number | Object;
 
 type CameraType = {
-  audio: boolean,
-  muted: boolean,
+  audio?: boolean,
+  muted?: boolean,
   onUserMedia: Function,
   onFailure: Function,
-  height: constraintTypes,
-  width: constraintTypes,
-  facingMode: String,
-  screenshotFormat: 'image/webp' |
+  height?: constraintTypes,
+  width?: constraintTypes,
+  facingMode?: String,
+  screenshotFormat?: 'image/webp' |
     'image/png' |
     'image/jpeg'
   ,
-  className: String,
-  audioSource: String,
-  videoSource: String
+  className?: String,
+  audioSource?: String,
+  videoSource?: String
 }
 
 type State = {
