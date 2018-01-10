@@ -26,7 +26,8 @@
   },
   "homepage": "https://github.com/onfido/react-webcam",
   "peerDependencies": {
-    "react": ">=0.14.0"
+    "preact": ">=8.0.0",
+    "preact-compat": ">=3.0.0",
   },
   "devDependencies": {
     "babel-core": "^6.26.0",

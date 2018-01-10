@@ -58,27 +58,32 @@
 </head>
 <body>
   <div id="root"></div>
-  <script src="//fb.me/react-with-addons-0.14.7.js"></script>
-  <script src="//fb.me/react-dom-0.14.7.js"></script>
+  <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/preact/8.2.7/preact.js"></script>
+  <script crossorigin src="//unpkg.com/prop-types/prop-types.min.js"></script>
+  <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/preact-compat/3.17.0/preact-compat.js"></script>
+  <script type="text/javascript">
+    React = preactCompat;
+    ReactDOM = preactCompat;
+  </script>
   <script src="//npmcdn.com/babel-transform-in-browser@6.4.6/dist/btib.min.js"></script>
   <script type="text/es2015">
     // getUserMedia only works for secure pages
     if (!/https/.test(window.location.protocol)) window.location.protocol = 'https://';
 
-    var App = React.createClass({
-      getInitialState: function() {
-        return {
-          screenshot: null,
-          tab: 0
-        };
-      },
+    const Webcam = window.Webcam.default;
 
-      render: function() {
+    const App = class App extends React.Component {
+      state={
+        screenshot: null,
+        tab: 0
+      }
+
+      render() {
         return (
           <div>
             <h1>react-webcam</h1>
             <Webcam
-              ref='webcam'
+              ref={ el => {this.webcam = el;} }
               width='960' height='640'
             />
             <div>
@@ -106,13 +111,13 @@
             </div>
           </div>
         );
-      },
+      }
 
-      screenshot: function() {
-        var screenshot = this.refs.webcam.getScreenshot();
+      screenshot = () => {
+        var screenshot = this.webcam.getScreenshot();
         this.setState({screenshot: screenshot});
       }
-    });
+    };
 
     ReactDOM.render(<App/>, document.getElementById('root'));
   </script>
