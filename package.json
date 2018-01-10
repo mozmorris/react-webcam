@@ -45,7 +45,9 @@
     "flow-bin": "^0.63.1",
     "html-webpack-plugin": "^2.29.0",
     "webpack": "^3.10.0",
-    "webpack-dev-server": "^2.9.6"
+    "webpack-dev-server": "^2.9.6",
+    "travis-weigh-in": "^1.0.2"
   },
-  "dependencies": {}
+  "dependencies": {
+  }
 }
