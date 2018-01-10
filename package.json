@@ -5,9 +5,11 @@
   "main": "dist/react-webcam.js",
   "scripts": {
     "prepublish": "npm run build:umd",
-    "build": "webpack",
-    "build:umd": "npm run build && NODE_ENV=production webpack",
-    "lint": "eslint src --fix",
+    "build": "npm run build:webpack && npm run build:flow",
+    "build:webpack": "NODE_ENV=production webpack",
+    "build:flow": "flow-copy-source -v src dist",
+    "prebuild": "npm run lint",
+    "lint": "eslint src",
     "dev": "webpack-dev-server --inline --hot --progress --https"
   },
   "repository": {
@@ -43,6 +45,7 @@
     "eslint-plugin-flowtype-errors": "^3.3.6",
     "eslint-plugin-react": "^6.3.0",
     "flow-bin": "^0.63.1",
+    "flow-copy-source": "^1.2.1",
     "html-webpack-plugin": "^2.29.0",
     "webpack": "^3.10.0",
     "webpack-dev-server": "^2.9.6",
