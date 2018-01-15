@@ -1,4 +1,17 @@
 {
-  "stage": 0,
-  "loose": "all"
+  "sourceMaps": true,
+  "presets": [
+    "es2015",
+    "stage-2"
+  ],
+  "plugins": [
+    ["transform-runtime", {
+      "helpers": false,
+      "polyfill": true,
+      "regenerator": true,
+      "moduleName": "babel-runtime"
+    }],
+    ["transform-react-jsx"],
+    [ "transform-flow-strip-types" ]
+  ]
 }
