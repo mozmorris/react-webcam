@@ -8,6 +8,10 @@ const mediaDevices = navigator.mediaDevices;
 const getUserMedia = mediaDevices && mediaDevices.getUserMedia ? mediaDevices.getUserMedia.bind(mediaDevices) : null;
 const hasGetUserMedia = !!(getUserMedia);
 
+const debugConsole = (...args) => {
+  //console.log(...args);
+};
+
 type constraintTypes = number | Object;
 
 type CameraType = {
@@ -145,7 +149,7 @@ export default class Webcam extends Component<CameraType, State> {
   handleUserMedia(stream: MediaStream) {
     this.stream = stream;
     const videoSettings = stream.getVideoTracks()[0].getSettings();
-    console.log('video track settings', videoSettings);
+    debugConsole('video track settings', videoSettings);
     this.setState({
       hasUserMedia: true,
       mirrored: videoSettings.facingMode === 'user'
@@ -179,7 +183,6 @@ export default class Webcam extends Component<CameraType, State> {
   getScreenshot() {
     const canvas = this.getCanvas();
     if (!canvas) return null;
-    console.log(`screenshot: ${canvas.width}x${canvas.height}`);
     return canvas.toDataURL(this.props.screenshotFormat);
   }
 
@@ -199,7 +202,7 @@ export default class Webcam extends Component<CameraType, State> {
     canvas.height = video.videoHeight;
 
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    console.log(`drawn image to canvas: ${canvas.width}x${canvas.height}`);
+    debugConsole(`drawn image to canvas: ${canvas.width}x${canvas.height}`);
     return canvas;
   }
 
