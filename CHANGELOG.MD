@@ -1,3 +1,20 @@
+## 0.1.0
+
+### Changed
+- Replaced React with preact compat, which means it's not compatible with
+React anymore until they support declarative html attributes and properties
+
+### Added
+- Flow typing added
+- Added automatic mirroring for webcam facing the user and cameras
+that don't have info on where they are facing (mostly desktop ones)
+- Added support iOS
+- Added support for picking user/env facing
+
+### Removed
+- Prop types have been removed
+
+
 ## 0.0.20
 
 ### Changed
