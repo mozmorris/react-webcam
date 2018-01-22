@@ -8,8 +8,9 @@ const mediaDevices = navigator.mediaDevices;
 const getUserMedia = mediaDevices && mediaDevices.getUserMedia ? mediaDevices.getUserMedia.bind(mediaDevices) : null;
 const hasGetUserMedia = !!(getUserMedia);
 
+const DEBUG = false;
 const debugConsole = (...args) => {
-  //console.log(...args);
+  if (DEBUG) console.log(...args);
 };
 
 type constraintTypes = number | Object;
