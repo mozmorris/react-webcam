@@ -32,7 +32,7 @@ module.exports = {
       commonjs: 'react',
       amd: 'react'
     }
-  }],
+  }, /^babel-runtime/],
   module: {
     rules: [{
       test: /\.js$/,
