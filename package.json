@@ -5,7 +5,7 @@
   "main": "dist/react-webcam.js",
   "scripts": {
     "prepublish": "npm run build",
-    "build": "npm run build:prod && npm run build:dev && npm run build:flow",
+    "build": "npm run build:prod && npm run build:flow",
     "build:prod": "NODE_ENV=production webpack",
     "build:dev": "webpack",
     "build:flow": "flow-copy-source -v src dist",
