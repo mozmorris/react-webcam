@@ -6,9 +6,9 @@
   ],
   "plugins": [
     ["transform-runtime", {
-      "helpers": false,
-      "polyfill": true,
-      "regenerator": true,
+      "helpers": true,
+      "polyfill": false,
+      "regenerator": false,
       "moduleName": "babel-runtime"
     }],
     ["transform-react-jsx"],

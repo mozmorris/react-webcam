@@ -5,7 +5,7 @@
   "main": "dist/react-webcam.js",
   "scripts": {
     "prepublish": "npm run build",
-    "build": "npm run build:prod && npm run build:dev && npm run build:flow",
+    "build": "npm run build:prod && npm run build:flow",
     "build:prod": "NODE_ENV=production webpack",
     "build:dev": "webpack",
     "build:flow": "flow-copy-source -v src dist",
@@ -48,9 +48,11 @@
     "flow-bin": "^0.63.1",
     "flow-copy-source": "^1.2.1",
     "html-webpack-plugin": "^2.29.0",
+    "travis-weigh-in": "^1.0.2",
     "webpack": "^3.10.0",
-    "webpack-dev-server": "^2.9.6",
-    "travis-weigh-in": "^1.0.2"
+    "webpack-dev-server": "^2.9.6"
   },
-  "dependencies": {}
+  "dependencies": {
+    "babel-runtime": "^6.26.0"
+  }
 }

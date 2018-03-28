@@ -12,16 +12,7 @@ const plugins = [
   })
 ];
 
-if (process.env.NODE_ENV === 'production') {
-  plugins.push(
-    new webpack.optimize.UglifyJsPlugin({
-      compressor: {
-        screw_ie8: true,
-        warnings: false
-      }
-    })
-  );
-}
+const isProd = process.env.NODE_ENV === 'production'
 
 module.exports = {
   entry: './src/react-webcam.js',
@@ -32,7 +23,7 @@ module.exports = {
       commonjs: 'react',
       amd: 'react'
     }
-  }],
+  }, isProd ? /^babel-runtime/ : ''],
   module: {
     rules: [{
       test: /\.js$/,
@@ -46,7 +37,7 @@ module.exports = {
     library: 'Webcam',
     libraryTarget: 'umd',
     path: `${__dirname}/dist`,
-    filename: process.env.NODE_ENV === 'production' ? 'react-webcam.min.js' : 'react-webcam.js'
+    filename: 'react-webcam.js'
   },
   devServer: {
     port: process.env.PORT || 3333,
