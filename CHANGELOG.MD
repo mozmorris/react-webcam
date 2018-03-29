@@ -1,3 +1,9 @@
+## 0.1.1
+
+### Changed
+- Internal: Changed babel inline code to babel-runtime and made that an external dependency, this allows on size cost savings for babel runtime code.
+
+
 ## 0.1.0
 
 ### Changed
