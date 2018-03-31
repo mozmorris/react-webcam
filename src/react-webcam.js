@@ -220,6 +220,7 @@ export default class Webcam extends Component {
         src={this.state.src}
         muted={this.props.muted}
         className={this.props.className}
+        playsInline
         style={this.props.style}
         ref={ref => this.video = ref}
       />
