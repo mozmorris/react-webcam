@@ -1114,6 +1114,7 @@ var Webcam = function (_Component) {
         src: this.state.src,
         muted: this.props.muted,
         className: this.props.className,
+        playsInline: true,
         style: this.props.style,
         ref: function ref(_ref) {
           return _this3.video = _ref;
