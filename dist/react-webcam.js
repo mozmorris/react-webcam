@@ -919,7 +919,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 function hasGetUserMedia() {
-  return !!(navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
+  return !!(navigator.mediaDevices.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
 }
 
 var Webcam = function (_Component) {
@@ -978,14 +978,15 @@ var Webcam = function (_Component) {
       if (!this.state.hasUserMedia) return null;
 
       var canvas = this.getCanvas();
-      return canvas.toDataURL(this.props.screenshotFormat);
+      return canvas && canvas.toDataURL(this.props.screenshotFormat);
     }
   }, {
     key: 'getCanvas',
     value: function getCanvas() {
-      if (!this.state.hasUserMedia) return null;
-
       var video = (0, _reactDom.findDOMNode)(this);
+
+      if (!this.state.hasUserMedia || !video.videoHeight) return null;
+
       if (!this.ctx) {
         var _canvas = document.createElement('canvas');
         var aspectRatio = video.videoWidth / video.videoHeight;
@@ -1009,7 +1010,7 @@ var Webcam = function (_Component) {
     value: function requestUserMedia() {
       var _this2 = this;
 
-      navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+      navigator.getUserMedia = navigator.mediaDevices.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
 
       var sourceSelected = function sourceSelected(audioSource, videoSource) {
         var constraints = {
@@ -1024,11 +1025,11 @@ var Webcam = function (_Component) {
           };
         }
 
-        navigator.getUserMedia(constraints, function (stream) {
+        navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
           Webcam.mountedInstances.forEach(function (instance) {
             return instance.handleUserMedia(null, stream);
           });
-        }, function (e) {
+        }).catch(function (e) {
           Webcam.mountedInstances.forEach(function (instance) {
             return instance.handleUserMedia(e);
           });
@@ -1083,20 +1084,29 @@ var Webcam = function (_Component) {
 
         return;
       }
+      try {
+        var src = window.URL.createObjectURL(stream);
 
-      var src = window.URL.createObjectURL(stream);
+        this.stream = stream;
+        this.setState({
+          hasUserMedia: true,
+          src: src
+        });
 
-      this.stream = stream;
-      this.setState({
-        hasUserMedia: true,
-        src: src
-      });
-
-      this.props.onUserMedia();
+        this.props.onUserMedia();
+      } catch (error) {
+        this.stream = stream;
+        this.video.srcObject = stream;
+        this.setState({
+          hasUserMedia: true
+        });
+      }
     }
   }, {
     key: 'render',
     value: function render() {
+      var _this3 = this;
+
       return _react2.default.createElement('video', {
         autoPlay: true,
         width: this.props.width,
@@ -1104,7 +1114,10 @@ var Webcam = function (_Component) {
         src: this.state.src,
         muted: this.props.muted,
         className: this.props.className,
-        style: this.props.style
+        style: this.props.style,
+        ref: function ref(_ref) {
+          return _this3.video = _ref;
+        }
       });
     }
   }]);
