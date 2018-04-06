@@ -1,6 +1,6 @@
 {
   "name": "react-webcam-onfido",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "React webcam component",
   "main": "dist/react-webcam.js",
   "scripts": {
