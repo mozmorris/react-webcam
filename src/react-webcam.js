@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { findDOMNode } from 'react-dom';
 
 function hasGetUserMedia() {
-  return !!(navigator.mediaDevices.getUserMedia || navigator.webkitGetUserMedia ||
-            navigator.mozGetUserMedia || navigator.msGetUserMedia);
+  return !!(
+    navigator.mediaDevices.getUserMedia ||
+    navigator.webkitGetUserMedia ||
+    navigator.mozGetUserMedia ||
+    navigator.msGetUserMedia
+  );
 }
 
 export default class Webcam extends Component {
@@ -20,14 +23,8 @@ export default class Webcam extends Component {
   static propTypes = {
     audio: PropTypes.bool,
     onUserMedia: PropTypes.func,
-    height: PropTypes.oneOfType([
-      PropTypes.number,
-      PropTypes.string,
-    ]),
-    width: PropTypes.oneOfType([
-      PropTypes.number,
-      PropTypes.string,
-    ]),
+    height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     screenshotFormat: PropTypes.oneOf([
       'image/webp',
       'image/png',
@@ -60,7 +57,7 @@ export default class Webcam extends Component {
     }
   }
 
-  componentWillUpdate(nextProps, nextState) { // eslint-disable-line no-unused-vars
+  componentWillUpdate(nextProps) {
     if (
       nextProps.videoSource !== this.props.videoSource ||
       nextProps.audioSource !== this.props.audioSource
@@ -97,32 +94,31 @@ export default class Webcam extends Component {
   }
 
   getCanvas() {
-    const video = findDOMNode(this);
-
-    if (!this.state.hasUserMedia || !video.videoHeight) return null;
+    if (!this.state.hasUserMedia || !this.video.videoHeight) return null;
 
     if (!this.ctx) {
       const canvas = document.createElement('canvas');
-      const aspectRatio = video.videoWidth / video.videoHeight;
+      const aspectRatio = this.video.videoWidth / this.video.videoHeight;
 
-      canvas.width = video.clientWidth;
-      canvas.height = video.clientWidth / aspectRatio;
+      canvas.width = this.video.clientWidth;
+      canvas.height = this.video.clientWidth / aspectRatio;
 
       this.canvas = canvas;
       this.ctx = canvas.getContext('2d');
     }
 
     const { ctx, canvas } = this;
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    ctx.drawImage(this.video, 0, 0, canvas.width, canvas.height);
 
     return canvas;
   }
 
   requestUserMedia() {
-    navigator.getUserMedia = navigator.mediaDevices.getUserMedia ||
-                          navigator.webkitGetUserMedia ||
-                          navigator.mozGetUserMedia ||
-                          navigator.msGetUserMedia;
+    navigator.getUserMedia =
+      navigator.mediaDevices.getUserMedia ||
+      navigator.webkitGetUserMedia ||
+      navigator.mozGetUserMedia ||
+      navigator.msGetUserMedia;
 
     const sourceSelected = (audioSource, videoSource) => {
       const constraints = {
@@ -139,38 +135,44 @@ export default class Webcam extends Component {
 
       navigator.mediaDevices
         .getUserMedia(constraints)
-        .then(stream => {
+        .then((stream) => {
           Webcam.mountedInstances.forEach(instance =>
-            instance.handleUserMedia(null, stream)
-          )
+            instance.handleUserMedia(null, stream),
+          );
         })
-        .catch(e => {
+        .catch((e) => {
           Webcam.mountedInstances.forEach(instance =>
-            instance.handleUserMedia(e)
-          )
-        })
+            instance.handleUserMedia(e),
+          );
+        });
     };
 
     if (this.props.audioSource && this.props.videoSource) {
       sourceSelected(this.props.audioSource, this.props.videoSource);
     } else if ('mediaDevices' in navigator) {
-      navigator.mediaDevices.enumerateDevices().then((devices) => {
-        let audioSource = null;
-        let videoSource = null;
+      navigator.mediaDevices
+        .enumerateDevices()
+        .then((devices) => {
+          let audioSource = null;
+          let videoSource = null;
 
-        devices.forEach((device) => {
-          if (device.kind === 'audioinput') {
-            audioSource = device.id;
-          } else if (device.kind === 'videoinput') {
-            videoSource = device.id;
+          devices.forEach((device) => {
+            if (device.kind === 'audioinput') {
+              audioSource = device.id;
+            } else if (device.kind === 'videoinput') {
+              videoSource = device.id;
+            }
+          });
+
+          if (this.props.audioSource) {
+            audioSource = this.props.audioSource;
           }
-        });
+          if (this.props.videoSource) {
+            videoSource = this.props.videoSource;
+          }
 
-        if (this.props.audioSource) { audioSource = this.props.audioSource; }
-        if (this.props.videoSource) { videoSource = this.props.videoSource; }
-
-        sourceSelected(audioSource, videoSource);
-      })
+          sourceSelected(audioSource, videoSource);
+        })
         .catch((error) => {
           console.log(`${error.name}: ${error.message}`); // eslint-disable-line no-console
         });
@@ -187,8 +189,12 @@ export default class Webcam extends Component {
           }
         });
 
-        if (this.props.audioSource) { audioSource = this.props.audioSource; }
-        if (this.props.videoSource) { videoSource = this.props.videoSource; }
+        if (this.props.audioSource) {
+          audioSource = this.props.audioSource;
+        }
+        if (this.props.videoSource) {
+          videoSource = this.props.videoSource;
+        }
 
         sourceSelected(audioSource, videoSource);
       });
@@ -215,11 +221,11 @@ export default class Webcam extends Component {
       });
 
       this.props.onUserMedia();
-    } catch(error) {
+    } catch (err) {
       this.stream = stream;
       this.video.srcObject = stream;
       this.setState({
-        hasUserMedia: true
+        hasUserMedia: true,
       });
     }
   }
@@ -235,7 +241,9 @@ export default class Webcam extends Component {
         className={this.props.className}
         playsInline
         style={this.props.style}
-        ref={ref => this.video = ref}
+        ref={(ref) => {
+          this.video = ref;
+        }}
       />
     );
   }
