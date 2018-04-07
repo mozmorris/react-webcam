@@ -1,6 +1,6 @@
 {
   "name": "react-webcam",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "React webcam component",
   "main": "dist/react-webcam.js",
   "scripts": {
@@ -42,7 +42,7 @@
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-react": "^7.1.0",
-    "webpack": "^3.2.0"
+    "webpack": "^2.5.1"
   },
   "dependencies": {
     "prop-types": "^15.5.8"
