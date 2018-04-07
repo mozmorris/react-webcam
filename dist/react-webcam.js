@@ -7,7 +7,7 @@
 		exports["Webcam"] = factory(require("react"), require("react-dom"));
 	else
 		root["Webcam"] = factory(root["React"], root["ReactDOM"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_5__, __WEBPACK_EXTERNAL_MODULE_9__) {
+})(this, function(__WEBPACK_EXTERNAL_MODULE_5__, __WEBPACK_EXTERNAL_MODULE_6__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -43,6 +43,9 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
 /******/
+/******/ 	// identity function for calling harmony imports with the correct context
+/******/ 	__webpack_require__.i = function(value) { return value; };
+/******/
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
@@ -70,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 4);
+/******/ 	return __webpack_require__(__webpack_require__.s = 9);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -277,297 +280,6 @@ module.exports = ReactPropTypesSecret;
 "use strict";
 
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(5);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _propTypes = __webpack_require__(6);
-
-var _propTypes2 = _interopRequireDefault(_propTypes);
-
-var _reactDom = __webpack_require__(9);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-function hasGetUserMedia() {
-  return !!(navigator.mediaDevices.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
-}
-
-var Webcam = function (_Component) {
-  _inherits(Webcam, _Component);
-
-  function Webcam() {
-    _classCallCheck(this, Webcam);
-
-    var _this = _possibleConstructorReturn(this, (Webcam.__proto__ || Object.getPrototypeOf(Webcam)).call(this));
-
-    _this.state = {
-      hasUserMedia: false
-    };
-    return _this;
-  }
-
-  _createClass(Webcam, [{
-    key: 'componentDidMount',
-    value: function componentDidMount() {
-      if (!hasGetUserMedia()) return;
-
-      Webcam.mountedInstances.push(this);
-
-      if (!this.state.hasUserMedia && !Webcam.userMediaRequested) {
-        this.requestUserMedia();
-      }
-    }
-  }, {
-    key: 'componentWillUpdate',
-    value: function componentWillUpdate(nextProps, nextState) {
-      // eslint-disable-line no-unused-vars
-      if (nextProps.videoSource !== this.props.videoSource || nextProps.audioSource !== this.props.audioSource) {
-        this.requestUserMedia();
-      }
-    }
-  }, {
-    key: 'componentWillUnmount',
-    value: function componentWillUnmount() {
-      var index = Webcam.mountedInstances.indexOf(this);
-      Webcam.mountedInstances.splice(index, 1);
-
-      if (Webcam.mountedInstances.length === 0 && this.state.hasUserMedia) {
-        if (this.stream.stop) {
-          this.stream.stop();
-        } else {
-          if (this.stream.getVideoTracks) {
-            this.stream.getVideoTracks().map(function (track) {
-              return track.stop();
-            });
-          }
-          if (this.stream.getAudioTracks) {
-            this.stream.getAudioTracks().map(function (track) {
-              return track.stop();
-            });
-          }
-        }
-        Webcam.userMediaRequested = false;
-        window.URL.revokeObjectURL(this.state.src);
-      }
-    }
-  }, {
-    key: 'getScreenshot',
-    value: function getScreenshot() {
-      if (!this.state.hasUserMedia) return null;
-
-      var canvas = this.getCanvas();
-      return canvas && canvas.toDataURL(this.props.screenshotFormat);
-    }
-  }, {
-    key: 'getCanvas',
-    value: function getCanvas() {
-      var video = (0, _reactDom.findDOMNode)(this);
-
-      if (!this.state.hasUserMedia || !video.videoHeight) return null;
-
-      if (!this.ctx) {
-        var _canvas = document.createElement('canvas');
-        var aspectRatio = video.videoWidth / video.videoHeight;
-
-        _canvas.width = video.clientWidth;
-        _canvas.height = video.clientWidth / aspectRatio;
-
-        this.canvas = _canvas;
-        this.ctx = _canvas.getContext('2d');
-      }
-
-      var ctx = this.ctx,
-          canvas = this.canvas;
-
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-      return canvas;
-    }
-  }, {
-    key: 'requestUserMedia',
-    value: function requestUserMedia() {
-      var _this2 = this;
-
-      navigator.getUserMedia = navigator.mediaDevices.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
-
-      var sourceSelected = function sourceSelected(audioSource, videoSource) {
-        var constraints = {
-          video: {
-            optional: [{ sourceId: videoSource }]
-          }
-        };
-
-        if (_this2.props.audio) {
-          constraints.audio = {
-            optional: [{ sourceId: audioSource }]
-          };
-        }
-
-        navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
-          Webcam.mountedInstances.forEach(function (instance) {
-            return instance.handleUserMedia(null, stream);
-          });
-        }).catch(function (e) {
-          Webcam.mountedInstances.forEach(function (instance) {
-            return instance.handleUserMedia(e);
-          });
-        });
-      };
-
-      if (this.props.audioSource && this.props.videoSource) {
-        sourceSelected(this.props.audioSource, this.props.videoSource);
-      } else if ('mediaDevices' in navigator) {
-        navigator.mediaDevices.enumerateDevices().then(function (devices) {
-          var audioSource = null;
-          var videoSource = null;
-
-          devices.forEach(function (device) {
-            if (device.kind === 'audioinput') {
-              audioSource = device.id;
-            } else if (device.kind === 'videoinput') {
-              videoSource = device.id;
-            }
-          });
-
-          if (_this2.props.audioSource) {
-            audioSource = _this2.props.audioSource;
-          }
-          if (_this2.props.videoSource) {
-            videoSource = _this2.props.videoSource;
-          }
-
-          sourceSelected(audioSource, videoSource);
-        }).catch(function (error) {
-          console.log(error.name + ': ' + error.message); // eslint-disable-line no-console
-        });
-      } else {
-        MediaStreamTrack.getSources(function (sources) {
-          var audioSource = null;
-          var videoSource = null;
-
-          sources.forEach(function (source) {
-            if (source.kind === 'audio') {
-              audioSource = source.id;
-            } else if (source.kind === 'video') {
-              videoSource = source.id;
-            }
-          });
-
-          if (_this2.props.audioSource) {
-            audioSource = _this2.props.audioSource;
-          }
-          if (_this2.props.videoSource) {
-            videoSource = _this2.props.videoSource;
-          }
-
-          sourceSelected(audioSource, videoSource);
-        });
-      }
-
-      Webcam.userMediaRequested = true;
-    }
-  }, {
-    key: 'handleUserMedia',
-    value: function handleUserMedia(error, stream) {
-      if (error) {
-        this.setState({
-          hasUserMedia: false
-        });
-
-        return;
-      }
-      try {
-        var src = window.URL.createObjectURL(stream);
-
-        this.stream = stream;
-        this.setState({
-          hasUserMedia: true,
-          src: src
-        });
-
-        this.props.onUserMedia();
-      } catch (error) {
-        this.stream = stream;
-        this.video.srcObject = stream;
-        this.setState({
-          hasUserMedia: true
-        });
-      }
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      var _this3 = this;
-
-      return _react2.default.createElement('video', {
-        autoPlay: true,
-        width: this.props.width,
-        height: this.props.height,
-        src: this.state.src,
-        muted: this.props.audio,
-        className: this.props.className,
-        playsInline: true,
-        style: this.props.style,
-        ref: function ref(_ref) {
-          return _this3.video = _ref;
-        }
-      });
-    }
-  }]);
-
-  return Webcam;
-}(_react.Component);
-
-Webcam.defaultProps = {
-  audio: true,
-  className: '',
-  height: 480,
-  onUserMedia: function onUserMedia() {},
-  screenshotFormat: 'image/webp',
-  width: 640
-};
-Webcam.propTypes = {
-  audio: _propTypes2.default.bool,
-  onUserMedia: _propTypes2.default.func,
-  height: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string]),
-  width: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string]),
-  screenshotFormat: _propTypes2.default.oneOf(['image/webp', 'image/png', 'image/jpeg']),
-  style: _propTypes2.default.object,
-  className: _propTypes2.default.string,
-  audioSource: _propTypes2.default.string,
-  videoSource: _propTypes2.default.string
-};
-Webcam.mountedInstances = [];
-Webcam.userMediaRequested = false;
-exports.default = Webcam;
-module.exports = exports['default'];
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports) {
-
-module.exports = __WEBPACK_EXTERNAL_MODULE_5__;
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 /**
@@ -589,7 +301,7 @@ if (true) {
   // By explicitly using `prop-types` you are opting into new development behavior.
   // http://fb.me/prop-types-in-prod
   var throwOnDirectAccess = true;
-  module.exports = __webpack_require__(7)(isValidElement, throwOnDirectAccess);
+  module.exports = __webpack_require__(8)(isValidElement, throwOnDirectAccess);
 } else {
   // By explicitly using `prop-types` you are opting into new production behavior.
   // http://fb.me/prop-types-in-prod
@@ -597,7 +309,88 @@ if (true) {
 }
 
 /***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE_5__;
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE_6__;
+
+/***/ }),
 /* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/**
+ * Copyright 2013-present, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ */
+
+
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+if (true) {
+  var invariant = __webpack_require__(1);
+  var warning = __webpack_require__(2);
+  var ReactPropTypesSecret = __webpack_require__(3);
+  var loggedTypeFailures = {};
+}
+
+/**
+ * Assert that the values match with the type specs.
+ * Error messages are memorized and will only be shown once.
+ *
+ * @param {object} typeSpecs Map of name to a ReactPropType
+ * @param {object} values Runtime values that need to be type-checked
+ * @param {string} location e.g. "prop", "context", "child context"
+ * @param {string} componentName Name of the component for error messages.
+ * @param {?Function} getStack Returns the component stack.
+ * @private
+ */
+function checkPropTypes(typeSpecs, values, location, componentName, getStack) {
+  if (true) {
+    for (var typeSpecName in typeSpecs) {
+      if (typeSpecs.hasOwnProperty(typeSpecName)) {
+        var error;
+        // Prop type validation may throw. In case they do, we don't want to
+        // fail the render phase where it didn't fail before. So we log it.
+        // After these have been cleaned up, we'll let them throw.
+        try {
+          // This is intentionally an invariant that gets caught. It's the same
+          // behavior as without this statement except with a better message.
+          invariant(typeof typeSpecs[typeSpecName] === 'function', '%s: %s type `%s` is invalid; it must be a function, usually from ' + 'React.PropTypes.', componentName || 'React class', location, typeSpecName);
+          error = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, ReactPropTypesSecret);
+        } catch (ex) {
+          error = ex;
+        }
+        warning(!error || error instanceof Error, '%s: type specification of %s `%s` is invalid; the type checker ' + 'function must return `null` or an `Error` but returned a %s. ' + 'You may have forgotten to pass an argument to the type checker ' + 'creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and ' + 'shape all require an argument).', componentName || 'React class', location, typeSpecName, typeof error === 'undefined' ? 'undefined' : _typeof(error));
+        if (error instanceof Error && !(error.message in loggedTypeFailures)) {
+          // Only monitor this failure once because there tends to be a lot of the
+          // same error.
+          loggedTypeFailures[error.message] = true;
+
+          var stack = getStack ? getStack() : '';
+
+          warning(false, 'Failed %s type: %s%s', location, error.message, stack != null ? stack : '');
+        }
+      }
+    }
+  }
+}
+
+module.exports = checkPropTypes;
+
+/***/ }),
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -619,7 +412,7 @@ var invariant = __webpack_require__(1);
 var warning = __webpack_require__(2);
 
 var ReactPropTypesSecret = __webpack_require__(3);
-var checkPropTypes = __webpack_require__(8);
+var checkPropTypes = __webpack_require__(7);
 
 module.exports = function (isValidElement, throwOnDirectAccess) {
   /* global Symbol */
@@ -1095,79 +888,289 @@ module.exports = function (isValidElement, throwOnDirectAccess) {
 };
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/**
- * Copyright 2013-present, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- */
 
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-if (true) {
-  var invariant = __webpack_require__(1);
-  var warning = __webpack_require__(2);
-  var ReactPropTypesSecret = __webpack_require__(3);
-  var loggedTypeFailures = {};
+var _react = __webpack_require__(5);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = __webpack_require__(4);
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _reactDom = __webpack_require__(6);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+function hasGetUserMedia() {
+  return !!(navigator.mediaDevices.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
 }
 
-/**
- * Assert that the values match with the type specs.
- * Error messages are memorized and will only be shown once.
- *
- * @param {object} typeSpecs Map of name to a ReactPropType
- * @param {object} values Runtime values that need to be type-checked
- * @param {string} location e.g. "prop", "context", "child context"
- * @param {string} componentName Name of the component for error messages.
- * @param {?Function} getStack Returns the component stack.
- * @private
- */
-function checkPropTypes(typeSpecs, values, location, componentName, getStack) {
-  if (true) {
-    for (var typeSpecName in typeSpecs) {
-      if (typeSpecs.hasOwnProperty(typeSpecName)) {
-        var error;
-        // Prop type validation may throw. In case they do, we don't want to
-        // fail the render phase where it didn't fail before. So we log it.
-        // After these have been cleaned up, we'll let them throw.
-        try {
-          // This is intentionally an invariant that gets caught. It's the same
-          // behavior as without this statement except with a better message.
-          invariant(typeof typeSpecs[typeSpecName] === 'function', '%s: %s type `%s` is invalid; it must be a function, usually from ' + 'React.PropTypes.', componentName || 'React class', location, typeSpecName);
-          error = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, ReactPropTypesSecret);
-        } catch (ex) {
-          error = ex;
-        }
-        warning(!error || error instanceof Error, '%s: type specification of %s `%s` is invalid; the type checker ' + 'function must return `null` or an `Error` but returned a %s. ' + 'You may have forgotten to pass an argument to the type checker ' + 'creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and ' + 'shape all require an argument).', componentName || 'React class', location, typeSpecName, typeof error === 'undefined' ? 'undefined' : _typeof(error));
-        if (error instanceof Error && !(error.message in loggedTypeFailures)) {
-          // Only monitor this failure once because there tends to be a lot of the
-          // same error.
-          loggedTypeFailures[error.message] = true;
+var Webcam = function (_Component) {
+  _inherits(Webcam, _Component);
 
-          var stack = getStack ? getStack() : '';
+  function Webcam() {
+    _classCallCheck(this, Webcam);
 
-          warning(false, 'Failed %s type: %s%s', location, error.message, stack != null ? stack : '');
-        }
+    var _this = _possibleConstructorReturn(this, (Webcam.__proto__ || Object.getPrototypeOf(Webcam)).call(this));
+
+    _this.state = {
+      hasUserMedia: false
+    };
+    return _this;
+  }
+
+  _createClass(Webcam, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      if (!hasGetUserMedia()) return;
+
+      Webcam.mountedInstances.push(this);
+
+      if (!this.state.hasUserMedia && !Webcam.userMediaRequested) {
+        this.requestUserMedia();
       }
     }
-  }
-}
+  }, {
+    key: 'componentWillUpdate',
+    value: function componentWillUpdate(nextProps, nextState) {
+      // eslint-disable-line no-unused-vars
+      if (nextProps.videoSource !== this.props.videoSource || nextProps.audioSource !== this.props.audioSource) {
+        this.requestUserMedia();
+      }
+    }
+  }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      var index = Webcam.mountedInstances.indexOf(this);
+      Webcam.mountedInstances.splice(index, 1);
 
-module.exports = checkPropTypes;
+      if (Webcam.mountedInstances.length === 0 && this.state.hasUserMedia) {
+        if (this.stream.stop) {
+          this.stream.stop();
+        } else {
+          if (this.stream.getVideoTracks) {
+            this.stream.getVideoTracks().map(function (track) {
+              return track.stop();
+            });
+          }
+          if (this.stream.getAudioTracks) {
+            this.stream.getAudioTracks().map(function (track) {
+              return track.stop();
+            });
+          }
+        }
+        Webcam.userMediaRequested = false;
+        window.URL.revokeObjectURL(this.state.src);
+      }
+    }
+  }, {
+    key: 'getScreenshot',
+    value: function getScreenshot() {
+      if (!this.state.hasUserMedia) return null;
 
-/***/ }),
-/* 9 */
-/***/ (function(module, exports) {
+      var canvas = this.getCanvas();
+      return canvas && canvas.toDataURL(this.props.screenshotFormat);
+    }
+  }, {
+    key: 'getCanvas',
+    value: function getCanvas() {
+      var video = (0, _reactDom.findDOMNode)(this);
 
-module.exports = __WEBPACK_EXTERNAL_MODULE_9__;
+      if (!this.state.hasUserMedia || !video.videoHeight) return null;
+
+      if (!this.ctx) {
+        var _canvas = document.createElement('canvas');
+        var aspectRatio = video.videoWidth / video.videoHeight;
+
+        _canvas.width = video.clientWidth;
+        _canvas.height = video.clientWidth / aspectRatio;
+
+        this.canvas = _canvas;
+        this.ctx = _canvas.getContext('2d');
+      }
+
+      var ctx = this.ctx,
+          canvas = this.canvas;
+
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      return canvas;
+    }
+  }, {
+    key: 'requestUserMedia',
+    value: function requestUserMedia() {
+      var _this2 = this;
+
+      navigator.getUserMedia = navigator.mediaDevices.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+
+      var sourceSelected = function sourceSelected(audioSource, videoSource) {
+        var constraints = {
+          video: {
+            optional: [{ sourceId: videoSource }]
+          }
+        };
+
+        if (_this2.props.audio) {
+          constraints.audio = {
+            optional: [{ sourceId: audioSource }]
+          };
+        }
+
+        navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
+          Webcam.mountedInstances.forEach(function (instance) {
+            return instance.handleUserMedia(null, stream);
+          });
+        }).catch(function (e) {
+          Webcam.mountedInstances.forEach(function (instance) {
+            return instance.handleUserMedia(e);
+          });
+        });
+      };
+
+      if (this.props.audioSource && this.props.videoSource) {
+        sourceSelected(this.props.audioSource, this.props.videoSource);
+      } else if ('mediaDevices' in navigator) {
+        navigator.mediaDevices.enumerateDevices().then(function (devices) {
+          var audioSource = null;
+          var videoSource = null;
+
+          devices.forEach(function (device) {
+            if (device.kind === 'audioinput') {
+              audioSource = device.id;
+            } else if (device.kind === 'videoinput') {
+              videoSource = device.id;
+            }
+          });
+
+          if (_this2.props.audioSource) {
+            audioSource = _this2.props.audioSource;
+          }
+          if (_this2.props.videoSource) {
+            videoSource = _this2.props.videoSource;
+          }
+
+          sourceSelected(audioSource, videoSource);
+        }).catch(function (error) {
+          console.log(error.name + ': ' + error.message); // eslint-disable-line no-console
+        });
+      } else {
+        MediaStreamTrack.getSources(function (sources) {
+          var audioSource = null;
+          var videoSource = null;
+
+          sources.forEach(function (source) {
+            if (source.kind === 'audio') {
+              audioSource = source.id;
+            } else if (source.kind === 'video') {
+              videoSource = source.id;
+            }
+          });
+
+          if (_this2.props.audioSource) {
+            audioSource = _this2.props.audioSource;
+          }
+          if (_this2.props.videoSource) {
+            videoSource = _this2.props.videoSource;
+          }
+
+          sourceSelected(audioSource, videoSource);
+        });
+      }
+
+      Webcam.userMediaRequested = true;
+    }
+  }, {
+    key: 'handleUserMedia',
+    value: function handleUserMedia(error, stream) {
+      if (error) {
+        this.setState({
+          hasUserMedia: false
+        });
+
+        return;
+      }
+      try {
+        var src = window.URL.createObjectURL(stream);
+
+        this.stream = stream;
+        this.setState({
+          hasUserMedia: true,
+          src: src
+        });
+
+        this.props.onUserMedia();
+      } catch (error) {
+        this.stream = stream;
+        this.video.srcObject = stream;
+        this.setState({
+          hasUserMedia: true
+        });
+      }
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this3 = this;
+
+      return _react2.default.createElement('video', {
+        autoPlay: true,
+        width: this.props.width,
+        height: this.props.height,
+        src: this.state.src,
+        muted: this.props.audio,
+        className: this.props.className,
+        playsInline: true,
+        style: this.props.style,
+        ref: function ref(_ref) {
+          return _this3.video = _ref;
+        }
+      });
+    }
+  }]);
+
+  return Webcam;
+}(_react.Component);
+
+Webcam.defaultProps = {
+  audio: true,
+  className: '',
+  height: 480,
+  onUserMedia: function onUserMedia() {},
+  screenshotFormat: 'image/webp',
+  width: 640
+};
+Webcam.propTypes = {
+  audio: _propTypes2.default.bool,
+  onUserMedia: _propTypes2.default.func,
+  height: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string]),
+  width: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string]),
+  screenshotFormat: _propTypes2.default.oneOf(['image/webp', 'image/png', 'image/jpeg']),
+  style: _propTypes2.default.object,
+  className: _propTypes2.default.string,
+  audioSource: _propTypes2.default.string,
+  videoSource: _propTypes2.default.string
+};
+Webcam.mountedInstances = [];
+Webcam.userMediaRequested = false;
+exports.default = Webcam;
+module.exports = exports['default'];
 
 /***/ })
 /******/ ]);
