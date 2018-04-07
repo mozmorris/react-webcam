@@ -11,7 +11,7 @@ npm install react-webcam
 
 ## Demo
 
-https://www.mozmorris.com/react-webcam/examples/ (if demo doesn't work, check browser compatibility and verify browser is using https)
+https://codepen.io/mozmorris/pen/JLZdoP
 
 ## Usage
 

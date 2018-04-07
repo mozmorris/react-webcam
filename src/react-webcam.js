@@ -12,7 +12,6 @@ export default class Webcam extends Component {
     audio: true,
     className: '',
     height: 480,
-    muted: false,
     onUserMedia: () => {},
     screenshotFormat: 'image/webp',
     width: 640,
@@ -20,7 +19,6 @@ export default class Webcam extends Component {
 
   static propTypes = {
     audio: PropTypes.bool,
-    muted: PropTypes.bool,
     onUserMedia: PropTypes.func,
     height: PropTypes.oneOfType([
       PropTypes.number,
@@ -58,6 +56,15 @@ export default class Webcam extends Component {
     Webcam.mountedInstances.push(this);
 
     if (!this.state.hasUserMedia && !Webcam.userMediaRequested) {
+      this.requestUserMedia();
+    }
+  }
+
+  componentWillUpdate(nextProps, nextState) { // eslint-disable-line no-unused-vars
+    if (
+      nextProps.videoSource !== this.props.videoSource ||
+      nextProps.audioSource !== this.props.audioSource
+    ) {
       this.requestUserMedia();
     }
   }
@@ -152,12 +159,15 @@ export default class Webcam extends Component {
         let videoSource = null;
 
         devices.forEach((device) => {
-          if (device.kind === 'audio') {
+          if (device.kind === 'audioinput') {
             audioSource = device.id;
-          } else if (device.kind === 'video') {
+          } else if (device.kind === 'videoinput') {
             videoSource = device.id;
           }
         });
+
+        if (this.props.audioSource) { audioSource = this.props.audioSource; }
+        if (this.props.videoSource) { videoSource = this.props.videoSource; }
 
         sourceSelected(audioSource, videoSource);
       })
@@ -176,6 +186,9 @@ export default class Webcam extends Component {
             videoSource = source.id;
           }
         });
+
+        if (this.props.audioSource) { audioSource = this.props.audioSource; }
+        if (this.props.videoSource) { videoSource = this.props.videoSource; }
 
         sourceSelected(audioSource, videoSource);
       });
@@ -218,7 +231,7 @@ export default class Webcam extends Component {
         width={this.props.width}
         height={this.props.height}
         src={this.state.src}
-        muted={this.props.muted}
+        muted={this.props.audio}
         className={this.props.className}
         playsInline
         style={this.props.style}
