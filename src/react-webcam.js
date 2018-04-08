@@ -219,8 +219,6 @@ export default class Webcam extends Component {
         hasUserMedia: true,
         src,
       });
-
-      this.props.onUserMedia();
     } catch (err) {
       this.stream = stream;
       this.video.srcObject = stream;
@@ -228,6 +226,8 @@ export default class Webcam extends Component {
         hasUserMedia: true,
       });
     }
+
+    this.props.onUserMedia();
   }
 
   render() {
