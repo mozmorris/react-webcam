@@ -37,8 +37,8 @@ width            | number   | 640          | width of video element
 style            | object   |              | style prop passed to video element
 screenshotFormat | string   | 'image/webp' | format of screenshot
 onUserMedia      | function | noop         | callback when component receives a media stream
-audioSource      | string   |              | an array or single ConstrainDOMString(s) specifying the device id
-videoSource      | string   |              | an array or single ConstrainDOMString(s) specifying the device id
+audioConstraints | object   |              | MediaStreamConstraint(s) for the audio
+videoConstraints | object   |              | MediaStreamConstraints(s) for the video
 
 ### Methods
 
@@ -55,6 +55,12 @@ class WebcamCapture extends React.Component {
   };
 
   render() {
+    const videoConstraints = {
+      width: 1280,
+      height: 720,
+      facingMode: 'user',
+    };
+    
     return (
       <div>
         <Webcam
@@ -63,6 +69,7 @@ class WebcamCapture extends React.Component {
           ref={this.setRef}
           screenshotFormat="image/jpeg"
           width={350}
+          videoConstraints={videoConstraints}
         />
         <button onClick={this.capture}>Capture photo</button>
       </div>
