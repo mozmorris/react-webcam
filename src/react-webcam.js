@@ -16,6 +16,7 @@ export default class Webcam extends Component {
     className: '',
     height: 480,
     onUserMedia: () => {},
+    onUserMediaError: () => {},
     screenshotFormat: 'image/webp',
     width: 640,
   };
@@ -23,6 +24,7 @@ export default class Webcam extends Component {
   static propTypes = {
     audio: PropTypes.bool,
     onUserMedia: PropTypes.func,
+    onUserMediaError: PropTypes.func,
     height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     screenshotFormat: PropTypes.oneOf([
@@ -208,6 +210,7 @@ export default class Webcam extends Component {
       this.setState({
         hasUserMedia: false,
       });
+      this.props.onUserMediaError(error);
 
       return;
     }
