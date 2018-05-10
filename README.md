@@ -40,6 +40,7 @@ onUserMedia      | function | noop         | callback when component receives a 
 onUserMediaError | function | noop         | callback when component cannot receives any media stream width error param
 audioSource      | string   |              | an array or single ConstrainDOMString(s) specifying the device id
 videoSource      | string   |              | an array or single ConstrainDOMString(s) specifying the device id
+quality      | number   |        1      | quality of screenshot(0 to 1)
 
 ### Methods
 
