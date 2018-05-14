@@ -19,7 +19,7 @@ export default class Webcam extends Component {
     onUserMediaError: () => {},
     screenshotFormat: 'image/webp',
     width: 640,
-    quality: 1,
+    screenshotQuality: 0.92,
   };
 
   static propTypes = {
@@ -37,7 +37,7 @@ export default class Webcam extends Component {
     className: PropTypes.string,
     audioSource: PropTypes.string,
     videoSource: PropTypes.string,
-    quality: PropTypes.number,
+    screenshotQuality: PropTypes.number,
   };
 
   static mountedInstances = [];
@@ -96,7 +96,7 @@ export default class Webcam extends Component {
     const canvas = this.getCanvas();
     return canvas && canvas.toDataURL(
       this.props.screenshotFormat,
-      this.props.quality,
+      this.props.screenshotQuality,
     );
   }
 
