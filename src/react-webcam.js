@@ -1,5 +1,6 @@
 /* @flow */
 import React, { Component } from 'react';
+import { startRecording, stopRecording, getVideoUrl } from './video';
 
 /*
 Deliberately ignoring the old api, due to very inconsistent behaviour
@@ -205,6 +206,20 @@ export default class Webcam extends Component<CameraType, State> {
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
     debugConsole(`drawn image to canvas: ${canvas.width}x${canvas.height}`);
     return canvas;
+  }
+
+  startRecording() {
+    console.log('recording started');
+    startRecording(this.stream);
+  }
+
+  stopRecording() {
+    console.log('recording started');
+    stopRecording();
+  }
+
+  getVideo() {
+    return getVideoUrl();
   }
 
   render() {

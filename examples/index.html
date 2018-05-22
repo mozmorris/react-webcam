@@ -75,6 +75,8 @@
     const App = class App extends React.Component {
       state={
         screenshot: null,
+        videoUrl: null,
+        recording: false,
         tab: 0
       }
 
@@ -109,6 +111,27 @@
                 { this.state.screenshot ? <img src={this.state.screenshot} /> : null }
               </div>
             </div>
+
+            <div className='videoContainer'>
+              <h2>Video</h2>
+              <Webcam audio={true}
+                ref={ el => {this.videoWebcam = el;} }
+              />
+              <div className='controls'>
+                <button onClick={this.handleClick}>{this.state.recording ? 'Stop recording' : 'Start Recording' }</button>
+              </div>
+
+              { this.state.videoUrl &&
+                <div className='videoReproduction'>
+                  Check your video below...
+                  <div className='controls'>
+                    <button onClick={this.play}>Play</button>
+                  </div>
+                  <video id='videoCanvas'></video>
+                  <br/>
+                </div>
+              }
+              </div>
           </div>
         );
       }
@@ -116,6 +139,31 @@
       screenshot = () => {
         var screenshot = this.webcam.getScreenshot();
         this.setState({screenshot: screenshot});
+      }
+
+      handleClick = () => {
+        this.state.recording ? this.stopRecording() : this.startRecording()
+      }
+
+      startRecording = () => {
+        this.videoWebcam.startRecording();
+        this.setState({recording: true})
+      }
+
+      stopRecording = () => {
+        this.videoWebcam.stopRecording();
+        this.setState({recording: false})
+        const videoUrl = this.videoWebcam.getVideo();
+        this.setState({videoUrl})
+      }
+
+      play = () => {
+        let video = document.getElementById('videoCanvas');
+        if (this.state.videoUrl) {
+          video.src = this.state.videoUrl;
+          video.load();
+          video.onloadeddata = () => { video.play();}
+        }
       }
     };
 
