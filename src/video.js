@@ -57,7 +57,6 @@ export const stopRecording = () => {
 
 
 export const getVideoUrl = () => {
-  console.log(recordedBlobs);
-  const superBuffer = new Blob(recordedBlobs, {type: 'video/webm'});
+  const superBuffer = new Blob(recordedBlobs);
   return window.URL.createObjectURL(superBuffer);
 };

@@ -61,6 +61,7 @@
   <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/preact/8.2.7/preact.js"></script>
   <script crossorigin src="//unpkg.com/prop-types/prop-types.min.js"></script>
   <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/preact-compat/3.17.0/preact-compat.js"></script>
+
   <script type="text/javascript">
     React = preactCompat;
     ReactDOM = preactCompat;
@@ -83,6 +84,26 @@
       render() {
         return (
           <div>
+            <div className='videoContainer'>
+              <h2>Video</h2>
+              <Webcam audio={true} muted={true}
+                ref={ el => {this.videoWebcam = el;} }
+              />
+              <div className='controls'>
+                <button onClick={this.handleClick}>{this.state.recording ? 'Stop recording' : 'Start Recording' }</button>
+              </div>
+
+              { this.state.videoUrl &&
+                <div className='videoReproduction'>
+                  Check your video below...
+                  <div className='controls'>
+                    <button onClick={this.play}>Play</button>
+                  </div>
+                  <video id='videoCanvas' src={this.state.videoUrl} loop controls/>
+                </div>
+              }
+            </div>
+            <hr/>
             <h1>react-webcam</h1>
             <Webcam
               ref={ el => {this.webcam = el;} }
@@ -102,6 +123,7 @@
                 <Webcam width='212' height='160'/>
               </div>
             </div>
+
             <div>
               <h2>Screenshots</h2>
               <div className='screenshots'>
@@ -111,27 +133,6 @@
                 { this.state.screenshot ? <img src={this.state.screenshot} /> : null }
               </div>
             </div>
-
-            <div className='videoContainer'>
-              <h2>Video</h2>
-              <Webcam audio={true}
-                ref={ el => {this.videoWebcam = el;} }
-              />
-              <div className='controls'>
-                <button onClick={this.handleClick}>{this.state.recording ? 'Stop recording' : 'Start Recording' }</button>
-              </div>
-
-              { this.state.videoUrl &&
-                <div className='videoReproduction'>
-                  Check your video below...
-                  <div className='controls'>
-                    <button onClick={this.play}>Play</button>
-                  </div>
-                  <video id='videoCanvas'></video>
-                  <br/>
-                </div>
-              }
-              </div>
           </div>
         );
       }
@@ -157,15 +158,46 @@
         this.setState({videoUrl})
       }
 
+      handleVideoError = (video) => {
+        video.addEventListener('error', (event) => {
+          console.error('MediaRecording.recordedMedia.error()');
+          console.log('Your browser can not play ' + video.src
+            + 'media clip. event:', event);
+        }, true);
+      }
+
       play = () => {
         let video = document.getElementById('videoCanvas');
+        video.controls = true
+        const playPromise = video.play();
+        this.handleVideoError(video)
         if (this.state.videoUrl) {
           video.src = this.state.videoUrl;
-          video.load();
-          video.onloadeddata = () => { video.play();}
+          // workaround for non-seekable video taken from
+          // https://bugs.chromium.org/p/chromium/issues/detail?id=642012#c23
+          video.addEventListener('loadedmetadata', () => {
+            if (video.duration === Infinity) {
+              video.currentTime = 1e101;
+              video.ontimeupdate = () => {
+                video.currentTime = 0;
+                video.ontimeupdate = () => {
+                  delete video.ontimeupdate;
+                  video.onloadeddata = () => {
+                    if (playPromise !== undefined) {
+                      playPromise.then(() => {
+                        console.log('All good')
+                      }).catch((error) => {
+                        console.log('something went wrong', error)
+                      });
+                    }
+                  }
+                };
+              };
+            }
+          });
         }
       }
-    };
+  };
 
     ReactDOM.render(<App/>, document.getElementById('root'));
   </script>
