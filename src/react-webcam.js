@@ -6,7 +6,8 @@ import { startRecording, stopRecording, getVideoUrl } from './video';
 Deliberately ignoring the old api, due to very inconsistent behaviour
 */
 const mediaDevices = navigator.mediaDevices;
-const getUserMedia = mediaDevices && mediaDevices.getUserMedia ? mediaDevices.getUserMedia.bind(mediaDevices) : null;
+const media = (mediaDevices && mediaDevices.getUserMedia) || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+const getUserMedia = media ? media.bind(mediaDevices) : null;
 const hasGetUserMedia = !!(getUserMedia);
 
 const DEBUG = false;
@@ -79,7 +80,7 @@ export default class Webcam extends Component<CameraType, State> {
 
   requestUserMedia() {
     if (!getUserMedia || !mediaDevices) return;
-    const { height, width, facingMode } = this.props;
+    const { facingMode } = this.props;
     /*
     Safari 11 has a bug where if you specify both the height and width
     constraints you must chose a resolution supported by the web cam. If an
@@ -93,7 +94,7 @@ export default class Webcam extends Component<CameraType, State> {
     Reference: https://developer.mozilla.org/en-US/docs/Web/API/Media_Streams_API/Constraints
     */
     const constraints = {
-      video: {width, height, facingMode},
+      video: { facingMode },
       audio: this.props.audio
     };
 
@@ -198,6 +199,8 @@ export default class Webcam extends Component<CameraType, State> {
           // support transform
           transform: this.state.mirrored ? 'scaleX(-1)' : ''
         }}
+        height={this.props.height}
+        width={this.props.width}
         ref={(el) => this.video = el}
         autoPlay
         playsinline// necessary for iOS, see https://github.com/webrtc/samples/issues/929
