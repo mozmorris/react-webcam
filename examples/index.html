@@ -73,73 +73,13 @@
 
     const Webcam = window.Webcam.default;
 
-    const App = class App extends React.Component {
-      state={
-        screenshot: null,
-        videoUrl: null,
-        recording: false,
-        tab: 0
-      }
-
-      render() {
-        return (
-          <div>
-            <div className='videoContainer'>
-              <h2>Video</h2>
-              <Webcam audio={true} muted={true}
-                ref={ el => {this.videoWebcam = el;} }
-              />
-              <div className='controls'>
-                <button onClick={this.handleClick}>{this.state.recording ? 'Stop recording' : 'Start Recording' }</button>
-              </div>
-
-              { this.state.videoUrl &&
-                <div className='videoReproduction'>
-                  Check your video below...
-                  <div className='controls'>
-                    <button onClick={this.play}>Play</button>
-                  </div>
-                  <video id='videoCanvas' src={this.state.videoUrl} loop controls/>
-                </div>
-              }
-            </div>
-            <hr/>
-            <h1>react-webcam</h1>
-            <Webcam
-              ref={ el => {this.webcam = el;} }
-              width='960' height='640'
-            />
-            <div>
-              <h2>CSS Filters</h2>
-              <div className='webcams'>
-                <Webcam width='212' height='160'/>
-                <Webcam width='212' height='160'/>
-                <Webcam width='212' height='160'/>
-                <Webcam width='212' height='160'/>
-                <Webcam width='212' height='160'/>
-                <Webcam width='212' height='160'/>
-                <Webcam width='212' height='160'/>
-                <Webcam width='212' height='160'/>
-                <Webcam width='212' height='160'/>
-              </div>
-            </div>
-
-            <div>
-              <h2>Screenshots</h2>
-              <div className='screenshots'>
-                <div className='controls'>
-                  <button onClick={this.screenshot}>capture</button>
-                </div>
-                { this.state.screenshot ? <img src={this.state.screenshot} /> : null }
-              </div>
-            </div>
-          </div>
-        );
-      }
-
-      screenshot = () => {
-        var screenshot = this.webcam.getScreenshot();
-        this.setState({screenshot: screenshot});
+    const VideoExamples = class VideoExamples extends React.Component {
+      constructor(props) {
+        super(props)
+        this.state = {
+          videoUrl: null,
+          recording: false
+        }
       }
 
       handleClick = () => {
@@ -197,9 +137,107 @@
           });
         }
       }
-  };
 
-    ReactDOM.render(<App/>, document.getElementById('root'));
+      render() {
+        return (
+          <div className='videoContainer'>
+            <h2>Video</h2>
+            <Webcam audio={true} muted={true}
+              ref={ el => {this.videoWebcam = el;} }
+            />
+            <div className='controls'>
+              <button onClick={this.handleClick}>{this.state.recording ? 'Stop recording' : 'Start Recording' }</button>
+            </div>
+
+            { this.state.videoUrl &&
+              <div className='videoReproduction'>
+                Check your video below...
+                <div className='controls'>
+                  <button onClick={this.play}>Play</button>
+                </div>
+                <video id='videoCanvas' src={this.state.videoUrl} loop controls/>
+              </div>
+            }
+          </div>
+        )
+      }
+    }
+
+    const ScreenshotExamples = class ScreenshotExamples extends React.Component{
+      constructor(props) {
+        super(props)
+        this.state = {screenshot: null}
+      }
+
+      screenshot = () => {
+        var screenshot = this.webcam.getScreenshot();
+        this.setState({screenshot: screenshot});
+      }
+
+      render() {
+        return (
+          <div className='screenshotContainer'>
+            <div>
+
+              <h2>Screenshots</h2>
+              <Webcam
+                audio={false}
+                ref={ el => {this.webcam = el;} }
+                width='960' height='640'
+              />
+              <div className='screenshots'>
+                <div className='controls'>
+                  <button onClick={this.screenshot}>capture</button>
+                </div>
+                { this.state.screenshot ? <img src={this.state.screenshot} /> : null }
+              </div>
+            </div>
+
+            <div>
+              <h2>CSS Filters</h2>
+              <div className='webcams'>
+                <Webcam width='212' height='160'/>
+                <Webcam width='212' height='160'/>
+                <Webcam width='212' height='160'/>
+                <Webcam width='212' height='160'/>
+                <Webcam width='212' height='160'/>
+                <Webcam width='212' height='160'/>
+                <Webcam width='212' height='160'/>
+                <Webcam width='212' height='160'/>
+                <Webcam width='212' height='160'/>
+              </div>
+            </div>
+          </div>
+        )
+      }
+    }
+
+    const App = class App extends React.Component {
+      options = () => {
+        return window.location.search.slice(1).split('&')
+          .reduce(function _reduce (/*Object*/ a, /*String*/ b) {
+            b = b.split('=');
+            a[b[0]] = decodeURIComponent(b[1]);
+            return a;
+          }, {});
+      }
+
+      render() {
+        const options = this.options()
+        return (
+          <div>
+            <h1>react-webcam</h1>
+            {
+              options.video === 'true'?
+                <VideoExamples recording={this.state.recording} videoUrl={this.state.videoUrl} /> :
+                <ScreenshotExamples screenshot={this.state.screenshot} />
+            }
+          </div>
+        );
+      }
+
+  };
+  ReactDOM.render(<App/>, document.getElementById('root'));
   </script>
 </body>
 </html>
