@@ -41,7 +41,7 @@ type State = {
 
 export default class Webcam extends Component<CameraType, State> {
   static defaultProps = {
-    audio: true,
+    audio: false,
     screenshotFormat: 'image/webp',
     onUserMedia: () => {},
     onFailure: () => {}
@@ -80,7 +80,7 @@ export default class Webcam extends Component<CameraType, State> {
 
   requestUserMedia() {
     if (!getUserMedia || !mediaDevices) return;
-    const { facingMode } = this.props;
+    const { facingMode, audio } = this.props;
     /*
     Safari 11 has a bug where if you specify both the height and width
     constraints you must chose a resolution supported by the web cam. If an
@@ -93,10 +93,10 @@ export default class Webcam extends Component<CameraType, State> {
 
     Reference: https://developer.mozilla.org/en-US/docs/Web/API/Media_Streams_API/Constraints
     */
-    const constraints = {
-      video: { facingMode },
-      audio: this.props.audio
-    };
+
+    // if `{facingMode: 'user'}` Firefox will still allow the user to choose which camera to use (Front camera will be the first option)
+    // if `{facingMode: {exact: 'user'}}` Firefox won't give the user a choice and will show the front camera
+    const constraints = {video: { facingMode: {exact: facingMode} }, audio };
 
     const logError = e => console.log('error', e, typeof e);
 

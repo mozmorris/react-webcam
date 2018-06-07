@@ -181,9 +181,9 @@
 
               <h2>Screenshots</h2>
               <Webcam
-                audio={false}
                 ref={ el => {this.webcam = el;} }
                 width='960' height='640'
+                facingMode={'user'}
               />
               <div className='screenshots'>
                 <div className='controls'>
