@@ -102,6 +102,7 @@ export default class Webcam extends Component<CameraType, State> {
 
     const onSuccess = stream => {
       Webcam.mountedInstances.forEach((instance) => instance.handleUserMedia(stream));
+      Webcam.userMediaRequested = true;
     };
 
     const onError = e => {
@@ -109,7 +110,6 @@ export default class Webcam extends Component<CameraType, State> {
       Webcam.mountedInstances.forEach((instance) => instance.handleError(e));
     };
     getUserMedia(constraints).then(onSuccess).catch(onError);
-    Webcam.userMediaRequested = true;
   }
 
   handleError(error: Object) {

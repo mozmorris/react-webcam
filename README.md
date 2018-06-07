@@ -38,6 +38,16 @@ screenshotFormat | string   | 'image/webp' | format of screenshot
 onUserMedia      | function | noop         | callback when component receives a media stream
 onFailure        | function | noop         | Callback in case an error happens, no getUserMedia for example
 
+## Functions
+
+function         | notes
+-----------------|----------
+getCanvas        | returns a canvas with the same size as the video element
+startRecording   | starts the recording  
+stopRecording    | stops the recording
+getVideoUrl      | returns the objectUrl for the recorded video
+
+
 ## License
 
 MIT
