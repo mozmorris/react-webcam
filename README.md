@@ -47,7 +47,7 @@ getScreenshot    | returns one frame of the stream
 getCanvas        | returns a canvas with the same size as the video element
 startRecording   | starts the recording  
 stopRecording    | stops the recording
-getVideoUrl      | returns the objectUrl for the recorded video
+getVideoUrl      | returns the video blob for the recorded video
 
 
 ## License

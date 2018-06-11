@@ -1,6 +1,6 @@
 /* @flow */
 import React, { Component } from 'react';
-import { startRecording, stopRecording, getVideoUrl } from './video';
+import { startRecording, stopRecording, getVideoBlob } from './video';
 
 /*
 Deliberately ignoring the old api, due to very inconsistent behaviour
@@ -178,8 +178,8 @@ export default class Webcam extends Component<CameraType, State> {
     stopRecording();
   }
 
-  getVideo() {
-    return getVideoUrl();
+  getVideoBlob() {
+    return getVideoBlob();
   }
 
   render() {

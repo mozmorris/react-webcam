@@ -82,6 +82,10 @@
         }
       }
 
+      componentWillUnmount() {
+        window.URL.revokeObjectURL(this.state.videoUrl);
+      }
+
       handleClick = () => {
         this.state.recording ? this.stopRecording() : this.startRecording()
       }
@@ -94,7 +98,8 @@
       stopRecording = () => {
         this.videoWebcam.stopRecording();
         this.setState({recording: false})
-        const videoUrl = this.videoWebcam.getVideo();
+        const videoBlob = this.videoWebcam.getVideoBlob();
+        const videoUrl = window.URL.createObjectURL(videoBlob);
         this.setState({videoUrl})
       }
 

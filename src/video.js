@@ -56,7 +56,4 @@ export const stopRecording = () => {
 };
 
 
-export const getVideoUrl = () => {
-  const superBuffer = new Blob(recordedBlobs);
-  return window.URL.createObjectURL(superBuffer);
-};
+export const getVideoBlob = () => new Blob(recordedBlobs);
