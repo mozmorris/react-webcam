@@ -6,8 +6,7 @@ import { startRecording, stopRecording, getVideoUrl } from './video';
 Deliberately ignoring the old api, due to very inconsistent behaviour
 */
 const mediaDevices = navigator.mediaDevices;
-const media = (mediaDevices && mediaDevices.getUserMedia) || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
-const getUserMedia = media ? media.bind(mediaDevices) : null;
+const getUserMedia = mediaDevices && mediaDevices.getUserMedia ? mediaDevices.getUserMedia.bind(mediaDevices) : null;
 const hasGetUserMedia = !!(getUserMedia);
 
 const DEBUG = false;
@@ -19,7 +18,6 @@ type constraintTypes = number | Object;
 
 type CameraType = {
   audio?: boolean,
-  muted?: boolean,
   onUserMedia: Function,
   onFailure: Function,
   height?: constraintTypes,
@@ -49,8 +47,6 @@ export default class Webcam extends Component<CameraType, State> {
 
   static mountedInstances = [];
 
-  static userMediaRequested = false;
-
   state = {
     hasUserMedia: false,
     mirrored: false
@@ -72,10 +68,7 @@ export default class Webcam extends Component<CameraType, State> {
 
   componentDidMount() {
     Webcam.mountedInstances.push(this);
-
-    if (!Webcam.userMediaRequested) {
-      this.requestUserMedia();
-    }
+    this.requestUserMedia();
   }
 
   requestUserMedia() {
@@ -102,7 +95,6 @@ export default class Webcam extends Component<CameraType, State> {
 
     const onSuccess = stream => {
       Webcam.mountedInstances.forEach((instance) => instance.handleUserMedia(stream));
-      Webcam.userMediaRequested = true;
     };
 
     const onError = e => {
@@ -149,7 +141,6 @@ export default class Webcam extends Component<CameraType, State> {
           track.stop();
         }
       }
-      Webcam.userMediaRequested = false;
     }
   }
 
@@ -205,7 +196,7 @@ export default class Webcam extends Component<CameraType, State> {
         autoPlay
         playsinline// necessary for iOS, see https://github.com/webrtc/samples/issues/929
         srcObject={this.stream}
-        muted={this.props.muted} // muted must be true for recording and reproducing videos on android
+        muted={true} // muted must be true for recording and reproducing videos. Also there is no use case where we want the video element to reproduce any audio
         className={this.props.className}
       />
     );

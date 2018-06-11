@@ -142,9 +142,7 @@
         return (
           <div className='videoContainer'>
             <h2>Video</h2>
-            <Webcam audio={true} muted={true}
-              ref={ el => {this.videoWebcam = el;} }
-            />
+            <Webcam audio={true} ref={ el => {this.videoWebcam = el;} }/>
             <div className='controls'>
               <button onClick={this.handleClick}>{this.state.recording ? 'Stop recording' : 'Start Recording' }</button>
             </div>
