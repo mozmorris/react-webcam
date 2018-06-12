@@ -73,7 +73,7 @@
 
     const Webcam = window.Webcam.default;
 
-    const VideoExamples = class VideoExamples extends React.Component {
+    class VideoExamples extends React.Component {
       constructor(props) {
         super(props)
         this.state = {
@@ -111,33 +111,37 @@
         }, true);
       }
 
+      onVideoLoaded = (video, callback) => {
+        // workaround for non-seekable video taken from
+        // https://bugs.chromium.org/p/chromium/issues/detail?id=642012#c23
+        video.addEventListener('loadedmetadata', () => {
+          if(video.duration === Infinity) {
+            video.currentTime = 1e101;
+            video.ontimeupdate = () => {
+              video.currentTime = 0;
+              video.ontimeupdate = () => {
+                delete video.ontimeupdate;
+                video.onloadeddata = callback;
+              }
+            }
+          }
+        })
+      }
+
       play = () => {
         let video = document.getElementById('videoCanvas');
-        video.controls = true
         const playPromise = video.play();
         this.handleVideoError(video)
         if (this.state.videoUrl) {
           video.src = this.state.videoUrl;
-          // workaround for non-seekable video taken from
-          // https://bugs.chromium.org/p/chromium/issues/detail?id=642012#c23
-          video.addEventListener('loadedmetadata', () => {
-            if (video.duration === Infinity) {
-              video.currentTime = 1e101;
-              video.ontimeupdate = () => {
-                video.currentTime = 0;
-                video.ontimeupdate = () => {
-                  delete video.ontimeupdate;
-                  video.onloadeddata = () => {
-                    if (playPromise !== undefined) {
-                      playPromise.then(() => {
-                        console.log('All good')
-                      }).catch((error) => {
-                        console.log('something went wrong', error)
-                      });
-                    }
-                  }
-                };
-              };
+          video.controls = true
+          onVideoLoaded(video, () => {
+            if (playPromise !== undefined) {
+              playPromise.then(() => {
+                console.log('All good')
+              }).catch((error) => {
+                console.log('something went wrong', error)
+              });
             }
           });
         }
@@ -166,7 +170,7 @@
       }
     }
 
-    const ScreenshotExamples = class ScreenshotExamples extends React.Component{
+    class ScreenshotExamples extends React.Component{
       constructor(props) {
         super(props)
         this.state = {screenshot: null}
@@ -218,11 +222,13 @@
     const App = class App extends React.Component {
       options = () => {
         return window.location.search.slice(1).split('&')
-          .reduce(function _reduce (/*Object*/ a, /*String*/ b) {
-            b = b.split('=');
-            a[b[0]] = decodeURIComponent(b[1]);
-            return a;
-          }, {});
+        .reduce((acc, queryParam) => {
+          const queryParamParts = queryParam.split('=');
+          return {
+            ...acc,
+            [queryParamParts[0]]: decodeURIComponent(queryParamParts[1]),
+          };
+        }, {})
       }
 
       render() {
