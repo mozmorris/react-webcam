@@ -1,6 +1,6 @@
 /* @flow */
 import React, { Component } from 'react';
-import { startRecording, stopRecording, getVideoBlob } from './video';
+import { createMediaRecorder, startRecording } from './video';
 
 /*
 Deliberately ignoring the old api, due to very inconsistent behaviour
@@ -27,9 +27,7 @@ type CameraType = {
     'image/png' |
     'image/jpeg'
   ,
-  className?: String,
-  audioSource?: String,
-  videoSource?: String
+  className?: String
 }
 
 type State = {
@@ -56,6 +54,8 @@ export default class Webcam extends Component<CameraType, State> {
   canvas: HTMLCanvasElement
   ctx: CanvasRenderingContext2D
   video: ?HTMLVideoElement
+  recordedBlobs: Array<any>
+  mediaRecorder: Object
 
   constructor(props: CameraType) {
     super(props);
@@ -89,7 +89,7 @@ export default class Webcam extends Component<CameraType, State> {
 
     // if `{facingMode: 'user'}` Firefox will still allow the user to choose which camera to use (Front camera will be the first option)
     // if `{facingMode: {exact: 'user'}}` Firefox won't give the user a choice and will show the front camera
-    const constraints = {video: { facingMode: {exact: facingMode} }, audio };
+    const constraints = {video: {facingMode}, audio};
 
     const logError = e => console.log('error', e, typeof e);
 
@@ -171,15 +171,16 @@ export default class Webcam extends Component<CameraType, State> {
   }
 
   startRecording() {
-    startRecording(this.stream);
+    this.mediaRecorder = createMediaRecorder(this.stream);
+    this.recordedBlobs = startRecording(this.mediaRecorder);
   }
 
   stopRecording() {
-    stopRecording();
+    this.mediaRecorder.stop(this.recordedBlobs);
   }
 
   getVideoBlob() {
-    return getVideoBlob();
+    return new Blob(this.recordedBlobs);
   }
 
   render() {

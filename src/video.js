@@ -1,59 +1,44 @@
-const mediaSource = new MediaSource();
-
-const handleSourceOpen = () => {
-  console.log('MediaSource opened');
-  sourceBuffer = mediaSource.addSourceBuffer('video/webm; codecs="vp8"');
-  console.log('Source buffer: ', sourceBuffer);
-};
-
-mediaSource.addEventListener('sourceopen', handleSourceOpen, false);
-let mediaRecorder;
-let recordedBlobs;
-let sourceBuffer;
-
-
-const handleDataAvailable = (event) => {
+const handleDataAvailable = (event, recordedBlobs) => {
   if (event.data && event.data.size > 0) {
     recordedBlobs.push(event.data);
   }
 };
 
-function handleStop(event) {
+const handleStop = (event) => {
   console.log('Recorder stopped: ', event);
-}
+};
 
-export const startRecording = (stream) => {
-  recordedBlobs = [];
-  let options = {mimeType: 'video/webm;codecs=vp9'};
-  if (!MediaRecorder.isTypeSupported(options.mimeType)) {
-    console.log(`${options.mimeType} is not Supported`);
-    options = {mimeType: 'video/webm;codecs=vp8'};
-    if (!MediaRecorder.isTypeSupported(options.mimeType)) {
-      console.log(`${options.mimeType} is not Supported`);
-      options = {mimeType: 'video/webm'};
-      if (!MediaRecorder.isTypeSupported(options.mimeType)) {
-        console.log(`${options.mimeType} is not Supported`);
-        options = {mimeType: ''};
-      }
+const videoOptions = () => {
+  let mimeTypes = ['video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm'];
+  let mimeType = '';
+  for (let type in mimeTypes) {
+    if (MediaRecorder.isTypeSupported(mimeTypes[type])) {
+      mimeType = mimeTypes[type];
+      break;
+    }
+    else {
+      console.log(`${mimeTypes[type]} is not Supported`);
     }
   }
+  return mimeType ? {mimeType} : {mimeType: ''};
+};
+
+export const createMediaRecorder = (stream) => {
+  let options = videoOptions();
   try {
-    mediaRecorder = new MediaRecorder(stream, options);
-  } catch (e) {
+    return new MediaRecorder(stream, options);
+  }
+  catch (e) {
     console.error(`Exception while creating MediaRecorder: ${e}`);
     return;
   }
-  console.log('Created MediaRecorder', mediaRecorder, 'with options', options);
+};
+
+export const startRecording = (mediaRecorder) => {
+  let recordedBlobs = [];
   mediaRecorder.onstop = handleStop;
-  mediaRecorder.ondataavailable = handleDataAvailable;
+  mediaRecorder.ondataavailable = (e) => handleDataAvailable(e, recordedBlobs);
   mediaRecorder.start(10); // collect 10ms of data
   console.log('MediaRecorder started', mediaRecorder);
-};
-
-export const stopRecording = () => {
-  mediaRecorder.stop();
   return recordedBlobs;
 };
-
-
-export const getVideoBlob = () => new Blob(recordedBlobs);
