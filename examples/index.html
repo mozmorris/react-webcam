@@ -61,6 +61,7 @@
   <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/preact/8.2.7/preact.js"></script>
   <script crossorigin src="//unpkg.com/prop-types/prop-types.min.js"></script>
   <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/preact-compat/3.17.0/preact-compat.js"></script>
+
   <script type="text/javascript">
     React = preactCompat;
     ReactDOM = preactCompat;
@@ -72,20 +73,133 @@
 
     const Webcam = window.Webcam.default;
 
-    const App = class App extends React.Component {
-      state={
-        screenshot: null,
-        tab: 0
+    class VideoExamples extends React.Component {
+      constructor(props) {
+        super(props)
+        this.state = {
+          videoUrl: null,
+          recording: false
+        }
+      }
+
+      componentWillUnmount() {
+        window.URL.revokeObjectURL(this.state.videoUrl);
+      }
+
+      handleClick = () => {
+        this.state.recording ? this.stopRecording() : this.startRecording()
+      }
+
+      startRecording = () => {
+        this.videoWebcam.startRecording();
+        this.setState({recording: true})
+      }
+
+      stopRecording = () => {
+        this.videoWebcam.stopRecording();
+        this.setState({recording: false})
+        const videoBlob = this.videoWebcam.getVideoBlob();
+        const videoUrl = window.URL.createObjectURL(videoBlob);
+        this.setState({videoUrl})
+      }
+
+      handleVideoError = (video) => {
+        video.addEventListener('error', (event) => {
+          console.error('MediaRecording.recordedMedia.error()');
+          console.log('Your browser can not play ' + video.src
+            + 'media clip. event:', event);
+        }, true);
+      }
+
+      onVideoLoaded = (video, callback) => {
+        // workaround for non-seekable video taken from
+        // https://bugs.chromium.org/p/chromium/issues/detail?id=642012#c23
+        video.addEventListener('loadedmetadata', () => {
+          if(video.duration === Infinity) {
+            video.currentTime = 1e101;
+            video.ontimeupdate = () => {
+              video.currentTime = 0;
+              video.ontimeupdate = () => {
+                delete video.ontimeupdate;
+                video.onloadeddata = callback;
+              }
+            }
+          }
+        })
+      }
+
+      play = () => {
+        let video = document.getElementById('videoCanvas');
+        const playPromise = video.play();
+        this.handleVideoError(video)
+        if (this.state.videoUrl) {
+          video.src = this.state.videoUrl;
+          video.controls = true
+          onVideoLoaded(video, () => {
+            if (playPromise !== undefined) {
+              playPromise.then(() => {
+                console.log('All good')
+              }).catch((error) => {
+                console.log('something went wrong', error)
+              });
+            }
+          });
+        }
       }
 
       render() {
         return (
-          <div>
-            <h1>react-webcam</h1>
-            <Webcam
-              ref={ el => {this.webcam = el;} }
-              width='960' height='640'
-            />
+          <div className='videoContainer'>
+            <h2>Video</h2>
+            <Webcam audio={true} ref={ el => {this.videoWebcam = el;} }/>
+            <div className='controls'>
+              <button onClick={this.handleClick}>{this.state.recording ? 'Stop recording' : 'Start Recording' }</button>
+            </div>
+
+            { this.state.videoUrl &&
+              <div className='videoReproduction'>
+                Check your video below...
+                <div className='controls'>
+                  <button onClick={this.play}>Play</button>
+                </div>
+                <video id='videoCanvas' src={this.state.videoUrl} loop controls/>
+              </div>
+            }
+          </div>
+        )
+      }
+    }
+
+    class ScreenshotExamples extends React.Component{
+      constructor(props) {
+        super(props)
+        this.state = {screenshot: null}
+      }
+
+      screenshot = () => {
+        const screenshot = this.webcam.getScreenshot();
+        this.setState({screenshot: screenshot});
+      }
+
+      render() {
+        return (
+          <div className='screenshotContainer'>
+            <div>
+
+              <h2>Screenshots</h2>
+              <Webcam
+                ref={ el => {this.webcam = el;} }
+                width='960' height='640'
+                facingMode={'user'}
+              />
+              <div className='screenshots'>
+                <div className='controls'>
+                  <button onClick={this.screenshot}>capture</button>
+                </div>
+                { this.state.screenshot ? <img src={this.state.screenshot} /> : null }
+              </div>
+            </div>
+
             <div>
               <h2>CSS Filters</h2>
               <div className='webcams'>
@@ -100,26 +214,39 @@
                 <Webcam width='212' height='160'/>
               </div>
             </div>
-            <div>
-              <h2>Screenshots</h2>
-              <div className='screenshots'>
-                <div className='controls'>
-                  <button onClick={this.screenshot}>capture</button>
-                </div>
-                { this.state.screenshot ? <img src={this.state.screenshot} /> : null }
-              </div>
-            </div>
+          </div>
+        )
+      }
+    }
+
+    class App extends React.Component {
+      options = () => {
+        return window.location.search.slice(1).split('&')
+        .reduce((acc, queryParam) => {
+          const queryParamParts = queryParam.split('=');
+          return {
+            ...acc,
+            [queryParamParts[0]]: decodeURIComponent(queryParamParts[1]),
+          };
+        }, {})
+      }
+
+      render() {
+        const options = this.options()
+        return (
+          <div>
+            <h1>react-webcam</h1>
+            {
+              options.video === 'true'?
+                <VideoExamples recording={this.state.recording} videoUrl={this.state.videoUrl} /> :
+                <ScreenshotExamples screenshot={this.state.screenshot} />
+            }
           </div>
         );
       }
 
-      screenshot = () => {
-        var screenshot = this.webcam.getScreenshot();
-        this.setState({screenshot: screenshot});
-      }
-    };
-
-    ReactDOM.render(<App/>, document.getElementById('root'));
+  };
+  ReactDOM.render(<App/>, document.getElementById('root'));
   </script>
 </body>
 </html>

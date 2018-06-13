@@ -1,5 +1,6 @@
 /* @flow */
 import React, { Component } from 'react';
+import { createMediaRecorder, startRecording } from './video';
 
 /*
 Deliberately ignoring the old api, due to very inconsistent behaviour
@@ -17,7 +18,6 @@ type constraintTypes = number | Object;
 
 type CameraType = {
   audio?: boolean,
-  muted?: boolean,
   onUserMedia: Function,
   onFailure: Function,
   height?: constraintTypes,
@@ -27,9 +27,7 @@ type CameraType = {
     'image/png' |
     'image/jpeg'
   ,
-  className?: String,
-  audioSource?: String,
-  videoSource?: String
+  className?: String
 }
 
 type State = {
@@ -39,15 +37,13 @@ type State = {
 
 export default class Webcam extends Component<CameraType, State> {
   static defaultProps = {
-    audio: true,
+    audio: false,
     screenshotFormat: 'image/webp',
     onUserMedia: () => {},
     onFailure: () => {}
   };
 
   static mountedInstances = [];
-
-  static userMediaRequested = false;
 
   state = {
     hasUserMedia: false,
@@ -58,6 +54,8 @@ export default class Webcam extends Component<CameraType, State> {
   canvas: HTMLCanvasElement
   ctx: CanvasRenderingContext2D
   video: ?HTMLVideoElement
+  recordedBlobs: Array<any>
+  mediaRecorder: Object
 
   constructor(props: CameraType) {
     super(props);
@@ -70,74 +68,40 @@ export default class Webcam extends Component<CameraType, State> {
 
   componentDidMount() {
     Webcam.mountedInstances.push(this);
-
-    if (!Webcam.userMediaRequested) {
-      this.requestUserMedia();
-    }
+    this.requestUserMedia();
   }
 
   requestUserMedia() {
     if (!getUserMedia || !mediaDevices) return;
-    const sourceSelected = (audioSource, videoSource) => {
-      const { height, width, facingMode } = this.props;
-      /*
-      Safari 11 has a bug where if you specify both the height and width
-      constraints you must chose a resolution supported by the web cam. If an
-      unsupported resolution is used getUserMedia(constraints) will hit a
-      OverconstrainedError complaining that width is an invalid constraint.
-      This bug exists for ideal constraints as well as min and max.
+    const { facingMode, audio } = this.props;
+    /*
+    Safari 11 has a bug where if you specify both the height and width
+    constraints you must chose a resolution supported by the web cam. If an
+    unsupported resolution is used getUserMedia(constraints) will hit a
+    OverconstrainedError complaining that width is an invalid constraint.
+    This bug exists for ideal constraints as well as min and max.
 
-      However if only a height is specified safari will correctly chose the
-      nearest resolution supported by the web cam.
+    However if only a height is specified safari will correctly chose the
+    nearest resolution supported by the web cam.
 
-      Reference: https://developer.mozilla.org/en-US/docs/Web/API/Media_Streams_API/Constraints
-      */
-      const constraints = {
-        video: {
-          sourceId: videoSource,
-          width, height, facingMode
-        },
-        ...this.props.audio ? {
-          sourceId: audioSource
-        } : null
-      };
+    Reference: https://developer.mozilla.org/en-US/docs/Web/API/Media_Streams_API/Constraints
+    */
 
-      const logError = e => console.log('error', e, typeof e);
+    // if `{facingMode: 'user'}` Firefox will still allow the user to choose which camera to use (Front camera will be the first option)
+    // if `{facingMode: {exact: 'user'}}` Firefox won't give the user a choice and will show the front camera
+    const constraints = {video: {facingMode}, audio};
 
-      const onSuccess = stream => {
-        Webcam.mountedInstances.forEach((instance) => instance.handleUserMedia(stream));
-      };
+    const logError = e => console.log('error', e, typeof e);
 
-      const onError = e => {
-        logError(e);
-        Webcam.mountedInstances.forEach((instance) => instance.handleError(e));
-      };
-      getUserMedia(constraints).then(onSuccess).catch(onError);
+    const onSuccess = stream => {
+      Webcam.mountedInstances.forEach((instance) => instance.handleUserMedia(stream));
     };
 
-    if (this.props.audioSource && this.props.videoSource) {
-      sourceSelected(this.props.audioSource, this.props.videoSource);
-    } else {
-      mediaDevices.enumerateDevices().then((devices) => {
-        let audioSource = null;
-        let videoSource = null;
-
-        devices.forEach((device) => {
-          if (device.kind === 'audio') {
-            audioSource = device.id;
-          } else if (device.kind === 'video') {
-            videoSource = device.id;
-          }
-        });
-
-        sourceSelected(audioSource, videoSource);
-      })
-      .catch((error) => {
-        console.log(`${error.name}: ${error.message}`); // eslint-disable-line no-console
-      });
-    }
-
-    Webcam.userMediaRequested = true;
+    const onError = e => {
+      logError(e);
+      Webcam.mountedInstances.forEach((instance) => instance.handleError(e));
+    };
+    getUserMedia(constraints).then(onSuccess).catch(onError);
   }
 
   handleError(error: Object) {
@@ -177,7 +141,6 @@ export default class Webcam extends Component<CameraType, State> {
           track.stop();
         }
       }
-      Webcam.userMediaRequested = false;
     }
   }
 
@@ -207,6 +170,19 @@ export default class Webcam extends Component<CameraType, State> {
     return canvas;
   }
 
+  startRecording() {
+    this.mediaRecorder = createMediaRecorder(this.stream);
+    this.recordedBlobs = startRecording(this.mediaRecorder);
+  }
+
+  stopRecording() {
+    this.mediaRecorder.stop(this.recordedBlobs);
+  }
+
+  getVideoBlob() {
+    return new Blob(this.recordedBlobs);
+  }
+
   render() {
     return (
       <video
@@ -215,11 +191,13 @@ export default class Webcam extends Component<CameraType, State> {
           // support transform
           transform: this.state.mirrored ? 'scaleX(-1)' : ''
         }}
+        height={this.props.height}
+        width={this.props.width}
         ref={(el) => this.video = el}
         autoPlay
         playsinline// necessary for iOS, see https://github.com/webrtc/samples/issues/929
         srcObject={this.stream}
-        muted={this.props.muted}
+        muted={true} // muted must be true for recording videos
         className={this.props.className}
       />
     );
