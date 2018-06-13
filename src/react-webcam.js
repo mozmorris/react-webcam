@@ -197,7 +197,7 @@ export default class Webcam extends Component<CameraType, State> {
         autoPlay
         playsinline// necessary for iOS, see https://github.com/webrtc/samples/issues/929
         srcObject={this.stream}
-        muted={true} // muted must be true for recording and reproducing videos. Also there is no use case where we want the video element to reproduce any audio
+        muted={true} // muted must be true for recording videos
         className={this.props.className}
       />
     );
