@@ -1,3 +1,11 @@
+## 0.1.2
+
+### Added
+- Public: Added video recording feature.
+
+### Fixed
+- Fixed unhandled constraints errors
+
 ## 0.1.1
 
 ### Changed
