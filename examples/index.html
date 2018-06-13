@@ -219,7 +219,7 @@
       }
     }
 
-    const App = class App extends React.Component {
+    class App extends React.Component {
       options = () => {
         return window.location.search.slice(1).split('&')
         .reduce((acc, queryParam) => {
