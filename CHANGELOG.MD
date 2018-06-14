@@ -1,3 +1,8 @@
+## 0.1.3
+
+### Changed
+- Public: Bring back height and width video constraints. 
+
 ## 0.1.2
 
 ### Added
