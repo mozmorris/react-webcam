@@ -73,7 +73,7 @@ export default class Webcam extends Component<CameraType, State> {
 
   requestUserMedia() {
     if (!getUserMedia || !mediaDevices) return;
-    const { facingMode, audio } = this.props;
+    const { width, height, facingMode, audio } = this.props;
     /*
     Safari 11 has a bug where if you specify both the height and width
     constraints you must chose a resolution supported by the web cam. If an
@@ -89,7 +89,7 @@ export default class Webcam extends Component<CameraType, State> {
 
     // if `{facingMode: 'user'}` Firefox will still allow the user to choose which camera to use (Front camera will be the first option)
     // if `{facingMode: {exact: 'user'}}` Firefox won't give the user a choice and will show the front camera
-    const constraints = {video: {facingMode}, audio};
+    const constraints = {video: {width, height, facingMode}, audio};
 
     const logError = e => console.log('error', e, typeof e);
 
@@ -191,8 +191,6 @@ export default class Webcam extends Component<CameraType, State> {
           // support transform
           transform: this.state.mirrored ? 'scaleX(-1)' : ''
         }}
-        height={this.props.height}
-        width={this.props.width}
         ref={(el) => this.video = el}
         autoPlay
         playsinline// necessary for iOS, see https://github.com/webrtc/samples/issues/929
