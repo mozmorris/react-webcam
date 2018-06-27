@@ -34,6 +34,7 @@ className        | string   | ''           | CSS class of video element
 audio            | boolean  | true         | enable/disable audio
 height           | number   | 480          | height of video element
 width            | number   | 640          | width of video element
+screenshotWidth  | number   |              | width of screenshot
 style            | object   |              | style prop passed to video element
 screenshotFormat | string   | 'image/webp' | format of screenshot
 onUserMedia      | function | noop         | callback when component receives a media stream

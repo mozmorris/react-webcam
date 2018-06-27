@@ -38,6 +38,7 @@ export default class Webcam extends Component {
     audioSource: PropTypes.string,
     videoSource: PropTypes.string,
     screenshotQuality: PropTypes.number,
+    screenshotWidth: PropTypes.number,
   };
 
   static mountedInstances = [];
@@ -107,8 +108,10 @@ export default class Webcam extends Component {
       const canvas = document.createElement('canvas');
       const aspectRatio = this.video.videoWidth / this.video.videoHeight;
 
-      canvas.width = this.video.clientWidth;
-      canvas.height = this.video.clientWidth / aspectRatio;
+      const canvasWidth = this.props.screenshotWidth || this.video.clientWidth;
+
+      canvas.width = canvasWidth;
+      canvas.height = canvasWidth / aspectRatio;
 
       this.canvas = canvas;
       this.ctx = canvas.getContext('2d');
