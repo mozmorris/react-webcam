@@ -10,6 +10,66 @@ function hasGetUserMedia() {
   );
 }
 
+const constrainStringType = PropTypes.oneOfType([
+  PropTypes.string,
+  PropTypes.arrayOf(PropTypes.string),
+  PropTypes.shape({
+    exact: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.arrayOf(PropTypes.string),
+    ]),
+  }),
+  PropTypes.shape({
+    ideal: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.arrayOf(PropTypes.string),
+    ]),
+  }),
+]);
+
+const constrainBooleanType = PropTypes.oneOfType([
+  PropTypes.shape({
+    exact: PropTypes.bool,
+  }),
+  PropTypes.shape({
+    ideal: PropTypes.bool,
+  }),
+]);
+
+const constrainLongType = PropTypes.oneOfType([
+  PropTypes.number,
+  PropTypes.shape({
+    exact: PropTypes.number,
+    ideal: PropTypes.number,
+    min: PropTypes.number,
+    max: PropTypes.number,
+  }),
+]);
+
+const constrainDoubleType = constrainLongType;
+
+const audioConstraintType = PropTypes.shape({
+  deviceId: constrainStringType,
+  groupId: constrainStringType,
+  autoGainControl: constrainBooleanType,
+  channelCount: constrainLongType,
+  latency: constrainDoubleType,
+  noiseSuppression: constrainBooleanType,
+  sampleRate: constrainLongType,
+  sampleSize: constrainLongType,
+  volume: constrainDoubleType,
+});
+
+const videoConstraintType = PropTypes.shape({
+  deviceId: constrainStringType,
+  groupId: constrainStringType,
+  aspectRatio: constrainDoubleType,
+  facingMode: constrainStringType,
+  frameRate: constrainDoubleType,
+  height: constrainLongType,
+  width: constrainLongType,
+});
+
 export default class Webcam extends Component {
   static defaultProps = {
     audio: true,
@@ -35,10 +95,10 @@ export default class Webcam extends Component {
     ]),
     style: PropTypes.object,
     className: PropTypes.string,
-    audioSource: PropTypes.string,
-    videoSource: PropTypes.string,
     screenshotQuality: PropTypes.number,
     screenshotWidth: PropTypes.number,
+    audioConstraints: audioConstraintType,
+    videoConstraints: videoConstraintType,
   };
 
   static mountedInstances = [];
@@ -64,8 +124,8 @@ export default class Webcam extends Component {
 
   componentWillUpdate(nextProps) {
     if (
-      nextProps.videoSource !== this.props.videoSource ||
-      nextProps.audioSource !== this.props.audioSource
+      JSON.stringify(nextProps.audioConstraints) !== JSON.stringify(this.props.audioConstraints) ||
+      JSON.stringify(nextProps.videoConstraints) !== JSON.stringify(this.props.videoConstraints)
     ) {
       this.requestUserMedia();
     }
@@ -130,17 +190,13 @@ export default class Webcam extends Component {
       navigator.mozGetUserMedia ||
       navigator.msGetUserMedia;
 
-    const sourceSelected = (audioSource, videoSource) => {
+    const sourceSelected = (audioConstraints, videoConstraints) => {
       const constraints = {
-        video: {
-          optional: [{ sourceId: videoSource }],
-        },
+        video: videoConstraints || true,
       };
 
       if (this.props.audio) {
-        constraints.audio = {
-          optional: [{ sourceId: audioSource }],
-        };
+        constraints.audio = audioConstraints || true;
       }
 
       navigator.mediaDevices
@@ -157,36 +213,25 @@ export default class Webcam extends Component {
         });
     };
 
-    if (this.props.audioSource && this.props.videoSource) {
-      sourceSelected(this.props.audioSource, this.props.videoSource);
-    } else if ('mediaDevices' in navigator) {
-      navigator.mediaDevices
-        .enumerateDevices()
-        .then((devices) => {
-          let audioSource = null;
-          let videoSource = null;
-
-          devices.forEach((device) => {
-            if (device.kind === 'audioinput') {
-              audioSource = device.id;
-            } else if (device.kind === 'videoinput') {
-              videoSource = device.id;
-            }
-          });
-
-          if (this.props.audioSource) {
-            audioSource = this.props.audioSource;
-          }
-          if (this.props.videoSource) {
-            videoSource = this.props.videoSource;
-          }
-
-          sourceSelected(audioSource, videoSource);
-        })
-        .catch((error) => {
-          console.log(`${error.name}: ${error.message}`); // eslint-disable-line no-console
-        });
+    if ('mediaDevices' in navigator) {
+      sourceSelected(this.props.audioConstraints, this.props.videoConstraints);
     } else {
+      const optionalSource = id => ({ optional: [{ sourceId: id }] });
+
+      const constraintToSourceId = (constraint) => {
+        const deviceId = (constraint || {}).deviceId;
+
+        if (typeof deviceId === 'string') {
+          return deviceId;
+        } else if (Array.isArray(deviceId) && deviceId.length > 0) {
+          return deviceId[0];
+        } else if (typeof deviceId === 'object' && deviceId.ideal) {
+          return deviceId.ideal;
+        }
+
+        return null;
+      };
+
       MediaStreamTrack.getSources((sources) => {
         let audioSource = null;
         let videoSource = null;
@@ -199,14 +244,17 @@ export default class Webcam extends Component {
           }
         });
 
-        if (this.props.audioSource) {
-          audioSource = this.props.audioSource;
-        }
-        if (this.props.videoSource) {
-          videoSource = this.props.videoSource;
+        const audioSourceId = constraintToSourceId(this.props.audioConstraints);
+        if (audioSourceId) {
+          audioSource = audioSourceId;
         }
 
-        sourceSelected(audioSource, videoSource);
+        const videoSourceId = constraintToSourceId(this.props.videoConstraints);
+        if (videoSourceId) {
+          videoSource = videoSourceId;
+        }
+
+        sourceSelected(optionalSource(audioSource), optionalSource(videoSource));
       });
     }
 
