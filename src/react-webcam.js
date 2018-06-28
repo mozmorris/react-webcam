@@ -263,26 +263,22 @@ export default class Webcam extends Component {
 
   handleUserMedia(error, stream) {
     if (error) {
-      this.setState({
-        hasUserMedia: false,
-      });
+      this.setState({ hasUserMedia: false });
       this.props.onUserMediaError(error);
 
       return;
     }
-    try {
-      const src = window.URL.createObjectURL(stream);
 
-      this.stream = stream;
-      this.setState({
-        hasUserMedia: true,
-        src,
-      });
-    } catch (err) {
-      this.stream = stream;
+    this.stream = stream;
+
+    try {
       this.video.srcObject = stream;
+      this.setState({ hasUserMedia: true });
+    } catch (error) {
+      const src = window.URL.createObjectURL(stream);
       this.setState({
         hasUserMedia: true,
+        src: window.URL.createObjectURL(stream)
       });
     }
 
