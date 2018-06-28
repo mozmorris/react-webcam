@@ -124,8 +124,10 @@ export default class Webcam extends Component {
 
   componentWillUpdate(nextProps) {
     if (
-      JSON.stringify(nextProps.audioConstraints) !== JSON.stringify(this.props.audioConstraints) ||
-      JSON.stringify(nextProps.videoConstraints) !== JSON.stringify(this.props.videoConstraints)
+      JSON.stringify(nextProps.audioConstraints) !==
+        JSON.stringify(this.props.audioConstraints) ||
+      JSON.stringify(nextProps.videoConstraints) !==
+        JSON.stringify(this.props.videoConstraints)
     ) {
       this.requestUserMedia();
     }
@@ -155,9 +157,12 @@ export default class Webcam extends Component {
     if (!this.state.hasUserMedia) return null;
 
     const canvas = this.getCanvas();
-    return canvas && canvas.toDataURL(
-      this.props.screenshotFormat,
-      this.props.screenshotQuality,
+    return (
+      canvas &&
+      canvas.toDataURL(
+        this.props.screenshotFormat,
+        this.props.screenshotQuality,
+      )
     );
   }
 
@@ -254,35 +259,33 @@ export default class Webcam extends Component {
           videoSource = videoSourceId;
         }
 
-        sourceSelected(optionalSource(audioSource), optionalSource(videoSource));
+        sourceSelected(
+          optionalSource(audioSource),
+          optionalSource(videoSource),
+        );
       });
     }
 
     Webcam.userMediaRequested = true;
   }
 
-  handleUserMedia(error, stream) {
-    if (error) {
-      this.setState({
-        hasUserMedia: false,
-      });
-      this.props.onUserMediaError(error);
+  handleUserMedia(err, stream) {
+    if (err) {
+      this.setState({ hasUserMedia: false });
+      this.props.onUserMediaError(err);
 
       return;
     }
-    try {
-      const src = window.URL.createObjectURL(stream);
 
-      this.stream = stream;
-      this.setState({
-        hasUserMedia: true,
-        src,
-      });
-    } catch (err) {
-      this.stream = stream;
+    this.stream = stream;
+
+    try {
       this.video.srcObject = stream;
+      this.setState({ hasUserMedia: true });
+    } catch (error) {
       this.setState({
         hasUserMedia: true,
+        src: window.URL.createObjectURL(stream),
       });
     }
 
