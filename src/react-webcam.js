@@ -103,7 +103,7 @@ export default class Webcam extends Component<CameraType, State> {
       Webcam.mountedInstances.forEach((instance) => instance.handleUserMedia(stream));
     };
 
-    const fallbackConstraints = {video: true, audio };
+    const fallbackConstraints = { video: true, audio, facingMode };
 
     let hasTriedFallbackConstraints;
     const onError = e => {
