@@ -1,3 +1,8 @@
+## 0.1.4
+
+### Changed
+- Rejected getUserMedia calls, that don't fail due to denied permissions, will be retried one more time with fallback constraints, omitting width and height.
+
 ## 0.1.3
 
 ### Changed
