@@ -35,6 +35,8 @@ type State = {
   mirrored: boolean
 }
 
+const unrecoverableErrors = ['PermissionDeniedError', 'NotAllowedError', 'NotReadableError', 'NotFoundError'];
+
 export default class Webcam extends Component<CameraType, State> {
   static defaultProps = {
     audio: false,
@@ -89,7 +91,20 @@ export default class Webcam extends Component<CameraType, State> {
 
     // if `{facingMode: 'user'}` Firefox will still allow the user to choose which camera to use (Front camera will be the first option)
     // if `{facingMode: {exact: 'user'}}` Firefox won't give the user a choice and will show the front camera
-    const constraints = {video: {width, height, facingMode}, audio};
+    const constraints = {video: {
+      width: parseInt(width, 10) || width, // some devices need number types
+      height: parseInt(height, 10) || height,
+      facingMode,
+    }, audio};
+
+    const fallbackConstraints = {
+      ...constraints,
+      video: {
+        ...constraints.video,
+        width: undefined,
+        height: undefined,
+      },
+    };
 
     const logError = e => console.log('error', e, typeof e);
 
@@ -97,9 +112,16 @@ export default class Webcam extends Component<CameraType, State> {
       Webcam.mountedInstances.forEach((instance) => instance.handleUserMedia(stream));
     };
 
+    let hasTriedFallbackConstraints;
     const onError = e => {
       logError(e);
-      Webcam.mountedInstances.forEach((instance) => instance.handleError(e));
+      const recoverableError = !unrecoverableErrors.includes(e.name);
+      if (!recoverableError || hasTriedFallbackConstraints) {
+        Webcam.mountedInstances.forEach((instance) => instance.handleError(e));
+      } else {
+        hasTriedFallbackConstraints = true;
+        getUserMedia(fallbackConstraints).then(onSuccess).catch(onError);
+      }
     };
     getUserMedia(constraints).then(onSuccess).catch(onError);
   }
