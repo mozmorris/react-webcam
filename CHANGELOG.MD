@@ -1,3 +1,8 @@
+## 0.1.5
+
+### Changed
+- Width and height will be deleted from the cloned video object in fallback constraints.
+
 ## 0.1.4
 
 ### Changed

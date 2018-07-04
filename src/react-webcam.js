@@ -35,7 +35,7 @@ type State = {
   mirrored: boolean
 }
 
-const unrecoverableErrors = ['PermissionDeniedError', 'NotAllowedError', 'NotReadableError', 'NotFoundError'];
+const permissionErrors = ['PermissionDeniedError', 'NotAllowedError', 'NotReadableError', 'NotFoundError'];
 
 export default class Webcam extends Component<CameraType, State> {
   static defaultProps = {
@@ -101,10 +101,12 @@ export default class Webcam extends Component<CameraType, State> {
       ...constraints,
       video: {
         ...constraints.video,
-        width: undefined,
-        height: undefined,
       },
     };
+
+    delete fallbackConstraints.video.width;
+    delete fallbackConstraints.video.height;
+
 
     const logError = e => console.log('error', e, typeof e);
 
@@ -115,8 +117,8 @@ export default class Webcam extends Component<CameraType, State> {
     let hasTriedFallbackConstraints;
     const onError = e => {
       logError(e);
-      const recoverableError = !unrecoverableErrors.includes(e.name);
-      if (!recoverableError || hasTriedFallbackConstraints) {
+      const permissionError = !permissionErrors.includes(e.name);
+      if (!permissionError || hasTriedFallbackConstraints) {
         Webcam.mountedInstances.forEach((instance) => instance.handleError(e));
       } else {
         hasTriedFallbackConstraints = true;
