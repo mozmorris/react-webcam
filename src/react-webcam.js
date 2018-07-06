@@ -117,8 +117,8 @@ export default class Webcam extends Component<CameraType, State> {
     let hasTriedFallbackConstraints;
     const onError = e => {
       logError(e);
-      const permissionError = !permissionErrors.includes(e.name);
-      if (!permissionError || hasTriedFallbackConstraints) {
+      const isPermissionError = permissionErrors.includes(e.name);
+      if (isPermissionError || hasTriedFallbackConstraints) {
         Webcam.mountedInstances.forEach((instance) => instance.handleError(e));
       } else {
         hasTriedFallbackConstraints = true;
