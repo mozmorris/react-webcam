@@ -35,7 +35,7 @@ type State = {
   mirrored: boolean
 }
 
-const permissionErrors = ['PermissionDeniedError', 'NotAllowedError', 'NotReadableError', 'NotFoundError'];
+const permissionErrors = ['PermissionDeniedError', 'NotAllowedError','NotFoundError'];
 
 export default class Webcam extends Component<CameraType, State> {
   static defaultProps = {
