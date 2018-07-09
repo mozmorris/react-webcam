@@ -1,3 +1,9 @@
+## 0.1.6
+
+### Changed
+- Fallback width and height definable via props
+- A new fallback constraints object will created, omitting width and height if not defined in props
+
 ## 0.1.5
 
 ### Changed

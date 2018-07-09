@@ -22,6 +22,8 @@ type CameraType = {
   onFailure: Function,
   height?: constraintTypes,
   width?: constraintTypes,
+  fallbackHeight?: constraintTypes,
+  fallbackWidth?: constraintTypes,
   facingMode?: String,
   screenshotFormat?: 'image/webp' |
     'image/png' |
@@ -35,7 +37,7 @@ type State = {
   mirrored: boolean
 }
 
-const permissionErrors = ['PermissionDeniedError', 'NotAllowedError', 'NotReadableError', 'NotFoundError'];
+const permissionErrors = ['PermissionDeniedError', 'NotAllowedError','NotFoundError'];
 
 export default class Webcam extends Component<CameraType, State> {
   static defaultProps = {
@@ -73,9 +75,7 @@ export default class Webcam extends Component<CameraType, State> {
     this.requestUserMedia();
   }
 
-  requestUserMedia() {
-    if (!getUserMedia || !mediaDevices) return;
-    const { width, height, facingMode, audio } = this.props;
+  getConstraints(width: *, height: *, facingMode?: String, audio?: boolean): Object {
     /*
     Safari 11 has a bug where if you specify both the height and width
     constraints you must chose a resolution supported by the web cam. If an
@@ -91,22 +91,25 @@ export default class Webcam extends Component<CameraType, State> {
 
     // if `{facingMode: 'user'}` Firefox will still allow the user to choose which camera to use (Front camera will be the first option)
     // if `{facingMode: {exact: 'user'}}` Firefox won't give the user a choice and will show the front camera
-    const constraints = {video: {
-      width: parseInt(width, 10) || width, // some devices need number types
-      height: parseInt(height, 10) || height,
-      facingMode,
-    }, audio};
+    const constraints: Object = { video: { facingMode }, audio };
 
-    const fallbackConstraints = {
-      ...constraints,
-      video: {
-        ...constraints.video,
-      },
-    };
+    if (width) {
+      constraints.video.width = parseInt(width, 10) || width; // some devices need a Number type
+    }
 
-    delete fallbackConstraints.video.width;
-    delete fallbackConstraints.video.height;
+    if (height) {
+      constraints.video.height = parseInt(height, 10) || height;
+    }
 
+    return constraints;
+  }
+
+  requestUserMedia() {
+    if (!getUserMedia || !mediaDevices) return;
+    const { width, height, facingMode, audio, fallbackWidth, fallbackHeight } = this.props;
+
+    const constraints = this.getConstraints(width, height, facingMode, audio);
+    const fallbackConstraints = this.getConstraints(fallbackWidth, fallbackHeight, facingMode, audio);
 
     const logError = e => console.log('error', e, typeof e);
 
@@ -117,8 +120,8 @@ export default class Webcam extends Component<CameraType, State> {
     let hasTriedFallbackConstraints;
     const onError = e => {
       logError(e);
-      const permissionError = !permissionErrors.includes(e.name);
-      if (!permissionError || hasTriedFallbackConstraints) {
+      const isPermissionError = permissionErrors.includes(e.name);
+      if (isPermissionError || hasTriedFallbackConstraints) {
         Webcam.mountedInstances.forEach((instance) => instance.handleError(e));
       } else {
         hasTriedFallbackConstraints = true;
