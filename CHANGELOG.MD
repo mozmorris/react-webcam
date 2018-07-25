@@ -1,3 +1,8 @@
+## 0.1.7
+### Changed
+- Made `facingMode` a complex type rather than just `String`
+- Internal: Flow check has been moved out of the linter
+
 ## 0.1.6
 
 ### Changed

@@ -1,6 +1,6 @@
 {
   "name": "react-webcam-onfido",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "React webcam component",
   "main": "dist/react-webcam.js",
   "scripts": {
@@ -9,8 +9,9 @@
     "build:prod": "NODE_ENV=production webpack",
     "build:dev": "webpack",
     "build:flow": "flow-copy-source -v src dist",
-    "prebuild": "npm run lint",
+    "prebuild": "npm run lint && npm run flow",
     "lint": "eslint src",
+    "flow": "flow check",
     "dev": "webpack-dev-server --inline --hot --progress --https"
   },
   "repository": {
@@ -42,10 +43,8 @@
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",
     "eslint": "^3.6.1",
-    "eslint-plugin-flowtype": "^2.41.0",
-    "eslint-plugin-flowtype-errors": "^3.3.6",
     "eslint-plugin-react": "^6.3.0",
-    "flow-bin": "^0.63.1",
+    "flow-bin": "^0.76.0",
     "flow-copy-source": "^1.2.1",
     "html-webpack-plugin": "^2.29.0",
     "travis-weigh-in": "^1.0.2",

@@ -15,6 +15,8 @@ const debugConsole = (...args) => {
 };
 
 type constraintTypes = number | Object;
+type facingModeLiterals = 'user' | 'environment'
+type facingModeType = facingModeLiterals | { exact: facingModeLiterals}
 
 type CameraType = {
   audio?: boolean,
@@ -24,7 +26,7 @@ type CameraType = {
   width?: constraintTypes,
   fallbackHeight?: constraintTypes,
   fallbackWidth?: constraintTypes,
-  facingMode?: String,
+  facingMode?: facingModeType,
   screenshotFormat?: 'image/webp' |
     'image/png' |
     'image/jpeg'
@@ -75,7 +77,7 @@ export default class Webcam extends Component<CameraType, State> {
     this.requestUserMedia();
   }
 
-  getConstraints(width: *, height: *, facingMode?: String, audio?: boolean): Object {
+  getConstraints(width: *, height: *, facingMode?: facingModeType, audio?: boolean): Object {
     /*
     Safari 11 has a bug where if you specify both the height and width
     constraints you must chose a resolution supported by the web cam. If an

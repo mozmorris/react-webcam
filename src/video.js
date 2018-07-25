@@ -1,3 +1,5 @@
+const MediaRecorder = window.MediaRecorder;
+
 const handleDataAvailable = (event, recordedBlobs) => {
   if (event.data && event.data.size > 0) {
     recordedBlobs.push(event.data);
