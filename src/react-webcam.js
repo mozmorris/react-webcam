@@ -209,7 +209,10 @@ export default class Webcam extends Component<CameraType, State> {
   }
 
   getVideoBlob() {
-    return new Blob(this.recordedBlobs);
+    const mimeType = this.mediaRecorder.mimeType;
+     // return mimeType without codec
+    const type = mimeType.substr(0, mimeType.indexOf(';'));
+    return new Blob(this.recordedBlobs, {type});
   }
 
   render() {
