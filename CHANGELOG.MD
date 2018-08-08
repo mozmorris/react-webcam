@@ -1,3 +1,7 @@
+## 0.1.8
+### Changed
+- Public: Changed `getVideoBlob()` to return a Blob with `type`
+
 ## 0.1.7
 ### Changed
 - Made `facingMode` a complex type rather than just `String`
@@ -22,7 +26,7 @@
 ## 0.1.3
 
 ### Changed
-- Public: Bring back height and width video constraints. 
+- Public: Bring back height and width video constraints.
 
 ## 0.1.2
 
