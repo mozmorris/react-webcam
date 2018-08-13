@@ -1,5 +1,7 @@
 # react-webcam
 
+<img src="Logotype primary.png" width="70%" height="70%" />
+
 Webcam component for React. See [this](http://caniuse.com/#feat=stream)
 for browser compatibility.
 
