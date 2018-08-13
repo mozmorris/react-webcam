@@ -20,32 +20,32 @@ https://codepen.io/mozmorris/pen/JLZdoP
 ## Usage
 
 ```javascript
-import React from 'react';
-import Webcam from 'react-webcam';
+import React from "react";
+import Webcam from "react-webcam";
 
 class Component extends React.Component {
   render() {
-    return <Webcam/>;
+    return <Webcam />;
   }
 }
 ```
 
 ### Props
 
-prop             | type     | default      | notes
------------------|----------|--------------|----------
-className        | string   | ''           | CSS class of video element
-audio            | boolean  | true         | enable/disable audio
-height           | number   | 480          | height of video element
-width            | number   | 640          | width of video element
-screenshotWidth  | number   |              | width of screenshot
-style            | object   |              | style prop passed to video element
-screenshotFormat | string   | 'image/webp' | format of screenshot
-onUserMedia      | function | noop         | callback when component receives a media stream
-onUserMediaError | function | noop         | callback when component cannot receives any media stream width error param
-screenshotQuality      | number   |        0.92      | quality of screenshot(0 to 1)
-audioConstraints | object   |              | MediaStreamConstraint(s) for the audio
-videoConstraints | object   |              | MediaStreamConstraints(s) for the video
+| prop              | type     | default      | notes                                                                      |
+| ----------------- | -------- | ------------ | -------------------------------------------------------------------------- |
+| className         | string   | ''           | CSS class of video element                                                 |
+| audio             | boolean  | true         | enable/disable audio                                                       |
+| height            | number   | 480          | height of video element                                                    |
+| width             | number   | 640          | width of video element                                                     |
+| screenshotWidth   | number   |              | width of screenshot                                                        |
+| style             | object   |              | style prop passed to video element                                         |
+| screenshotFormat  | string   | 'image/webp' | format of screenshot                                                       |
+| onUserMedia       | function | noop         | callback when component receives a media stream                            |
+| onUserMediaError  | function | noop         | callback when component cannot receives any media stream width error param |
+| screenshotQuality | number   | 0.92         | quality of screenshot(0 to 1)                                              |
+| audioConstraints  | object   |              | MediaStreamConstraint(s) for the audio                                     |
+| videoConstraints  | object   |              | MediaStreamConstraints(s) for the video                                    |
 
 ### Methods
 
@@ -53,9 +53,9 @@ videoConstraints | object   |              | MediaStreamConstraints(s) for the v
 
 ```javascript
 class WebcamCapture extends React.Component {
-  setRef = (webcam) => {
+  setRef = webcam => {
     this.webcam = webcam;
-  }
+  };
 
   capture = () => {
     const imageSrc = this.webcam.getScreenshot();
@@ -65,7 +65,7 @@ class WebcamCapture extends React.Component {
     const videoConstraints = {
       width: 1280,
       height: 720,
-      facingMode: 'user',
+      facingMode: "user"
     };
 
     return (
@@ -84,6 +84,38 @@ class WebcamCapture extends React.Component {
   }
 }
 ```
+
+## Choosing a camera
+
+### User/Selfie/forward facing camera
+
+```javascript
+class WebcamCapture extends React.Component {
+  render() {
+    const videoConstraints = {
+      facingMode: "user"
+    };
+
+    return <Webcam videoConstraints={videoConstraints} />;
+  }
+}
+```
+
+### Enironment/Facing-Out camera
+
+```javascript
+class WebcamCapture extends React.Component {
+  render() {
+    const videoConstraints = {
+      facingMode: { exact: "environment" }
+    };
+
+    return <Webcam videoConstraints={videoConstraints} />;
+  }
+}
+```
+
+For more information on `facingMode`, please see the MDN web docs [https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints/facingMode](https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints/facingMode)
 
 ## License
 
