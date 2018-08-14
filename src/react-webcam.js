@@ -137,6 +137,7 @@ export default class Webcam extends Component {
     const index = Webcam.mountedInstances.indexOf(this);
     Webcam.mountedInstances.splice(index, 1);
 
+    Webcam.userMediaRequested = false;
     if (Webcam.mountedInstances.length === 0 && this.state.hasUserMedia) {
       if (this.stream.stop) {
         this.stream.stop();
@@ -148,7 +149,6 @@ export default class Webcam extends Component {
           this.stream.getAudioTracks().map(track => track.stop());
         }
       }
-      Webcam.userMediaRequested = false;
       window.URL.revokeObjectURL(this.state.src);
     }
   }
