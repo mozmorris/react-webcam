@@ -34,6 +34,7 @@ className        | string   | ''           | CSS class of video element
 audio            | boolean  | false        | enable/disable audio
 height           | number   | 480          | height of video element
 width            | number   | 640          | width of video element
+style            | object   | undefined    | CSS inline style
 facingMode       | string   | ''           | Facing mode of the camera. It can be `user` or `environment`
 screenshotFormat | string   | 'image/webp' | format of screenshot
 onUserMedia      | function | noop         | callback when component receives a media stream

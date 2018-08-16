@@ -1,3 +1,7 @@
+## 0.1.9
+### Added
+- Public: Added `style` prop style the video element inline
+
 ## 0.1.8
 ### Changed
 - Public: Changed `getVideoBlob()` to return a Blob with `type`

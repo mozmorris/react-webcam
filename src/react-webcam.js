@@ -31,7 +31,8 @@ type CameraType = {
     'image/png' |
     'image/jpeg'
   ,
-  className?: String
+  className?: String,
+  style: Object
 }
 
 type State = {
@@ -220,7 +221,8 @@ export default class Webcam extends Component<CameraType, State> {
         style={{
           // not necessary to add prefixes, since all browsers that support camera
           // support transform
-          transform: this.state.mirrored ? 'scaleX(-1)' : ''
+          transform: this.state.mirrored ? 'scaleX(-1)' : '',
+          ...this.props.style
         }}
         ref={(el) => this.video = el}
         autoPlay
