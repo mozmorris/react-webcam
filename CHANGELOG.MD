@@ -1,3 +1,7 @@
+## 0.1.10
+### Removed
+- Public: Removed possibility to override the style of the video element by passing inline style as a prop
+
 ## 0.1.9
 ### Added
 - Public: Added `style` prop style the video element inline
