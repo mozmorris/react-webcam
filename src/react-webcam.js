@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 function hasGetUserMedia() {
   return !!(
-    navigator.mediaDevices.getUserMedia ||
+    (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) ||
     navigator.webkitGetUserMedia ||
     navigator.mozGetUserMedia ||
     navigator.msGetUserMedia
