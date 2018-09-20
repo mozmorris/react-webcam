@@ -178,8 +178,8 @@ export default class Webcam extends Component {
         canvasWidth = canvasHeight * aspectRatio;
       }
 
-      _canvas.width = canvasWidth;
-      _canvas.height = canvasHeight;
+      canvas.width = canvasWidth;
+      canvas.height = canvasHeight;
 
       this.canvas = canvas;
       this.ctx = canvas.getContext('2d');
