@@ -34,20 +34,21 @@ class Component extends React.Component {
 
 ### Props
 
-| prop              | type     | default      | notes                                                                      |
-| ----------------- | -------- | ------------ | -------------------------------------------------------------------------- |
-| className         | string   | ''           | CSS class of video element                                                 |
-| audio             | boolean  | true         | enable/disable audio                                                       |
-| height            | number   | 480          | height of video element                                                    |
-| width             | number   | 640          | width of video element                                                     |
-| screenshotWidth   | number   |              | width of screenshot                                                        |
-| style             | object   |              | style prop passed to video element                                         |
-| screenshotFormat  | string   | 'image/webp' | format of screenshot                                                       |
-| onUserMedia       | function | noop         | callback for when component receives a media stream                            |
-| onUserMediaError  | function | noop         | callback for when component can't receive a media stream with MediaStreamError param    |
-| screenshotQuality | number   | 0.92         | quality of screenshot(0 to 1)                                              |
-| audioConstraints  | object   |              | MediaStreamConstraint(s) for the audio                                     |
-| videoConstraints  | object   |              | MediaStreamConstraints(s) for the video                                    |
+| prop                | type     | default      | notes                                                                                   |
+| -----------------   | -------- | ------------ | --------------------------------------------------------------------------------------- |
+| className           | string   | ''           | CSS class of video element                                                              |
+| audio               | boolean  | true         | enable/disable audio                                                                    |
+| height              | number   | 480          | height of video element                                                                 |
+| width               | number   | 640          | width of video element                                                                  |
+| minScreenshotWidth  | number   |              | min width of screenshot                                                                 |
+| minScreenshotHeight | number   |              | min height of screenshot                                                                |
+| style               | object   |              | style prop passed to video element                                                      |
+| screenshotFormat    | string   | 'image/webp' | format of screenshot                                                                    |
+| onUserMedia         | function | noop         | callback for when component receives a media stream                                     |
+| onUserMediaError    | function | noop         | callback for when component can't receive a media stream with MediaStreamError param    |
+| screenshotQuality   | number   | 0.92         | quality of screenshot(0 to 1)                                                           |
+| audioConstraints    | object   |              | MediaStreamConstraint(s) for the audio                                                  |
+| videoConstraints    | object   |              | MediaStreamConstraints(s) for the video                                                 |
 
 ### Methods
 

@@ -96,7 +96,8 @@ export default class Webcam extends Component {
     style: PropTypes.object,
     className: PropTypes.string,
     screenshotQuality: PropTypes.number,
-    screenshotWidth: PropTypes.number,
+    minScreenshotWidth: PropTypes.number,
+    minScreenshotHeight: PropTypes.number,
     audioConstraints: audioConstraintType,
     videoConstraints: videoConstraintType,
   };
@@ -169,10 +170,16 @@ export default class Webcam extends Component {
       const canvas = document.createElement('canvas');
       const aspectRatio = this.video.videoWidth / this.video.videoHeight;
 
-      const canvasWidth = this.props.screenshotWidth || this.video.clientWidth;
+      var canvasWidth = this.props.minScreenshotWidth || this.video.clientWidth;
+      var canvasHeight = canvasWidth / aspectRatio;
 
-      canvas.width = canvasWidth;
-      canvas.height = canvasWidth / aspectRatio;
+      if (this.props.minScreenshotHeight && (canvasHeight < this.props.minScreenshotHeight)) {
+        canvasHeight = this.props.minScreenshotHeight;
+        canvasWidth = canvasHeight * aspectRatio;
+      }
+
+      _canvas.width = canvasWidth;
+      _canvas.height = canvasHeight;
 
       this.canvas = canvas;
       this.ctx = canvas.getContext('2d');
