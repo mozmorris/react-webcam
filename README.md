@@ -103,7 +103,7 @@ class WebcamCapture extends React.Component {
 }
 ```
 
-### Enironment/Facing-Out camera
+### Environment/Facing-Out camera
 
 ```javascript
 class WebcamCapture extends React.Component {
