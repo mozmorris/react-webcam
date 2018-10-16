@@ -80,6 +80,7 @@ export default class Webcam extends Component {
     screenshotFormat: 'image/webp',
     width: 640,
     screenshotQuality: 0.92,
+    mirror: false,
   };
 
   static propTypes = {
@@ -99,6 +100,7 @@ export default class Webcam extends Component {
     screenshotWidth: PropTypes.number,
     audioConstraints: audioConstraintType,
     videoConstraints: videoConstraintType,
+    mirror: PropTypes.bool,
   };
 
   static mountedInstances = [];
@@ -179,6 +181,13 @@ export default class Webcam extends Component {
     }
 
     const { ctx, canvas } = this;
+
+    if (this.props.mirror) {
+      ctx.save();
+      ctx.translate(canvas.width, 0);
+      ctx.scale(-1, 1);
+    }
+
     ctx.drawImage(this.video, 0, 0, canvas.width, canvas.height);
 
     return canvas;
@@ -298,7 +307,7 @@ export default class Webcam extends Component {
         muted={this.props.audio}
         className={this.props.className}
         playsInline
-        style={this.props.style}
+        style={this.props.mirror ? { ...this.props.style, transform: 'scaleX(-1)' } : this.props.style}
         ref={(ref) => {
           this.video = ref;
         }}
