@@ -43,7 +43,8 @@ class Component extends React.Component {
 | screenshotWidth   | number   |              | width of screenshot                                                        |
 | style             | object   |              | style prop passed to video element                                         |
 | screenshotFormat  | string   | 'image/webp' | format of screenshot                                                       |
-| onUserMedia       | function | noop         | callback for when component receives a media stream                            |
+| rotate     | number   | 0            | rotate the video and captured screenshot, in degrees (0, 90, 180, etc.)    |
+| onUserMedia       | function | noop         | callback for when component receives a media stream                        |
 | onUserMediaError  | function | noop         | callback for when component can't receive a media stream with MediaStreamError param    |
 | screenshotQuality | number   | 0.92         | quality of screenshot(0 to 1)                                              |
 | audioConstraints  | object   |              | MediaStreamConstraint(s) for the audio                                     |

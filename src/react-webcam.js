@@ -80,6 +80,7 @@ export default class Webcam extends Component {
     screenshotFormat: 'image/webp',
     width: 640,
     screenshotQuality: 0.92,
+    rotate: 0
   };
 
   static propTypes = {
@@ -97,6 +98,7 @@ export default class Webcam extends Component {
     className: PropTypes.string,
     screenshotQuality: PropTypes.number,
     screenshotWidth: PropTypes.number,
+    rotate: PropTypes.number,
     audioConstraints: audioConstraintType,
     videoConstraints: videoConstraintType,
   };
@@ -179,7 +181,15 @@ export default class Webcam extends Component {
     }
 
     const { ctx, canvas } = this;
-    ctx.drawImage(this.video, 0, 0, canvas.width, canvas.height);
+
+    if (this.props.rotate) {
+      ctx.save();
+      ctx.translate(canvas.width / 2, canvas.height / 2);
+      ctx.rotate(this.props.rotate * (Math.PI / 180));
+      ctx.drawImage(this.video, -canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
+    } else {
+      ctx.drawImage(this.video, 0, 0, canvas.width, canvas.height);
+    }
 
     return canvas;
   }
@@ -298,7 +308,9 @@ export default class Webcam extends Component {
         muted={this.props.audio}
         className={this.props.className}
         playsInline
-        style={this.props.style}
+        style={Object.assign({}, this.props.style, this.props.rotate ? {
+          transform: `rotate(${this.props.rotate}deg)`
+        } : {})}
         ref={(ref) => {
           this.video = ref;
         }}
