@@ -4,6 +4,7 @@
   "description": "React webcam component",
   "main": "dist/react-webcam.js",
   "scripts": {
+    "prepare": "npm run build",
     "prepublish": "npm run build:umd",
     "build": "webpack src/react-webcam.js dist/react-webcam.js",
     "build:umd": "npm run build && NODE_ENV=production webpack src/react-webcam.js dist/react-webcam.min.js",
