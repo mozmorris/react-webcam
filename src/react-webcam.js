@@ -187,6 +187,7 @@ export default class Webcam extends Component {
       ctx.translate(canvas.width / 2, canvas.height / 2);
       ctx.rotate(this.props.rotate * (Math.PI / 180));
       ctx.drawImage(this.video, -canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
+      ctx.restore();
     } else {
       ctx.drawImage(this.video, 0, 0, canvas.width, canvas.height);
     }
