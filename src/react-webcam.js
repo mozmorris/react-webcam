@@ -75,6 +75,7 @@ export default class Webcam extends Component {
     audio: true,
     className: '',
     height: 480,
+    imageSmoothing: true,
     onUserMedia: () => {},
     onUserMediaError: () => {},
     screenshotFormat: 'image/webp',
@@ -100,6 +101,7 @@ export default class Webcam extends Component {
     minScreenshotHeight: PropTypes.number,
     audioConstraints: audioConstraintType,
     videoConstraints: videoConstraintType,
+    imageSmoothing: PropTypes.bool,
   };
 
   static mountedInstances = [];
@@ -186,6 +188,7 @@ export default class Webcam extends Component {
     }
 
     const { ctx, canvas } = this;
+    ctx.imageSmoothingEnabled = this.props.imageSmoothing;
     ctx.drawImage(this.video, 0, 0, canvas.width, canvas.height);
 
     return canvas;

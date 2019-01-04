@@ -44,6 +44,7 @@ class Component extends React.Component {
 | minScreenshotHeight | number   |              | min height of screenshot                                                                |
 | style               | object   |              | style prop passed to video element                                                      |
 | screenshotFormat    | string   | 'image/webp' | format of screenshot                                                                    |
+| imageSmoothing    | boolean   | true | pixel smoothing of the screenshot taken                                                                   |
 | onUserMedia         | function | noop         | callback for when component receives a media stream                                     |
 | onUserMediaError    | function | noop         | callback for when component can't receive a media stream with MediaStreamError param    |
 | screenshotQuality   | number   | 0.92         | quality of screenshot(0 to 1)                                                           |
