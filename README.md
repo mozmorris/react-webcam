@@ -121,6 +121,14 @@ class WebcamCapture extends React.Component {
 
 For more information on `facingMode`, please see the MDN web docs [https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints/facingMode](https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints/facingMode)
 
+## Using in iframes
+
+The Webcam component will fail to load when used inside cross-origin iframes in newer version of Chrome (> 64). In order to overcome this security restriction a special `allow` attribute needs to be added to the iframe tag specifying `microphone` and `camera` as the required permissions like in the below example:
+
+```
+<iframe src="https://my-website.com/page-with-webcam" allow="camera; microphone;"/>
+```
+
 ## License
 
 MIT
