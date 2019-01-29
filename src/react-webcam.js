@@ -51,6 +51,8 @@ export default class Webcam extends Component<CameraType, State> {
 
   static mountedInstances = [];
 
+  static userMediaRequested = false;
+
   state = {
     hasUserMedia: false,
     mirrored: false
@@ -107,7 +109,7 @@ export default class Webcam extends Component<CameraType, State> {
   }
 
   requestUserMedia() {
-    if (!getUserMedia || !mediaDevices) return;
+    if (!getUserMedia || !mediaDevices || Webcam.userMediaRequested) return;
     const { width, height, facingMode, audio, fallbackWidth, fallbackHeight } = this.props;
 
     const constraints = this.getConstraints(width, height, facingMode, audio);
@@ -116,11 +118,13 @@ export default class Webcam extends Component<CameraType, State> {
     const logError = e => console.log('error', e, typeof e);
 
     const onSuccess = stream => {
+      Webcam.userMediaRequested = false;
       Webcam.mountedInstances.forEach((instance) => instance.handleUserMedia(stream));
     };
 
     let hasTriedFallbackConstraints;
     const onError = e => {
+      Webcam.userMediaRequested = false;
       logError(e);
       const isPermissionError = permissionErrors.includes(e.name);
       if (isPermissionError || hasTriedFallbackConstraints) {
@@ -130,6 +134,7 @@ export default class Webcam extends Component<CameraType, State> {
         getUserMedia(fallbackConstraints).then(onSuccess).catch(onError);
       }
     };
+    Webcam.userMediaRequested = true;
     getUserMedia(constraints).then(onSuccess).catch(onError);
   }
 
