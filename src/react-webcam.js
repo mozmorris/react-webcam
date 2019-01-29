@@ -220,6 +220,10 @@ export default class Webcam extends Component<CameraType, State> {
   }
 
   render() {
+    // React will try and optimise this on re-mounts, so make sure to explicitly
+    // not render with a stream that no longer exists
+    if (!this.stream) return null;
+
     return (
       <video
         style={{
