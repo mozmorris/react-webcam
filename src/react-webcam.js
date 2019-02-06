@@ -41,6 +41,19 @@ type State = {
 
 const permissionErrors = ['PermissionDeniedError', 'NotAllowedError','NotFoundError'];
 
+const stopStreamTracks = (stream: MediaStream) => {
+  if (stream.getVideoTracks) {
+    for (let track of stream.getVideoTracks()) {
+      track.stop();
+    }
+  }
+  if (stream.getAudioTracks) {
+    for (let track of stream.getAudioTracks()) {
+      track.stop();
+    }
+  }
+};
+
 export default class Webcam extends Component<CameraType, State> {
   static defaultProps = {
     audio: false,
@@ -50,6 +63,8 @@ export default class Webcam extends Component<CameraType, State> {
   };
 
   static mountedInstances = [];
+
+  static userMediaRequested = false;
 
   state = {
     hasUserMedia: false,
@@ -107,7 +122,7 @@ export default class Webcam extends Component<CameraType, State> {
   }
 
   requestUserMedia() {
-    if (!getUserMedia || !mediaDevices) return;
+    if (!getUserMedia || !mediaDevices || Webcam.userMediaRequested) return;
     const { width, height, facingMode, audio, fallbackWidth, fallbackHeight } = this.props;
 
     const constraints = this.getConstraints(width, height, facingMode, audio);
@@ -116,11 +131,13 @@ export default class Webcam extends Component<CameraType, State> {
     const logError = e => console.log('error', e, typeof e);
 
     const onSuccess = stream => {
+      Webcam.userMediaRequested = false;
       Webcam.mountedInstances.forEach((instance) => instance.handleUserMedia(stream));
     };
 
     let hasTriedFallbackConstraints;
     const onError = e => {
+      Webcam.userMediaRequested = false;
       logError(e);
       const isPermissionError = permissionErrors.includes(e.name);
       if (isPermissionError || hasTriedFallbackConstraints) {
@@ -130,6 +147,7 @@ export default class Webcam extends Component<CameraType, State> {
         getUserMedia(fallbackConstraints).then(onSuccess).catch(onError);
       }
     };
+    Webcam.userMediaRequested = true;
     getUserMedia(constraints).then(onSuccess).catch(onError);
   }
 
@@ -159,18 +177,26 @@ export default class Webcam extends Component<CameraType, State> {
     const index = Webcam.mountedInstances.indexOf(this);
     Webcam.mountedInstances.splice(index, 1);
 
-    if (Webcam.mountedInstances.length === 0 && this.state.hasUserMedia) {
-      if (this.stream.getVideoTracks) {
-        for (let track of this.stream.getVideoTracks()) {
-          track.stop();
-        }
-      }
-      if (this.stream.getAudioTracks) {
-        for (let track of this.stream.getAudioTracks()) {
-          track.stop();
-        }
-      }
-    }
+    /*
+    We need to call `stopStreamTracks` since otherwise devices will continue
+    holding onto the stream (e.g. recording through the webcam, even though we
+    no longer need the stream)
+    However - some devices (namely iOS Safari) have issues with calling
+    `getUserMedia` multiple times from cold (i.e. without any existing streams
+    already running in the background), so we don't stop the stream for
+    `stopDelay` milliseconds, in an attempt to re-use the same stream, if a new
+    component is mounted soon after.
+    This issue of iOS Safari was pinpointed by unmounting and remounting the
+    webcam component multiple times, and confirming that the error occurred in
+    the `getUserMedia` request - and then testing that the error did _not_ occur
+    if we never called `.stop()` on the tracks (however we do need to relinquish
+    the stream eventually)
+    The precise value for `stopDelay` is a finger-in-the-air value, that is
+    a nice balance between the stream being relinquished (so the webcam light
+    turns off etc.), and the crash not occuring (because of the wait)
+    */
+    const stopDelay = 1000;
+    setTimeout(() => stopStreamTracks(this.stream), stopDelay);
   }
 
   getScreenshot() {
@@ -215,6 +241,13 @@ export default class Webcam extends Component<CameraType, State> {
   }
 
   render() {
+    // React will try and optimise this on re-mounts, so make sure to explicitly
+    // not render with a stream that no longer exists
+    // This is likely related to https://github.com/onfido/onfido-sdk-ui/blob/249f54264f3a1674a2702b95967bb91ec6e3b90d/src/components/Confirm/index.js#L37
+    // as the `video` element should not _should_ not show anything if the stream
+    // is `null` anyway
+    if (!this.stream) return null;
+
     return (
       <video
         style={{
