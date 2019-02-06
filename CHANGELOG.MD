@@ -1,3 +1,7 @@
+## 0.1.11
+### Added
+- Public: Added 1s delay before releasing the webcam stream in order to mitigate the iOS issue where multiple re-mounting of the webcam component was causing a crash.
+
 ## 0.1.10
 ### Removed
 - Public: Removed possibility to override the style of the video element by passing inline style as a prop
