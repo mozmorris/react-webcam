@@ -243,7 +243,7 @@ export default class Webcam extends Component<CameraType, State> {
   render() {
     // React will try and optimise this on re-mounts, so make sure to explicitly
     // not render with a stream that no longer exists
-    // This is likely related to https://github.com/onfido/onfido-sdk-ui/blob/master/src/components/Confirm/index.js#L37
+    // This is likely related to https://github.com/onfido/onfido-sdk-ui/blob/249f54264f3a1674a2702b95967bb91ec6e3b90d/src/components/Confirm/index.js#L37
     // as the `video` element should not _should_ not show anything if the stream
     // is `null` anyway
     if (!this.stream) return null;
