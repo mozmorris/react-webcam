@@ -125,7 +125,7 @@ export default class Webcam extends Component {
     }
   }
 
-  componentWillUpdate(nextProps) {
+  componentDidUpdate(nextProps) {
     if (
       JSON.stringify(nextProps.audioConstraints) !==
         JSON.stringify(this.props.audioConstraints) ||
