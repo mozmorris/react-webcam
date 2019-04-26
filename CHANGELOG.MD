@@ -1,3 +1,7 @@
+## 0.1.12
+### Changed
+- Internal: Upgraded to babel 7 and runtime to corejs3
+
 ## 0.1.11
 ### Added
 - Public: Added 1s delay before releasing the webcam stream in order to mitigate the iOS issue where multiple re-mounting of the webcam component was causing a crash.
