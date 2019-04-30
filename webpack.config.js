@@ -23,7 +23,7 @@ module.exports = {
       commonjs: 'react',
       amd: 'react'
     }
-  }, isProd ? /^babel-runtime/ : ''],
+  }, isProd ? /^@babel\/runtime-corejs3/ : ''],
   module: {
     rules: [{
       test: /\.js$/,
