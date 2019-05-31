@@ -1,54 +1,64 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import {
+  arrayOf,
+  bool,
+  func,
+  number,
+  object,
+  oneOf,
+  oneOfType,
+  shape,
+  string,
+} from 'prop-types';
 
 function hasGetUserMedia() {
   return !!(
-    (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) ||
-    navigator.webkitGetUserMedia ||
-    navigator.mozGetUserMedia ||
-    navigator.msGetUserMedia
+    (navigator.mediaDevices && navigator.mediaDevices.getUserMedia)
+    || navigator.webkitGetUserMedia
+    || navigator.mozGetUserMedia
+    || navigator.msGetUserMedia
   );
 }
 
-const constrainStringType = PropTypes.oneOfType([
-  PropTypes.string,
-  PropTypes.arrayOf(PropTypes.string),
-  PropTypes.shape({
-    exact: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.arrayOf(PropTypes.string),
+const constrainStringType = oneOfType([
+  string,
+  arrayOf(string),
+  shape({
+    exact: oneOfType([
+      string,
+      arrayOf(string),
     ]),
   }),
-  PropTypes.shape({
-    ideal: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.arrayOf(PropTypes.string),
+  shape({
+    ideal: oneOfType([
+      string,
+      arrayOf(string),
     ]),
   }),
 ]);
 
-const constrainBooleanType = PropTypes.oneOfType([
-  PropTypes.shape({
-    exact: PropTypes.bool,
+const constrainBooleanType = oneOfType([
+  shape({
+    exact: bool,
   }),
-  PropTypes.shape({
-    ideal: PropTypes.bool,
+  shape({
+    ideal: bool,
   }),
 ]);
 
-const constrainLongType = PropTypes.oneOfType([
-  PropTypes.number,
-  PropTypes.shape({
-    exact: PropTypes.number,
-    ideal: PropTypes.number,
-    min: PropTypes.number,
-    max: PropTypes.number,
+const constrainLongType = oneOfType([
+  number,
+  shape({
+    exact: number,
+    ideal: number,
+    min: number,
+    max: number,
   }),
 ]);
 
 const constrainDoubleType = constrainLongType;
 
-const audioConstraintType = PropTypes.shape({
+const audioConstraintType = shape({
   deviceId: constrainStringType,
   groupId: constrainStringType,
   autoGainControl: constrainBooleanType,
@@ -60,7 +70,7 @@ const audioConstraintType = PropTypes.shape({
   volume: constrainDoubleType,
 });
 
-const videoConstraintType = PropTypes.shape({
+const videoConstraintType = shape({
   deviceId: constrainStringType,
   groupId: constrainStringType,
   aspectRatio: constrainDoubleType,
@@ -84,24 +94,24 @@ export default class Webcam extends Component {
   };
 
   static propTypes = {
-    audio: PropTypes.bool,
-    onUserMedia: PropTypes.func,
-    onUserMediaError: PropTypes.func,
-    height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    screenshotFormat: PropTypes.oneOf([
+    audio: bool,
+    onUserMedia: func,
+    onUserMediaError: func,
+    height: oneOfType([number, string]),
+    width: oneOfType([number, string]),
+    screenshotFormat: oneOf([
       'image/webp',
       'image/png',
       'image/jpeg',
     ]),
-    style: PropTypes.object,
-    className: PropTypes.string,
-    screenshotQuality: PropTypes.number,
-    minScreenshotWidth: PropTypes.number,
-    minScreenshotHeight: PropTypes.number,
+    style: object,
+    className: string,
+    screenshotQuality: number,
+    minScreenshotWidth: number,
+    minScreenshotHeight: number,
     audioConstraints: audioConstraintType,
     videoConstraints: videoConstraintType,
-    imageSmoothing: PropTypes.bool,
+    imageSmoothing: bool,
   };
 
   static mountedInstances = [];
@@ -118,65 +128,73 @@ export default class Webcam extends Component {
   componentDidMount() {
     if (!hasGetUserMedia()) return;
 
+    const { state } = this;
+
     Webcam.mountedInstances.push(this);
 
-    if (!this.state.hasUserMedia && !Webcam.userMediaRequested) {
+    if (!state.hasUserMedia && !Webcam.userMediaRequested) {
       this.requestUserMedia();
     }
   }
 
   componentDidUpdate(nextProps) {
+    const { props } = this;
     if (
-      JSON.stringify(nextProps.audioConstraints) !==
-        JSON.stringify(this.props.audioConstraints) ||
-      JSON.stringify(nextProps.videoConstraints) !==
-        JSON.stringify(this.props.videoConstraints)
+      JSON.stringify(nextProps.audioConstraints)
+        !== JSON.stringify(props.audioConstraints)
+      || JSON.stringify(nextProps.videoConstraints)
+        !== JSON.stringify(props.videoConstraints)
     ) {
       this.requestUserMedia();
     }
   }
 
   componentWillUnmount() {
+    const { state } = this;
     const index = Webcam.mountedInstances.indexOf(this);
     Webcam.mountedInstances.splice(index, 1);
 
     Webcam.userMediaRequested = false;
-    if (Webcam.mountedInstances.length === 0 && this.state.hasUserMedia) {
+    if (Webcam.mountedInstances.length === 0 && state.hasUserMedia) {
       if (this.stream.getVideoTracks && this.stream.getAudioTracks) {
         this.stream.getVideoTracks().map(track => track.stop());
         this.stream.getAudioTracks().map(track => track.stop());
       } else {
         this.stream.stop();
       }
-      window.URL.revokeObjectURL(this.state.src);
+      window.URL.revokeObjectURL(state.src);
     }
   }
 
   getScreenshot() {
-    if (!this.state.hasUserMedia) return null;
+    const { state, props } = this;
+
+    if (!state.hasUserMedia) return null;
 
     const canvas = this.getCanvas();
     return (
-      canvas &&
-      canvas.toDataURL(
-        this.props.screenshotFormat,
-        this.props.screenshotQuality,
+      canvas
+      && canvas.toDataURL(
+        props.screenshotFormat,
+        props.screenshotQuality,
       )
     );
   }
 
   getCanvas() {
-    if (!this.state.hasUserMedia || !this.video.videoHeight) return null;
+    const { state, props } = this;
+
+    if (!state.hasUserMedia || !this.video.videoHeight) return null;
 
     if (!this.ctx) {
       const canvas = document.createElement('canvas');
       const aspectRatio = this.video.videoWidth / this.video.videoHeight;
 
-      var canvasWidth = this.props.minScreenshotWidth || this.video.clientWidth;
-      var canvasHeight = canvasWidth / aspectRatio;
+      let canvasWidth = props.minScreenshotWidth || this.video.clientWidth;
+      let canvasHeight = canvasWidth / aspectRatio;
 
-      if (this.props.minScreenshotHeight && (canvasHeight < this.props.minScreenshotHeight)) {
-        canvasHeight = this.props.minScreenshotHeight;
+      if (props.minScreenshotHeight && (canvasHeight < props.minScreenshotHeight)) {
+        canvasHeight = props.minScreenshotHeight;
         canvasWidth = canvasHeight * aspectRatio;
       }
 
@@ -188,55 +206,52 @@ export default class Webcam extends Component {
     }
 
     const { ctx, canvas } = this;
-    ctx.imageSmoothingEnabled = this.props.imageSmoothing;
+    ctx.imageSmoothingEnabled = props.imageSmoothing;
     ctx.drawImage(this.video, 0, 0, canvas.width, canvas.height);
 
     return canvas;
   }
 
   requestUserMedia() {
-    navigator.getUserMedia =
-      navigator.mediaDevices.getUserMedia ||
-      navigator.webkitGetUserMedia ||
-      navigator.mozGetUserMedia ||
-      navigator.msGetUserMedia;
+    const { props } = this;
+
+    navigator.getUserMedia = navigator.mediaDevices.getUserMedia
+      || navigator.webkitGetUserMedia
+      || navigator.mozGetUserMedia
+      || navigator.msGetUserMedia;
 
     const sourceSelected = (audioConstraints, videoConstraints) => {
       const constraints = {
         video: videoConstraints || true,
       };
 
-      if (this.props.audio) {
+      if (props.audio) {
         constraints.audio = audioConstraints || true;
       }
 
       navigator.mediaDevices
         .getUserMedia(constraints)
         .then((stream) => {
-          Webcam.mountedInstances.forEach(instance =>
-            instance.handleUserMedia(null, stream),
-          );
+          Webcam.mountedInstances.forEach(instance => instance.handleUserMedia(null, stream));
         })
         .catch((e) => {
-          Webcam.mountedInstances.forEach(instance =>
-            instance.handleUserMedia(e),
-          );
+          Webcam.mountedInstances.forEach(instance => instance.handleUserMedia(e));
         });
     };
 
     if ('mediaDevices' in navigator) {
-      sourceSelected(this.props.audioConstraints, this.props.videoConstraints);
+      sourceSelected(props.audioConstraints, props.videoConstraints);
     } else {
       const optionalSource = id => ({ optional: [{ sourceId: id }] });
 
       const constraintToSourceId = (constraint) => {
-        const deviceId = (constraint || {}).deviceId;
+        const { deviceId } = constraint || {};
 
         if (typeof deviceId === 'string') {
           return deviceId;
-        } else if (Array.isArray(deviceId) && deviceId.length > 0) {
+        } if (Array.isArray(deviceId) && deviceId.length > 0) {
           return deviceId[0];
-        } else if (typeof deviceId === 'object' && deviceId.ideal) {
+        } if (typeof deviceId === 'object' && deviceId.ideal) {
           return deviceId.ideal;
         }
 
@@ -255,12 +270,12 @@ export default class Webcam extends Component {
           }
         });
 
-        const audioSourceId = constraintToSourceId(this.props.audioConstraints);
+        const audioSourceId = constraintToSourceId(props.audioConstraints);
         if (audioSourceId) {
           audioSource = audioSourceId;
         }
 
-        const videoSourceId = constraintToSourceId(this.props.videoConstraints);
+        const videoSourceId = constraintToSourceId(props.videoConstraints);
         if (videoSourceId) {
           videoSource = videoSourceId;
         }
@@ -276,9 +291,11 @@ export default class Webcam extends Component {
   }
 
   handleUserMedia(err, stream) {
+    const { props } = this;
+
     if (err) {
       this.setState({ hasUserMedia: false });
-      this.props.onUserMediaError(err);
+      props.onUserMediaError(err);
 
       return;
     }
@@ -295,20 +312,22 @@ export default class Webcam extends Component {
       });
     }
 
-    this.props.onUserMedia();
+    props.onUserMedia();
   }
 
   render() {
+    const { state, props } = this;
+
     return (
       <video
         autoPlay
-        width={this.props.width}
-        height={this.props.height}
-        src={this.state.src}
-        muted={this.props.audio}
-        className={this.props.className}
+        width={props.width}
+        height={props.height}
+        src={state.src}
+        muted={props.audio}
+        className={props.className}
         playsInline
-        style={this.props.style}
+        style={props.style}
         ref={(ref) => {
           this.video = ref;
         }}
