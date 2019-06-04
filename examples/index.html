@@ -65,7 +65,6 @@
   <script src="../dist/react-webcam.js"></script>
   <script type="text/es2015">
     // getUserMedia only works for secure pages
-    if (!/https/.test(window.location.protocol)) window.location.protocol = 'https://';
 
     class App extends React.Component {
       constructor(props) {

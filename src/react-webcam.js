@@ -1,15 +1,5 @@
 import React, { Component } from 'react';
-import {
-  arrayOf,
-  bool,
-  func,
-  number,
-  object,
-  oneOf,
-  oneOfType,
-  shape,
-  string,
-} from 'prop-types';
+import PropTypes from 'prop-types';
 
 function hasGetUserMedia() {
   return !!(
@@ -20,45 +10,45 @@ function hasGetUserMedia() {
   );
 }
 
-const constrainStringType = oneOfType([
-  string,
-  arrayOf(string),
-  shape({
-    exact: oneOfType([
-      string,
-      arrayOf(string),
+const constrainStringType = PropTypes.oneOfType([
+  PropTypes.string,
+  PropTypes.arrayOf(PropTypes.string),
+  PropTypes.shape({
+    exact: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.arrayOf(PropTypes.string),
     ]),
   }),
-  shape({
-    ideal: oneOfType([
-      string,
-      arrayOf(string),
+  PropTypes.shape({
+    ideal: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.arrayOf(PropTypes.string),
     ]),
   }),
 ]);
 
-const constrainBooleanType = oneOfType([
-  shape({
-    exact: bool,
+const constrainBooleanType = PropTypes.oneOfType([
+  PropTypes.shape({
+    exact: PropTypes.bool,
   }),
-  shape({
-    ideal: bool,
+  PropTypes.shape({
+    ideal: PropTypes.bool,
   }),
 ]);
 
-const constrainLongType = oneOfType([
-  number,
-  shape({
-    exact: number,
-    ideal: number,
-    min: number,
-    max: number,
+const constrainLongType = PropTypes.oneOfType([
+  PropTypes.number,
+  PropTypes.shape({
+    exact: PropTypes.number,
+    ideal: PropTypes.number,
+    min: PropTypes.number,
+    max: PropTypes.number,
   }),
 ]);
 
 const constrainDoubleType = constrainLongType;
 
-const audioConstraintType = shape({
+const audioConstraintType = PropTypes.shape({
   deviceId: constrainStringType,
   groupId: constrainStringType,
   autoGainControl: constrainBooleanType,
@@ -70,7 +60,7 @@ const audioConstraintType = shape({
   volume: constrainDoubleType,
 });
 
-const videoConstraintType = shape({
+const videoConstraintType = PropTypes.shape({
   deviceId: constrainStringType,
   groupId: constrainStringType,
   aspectRatio: constrainDoubleType,
@@ -94,24 +84,24 @@ export default class Webcam extends Component {
   };
 
   static propTypes = {
-    audio: bool,
-    onUserMedia: func,
-    onUserMediaError: func,
-    height: oneOfType([number, string]),
-    width: oneOfType([number, string]),
-    screenshotFormat: oneOf([
+    audio: PropTypes.bool,
+    onUserMedia: PropTypes.func,
+    onUserMediaError: PropTypes.func,
+    height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    screenshotFormat: PropTypes.oneOf([
       'image/webp',
       'image/png',
       'image/jpeg',
     ]),
-    style: object,
-    className: string,
-    screenshotQuality: number,
-    minScreenshotWidth: number,
-    minScreenshotHeight: number,
+    style: PropTypes.object,
+    className: PropTypes.string,
+    screenshotQuality: PropTypes.number,
+    minScreenshotWidth: PropTypes.number,
+    minScreenshotHeight: PropTypes.number,
     audioConstraints: audioConstraintType,
     videoConstraints: videoConstraintType,
-    imageSmoothing: bool,
+    imageSmoothing: PropTypes.bool,
   };
 
   static mountedInstances = [];
@@ -249,9 +239,13 @@ export default class Webcam extends Component {
 
         if (typeof deviceId === 'string') {
           return deviceId;
-        } if (Array.isArray(deviceId) && deviceId.length > 0) {
+        }
+
+        if (Array.isArray(deviceId) && deviceId.length > 0) {
           return deviceId[0];
-        } if (typeof deviceId === 'object' && deviceId.ideal) {
+        }
+
+        if (typeof deviceId === 'object' && deviceId.ideal) {
           return deviceId.ideal;
         }
 
