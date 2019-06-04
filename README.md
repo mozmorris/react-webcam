@@ -1,6 +1,7 @@
 # react-webcam
 
-[![npm](https://img.shields.io/npm/dw/react-webcam.svg)](https://www.npmjs.com/package/react-webcam)
+[![Build Status][build-badge]][build]
+![downloads][downloads-badge]
 
 <img src="Logotype primary.png" width="70%" height="70%" />
 
@@ -136,3 +137,7 @@ MIT
 ## Credits
 
 Many thanks to @cezary for his work on this component.
+
+[build-badge]: https://img.shields.io/travis/com/mozmorris/react-webcam.svg?style=flat-square
+[build]: https://travis-ci.com/mozmorris/react-webcam
+[downloads-badge]: https://img.shields.io/npm/dw/react-webcam.svg?style=flat-square
