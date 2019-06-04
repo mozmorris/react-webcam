@@ -1,10 +1,13 @@
 {
   "parser": "babel-eslint",
+  "plugins": [
+    "jest"
+  ],
   "extends": "airbnb",
   "env": {
     "browser": true,
-    "mocha": true,
-    "node": true
+    "node": true,
+    "jest/globals": true
   },
   "rules": {
     "jsx-a11y/media-has-caption": 0,

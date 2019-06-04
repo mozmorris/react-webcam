@@ -7,7 +7,8 @@
     "prepublish": "npm run build:production",
     "build": "NODE_ENV=development webpack-cli src/react-webcam.js",
     "build:production": "npm run build && NODE_ENV=production webpack-cli src/react-webcam.js",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -39,10 +40,13 @@
     "eslint": "^5.16.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-import": "^2.17.3",
+    "eslint-plugin-jest": "^22.6.4",
     "eslint-plugin-jsx-a11y": "^6.2.1",
     "eslint-plugin-react": "^7.13.0",
+    "jest": "^24.8.0",
     "react": "^16.3.1",
     "react-dom": "^16.3.1",
+    "react-test-renderer": "^16.8.6",
     "webpack": "^4.32.2",
     "webpack-cli": "^3.3.2"
   },
