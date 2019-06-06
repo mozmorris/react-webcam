@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 
 function hasGetUserMedia() {
   return !!(
-    (navigator.mediaDevices && navigator.mediaDevices.getUserMedia)
-    || navigator.getUserMedia 
+    (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) 
     || navigator.webkitGetUserMedia
     || navigator.mozGetUserMedia
     || navigator.msGetUserMedia
+    || navigator.getUserMedia
   );
 }
 
@@ -206,11 +206,11 @@ export default class Webcam extends Component {
   requestUserMedia() {
     const { props } = this;
 
-    navigator.getUserMedia = navigator.mediaDevices.getUserMedia
-      || navigator.getUserMedia 
+    navigator.getUserMedia = navigator.mediaDevices.getUserMedia 
       || navigator.webkitGetUserMedia
       || navigator.mozGetUserMedia
-      || navigator.msGetUserMedia;
+      || navigator.msGetUserMedia
+      || navigator.getUserMedia;
 
     const sourceSelected = (audioConstraints, videoConstraints) => {
       const constraints = {
