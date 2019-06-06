@@ -219,14 +219,36 @@ export default class Webcam extends Component {
         constraints.audio = audioConstraints || true;
       }
 
-      navigator.mediaDevices
-        .getUserMedia(constraints)
-        .then((stream) => {
-          Webcam.mountedInstances.forEach(instance => instance.handleUserMedia(null, stream));
-        })
-        .catch((e) => {
-          Webcam.mountedInstances.forEach(instance => instance.handleUserMedia(e));
-        });
+      const handleUserMediaSuccess = stream => {
+        Webcam.mountedInstances.forEach(instance =>
+          instance.handleUserMedia(null, stream)
+        );
+      };
+
+      const handleUserMediaFailure = e => {
+        Webcam.mountedInstances.forEach(instance =>
+          instance.handleUserMedia(e)
+        );
+      };
+
+      navigator.getWebcam =
+        navigator.getUserMedia ||
+        navigator.webKitGetUserMedia ||
+        navigator.moxGetUserMedia ||
+        navigator.mozGetUserMedia ||
+        navigator.msGetUserMedia;
+      if (navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices
+          .getUserMedia(constraints)
+          .then(handleUserMediaSuccess)
+          .catch(handleUserMediaFailure);
+      } else {
+        navigator
+          .getWebcam(constraints)
+          .then(handleUserMediaSuccess)
+          .catch(handleUserMediaFailure);
+      }
+    };
     };
 
     if ('mediaDevices' in navigator) {
