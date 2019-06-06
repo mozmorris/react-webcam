@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 function hasGetUserMedia() {
   return !!(
     (navigator.mediaDevices && navigator.mediaDevices.getUserMedia)
+    || navigator.getUserMedia 
     || navigator.webkitGetUserMedia
     || navigator.mozGetUserMedia
     || navigator.msGetUserMedia
@@ -206,6 +207,7 @@ export default class Webcam extends Component {
     const { props } = this;
 
     navigator.getUserMedia = navigator.mediaDevices.getUserMedia
+      || navigator.getUserMedia 
       || navigator.webkitGetUserMedia
       || navigator.mozGetUserMedia
       || navigator.msGetUserMedia;
@@ -219,7 +221,7 @@ export default class Webcam extends Component {
         constraints.audio = audioConstraints || true;
       }
 
-      navigator.mediaDevices
+      navigator
         .getUserMedia(constraints)
         .then((stream) => {
           Webcam.mountedInstances.forEach(instance => instance.handleUserMedia(null, stream));
