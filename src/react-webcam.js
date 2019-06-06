@@ -237,7 +237,7 @@ export default class Webcam extends Component {
         navigator.moxGetUserMedia ||
         navigator.mozGetUserMedia ||
         navigator.msGetUserMedia;
-      if (navigator.mediaDevices.getUserMedia) {
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         navigator.mediaDevices
           .getUserMedia(constraints)
           .then(handleUserMediaSuccess)
