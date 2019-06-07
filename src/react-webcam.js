@@ -231,7 +231,7 @@ export default class Webcam extends Component {
         );
       };
 
-      navigator.getWebcam =
+      navigator.getWebcam = 
         navigator.getUserMedia ||
         navigator.webKitGetUserMedia ||
         navigator.moxGetUserMedia ||
@@ -247,9 +247,7 @@ export default class Webcam extends Component {
           .getWebcam(constraints)
           .then(handleUserMediaSuccess)
           .catch(handleUserMediaFailure);
-      }
-    };
-    };
+      } 
 
     if ('mediaDevices' in navigator) {
       sourceSelected(props.audioConstraints, props.videoConstraints);
