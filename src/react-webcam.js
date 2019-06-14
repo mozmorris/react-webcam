@@ -243,10 +243,14 @@ export default class Webcam extends Component {
           .then(handleUserMediaSuccess)
           .catch(handleUserMediaFailure);
       } else {
+        // legacy webKitGetUserMedia requires 3 args. constraints, onSuccess, onErr
+        // legacy getUserMedia does not return promise.
         navigator
-          .getWebcam(constraints)
-          .then(handleUserMediaSuccess)
-          .catch(handleUserMediaFailure);
+          .getWebcam(
+            constraints,
+            handleUserMediaSuccess,
+            handleUserMediaFailure
+        );
       }
     };  
 
