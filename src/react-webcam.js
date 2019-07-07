@@ -70,39 +70,30 @@ const videoConstraintType = PropTypes.shape({
   width: constrainLongType,
 });
 
+const propTypes = {
+  audio: PropTypes.bool,
+  onUserMedia: PropTypes.func,
+  onUserMediaError: PropTypes.func,
+  screenshotFormat: PropTypes.oneOf(['image/webp', 'image/png', 'image/jpeg']),
+  screenshotQuality: PropTypes.number,
+  minScreenshotWidth: PropTypes.number,
+  minScreenshotHeight: PropTypes.number,
+  audioConstraints: audioConstraintType,
+  videoConstraints: videoConstraintType,
+  imageSmoothing: PropTypes.bool,
+};
+
 export default class Webcam extends Component {
   static defaultProps = {
     audio: true,
-    className: '',
-    height: 480,
     imageSmoothing: true,
     onUserMedia: () => {},
     onUserMediaError: () => {},
     screenshotFormat: 'image/webp',
-    width: 640,
     screenshotQuality: 0.92,
   };
 
-  static propTypes = {
-    audio: PropTypes.bool,
-    onUserMedia: PropTypes.func,
-    onUserMediaError: PropTypes.func,
-    height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    screenshotFormat: PropTypes.oneOf([
-      'image/webp',
-      'image/png',
-      'image/jpeg',
-    ]),
-    style: PropTypes.object,
-    className: PropTypes.string,
-    screenshotQuality: PropTypes.number,
-    minScreenshotWidth: PropTypes.number,
-    minScreenshotHeight: PropTypes.number,
-    audioConstraints: audioConstraintType,
-    videoConstraints: videoConstraintType,
-    imageSmoothing: PropTypes.bool,
-  };
+  static propTypes = propTypes;
 
   static mountedInstances = [];
 
@@ -312,19 +303,28 @@ export default class Webcam extends Component {
   render() {
     const { state, props } = this;
 
+    const passThroughProps = Object.entries(props).reduce((result, [key, value]) => {
+      if (Object.prototype.hasOwnProperty.call(propTypes, key)) {
+        return result;
+      }
+
+      return {
+        ...result,
+        [key]: value,
+      };
+    },
+    {});
+
     return (
       <video
         autoPlay
-        width={props.width}
-        height={props.height}
         src={state.src}
         muted={props.audio}
-        className={props.className}
         playsInline
-        style={props.style}
         ref={(ref) => {
           this.video = ref;
         }}
+        {...passThroughProps}
       />
     );
   }
