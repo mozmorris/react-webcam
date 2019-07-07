@@ -3,10 +3,7 @@
 exports[`renders correctly 1`] = `
 <video
   autoPlay={true}
-  className=""
-  height={480}
   muted={true}
   playsInline={true}
-  width={640}
 />
 `;
