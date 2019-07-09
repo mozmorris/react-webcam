@@ -212,11 +212,11 @@ export default class Webcam extends Component {
 
     const sourceSelected = (audioConstraints, videoConstraints) => {
       const constraints = {
-        video: videoConstraints || true,
+        video: typeof videoConstraints !== 'undefined' ? videoConstraints : true,
       };
 
       if (props.audio) {
-        constraints.audio = audioConstraints || true;
+        constraints.audio = typeof audioConstraints !== 'undefined' ? audioConstraints : true;
       }
 
       navigator.mediaDevices
