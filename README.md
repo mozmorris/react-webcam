@@ -35,21 +35,19 @@ class Component extends React.Component {
 
 ### Props
 
+The props here are specific to this component but one can pass any prop to the underlying video tag eg `className` or `style`
+
 | prop                | type     | default      | notes                                                                                   |
 | -----------------   | -------- | ------------ | --------------------------------------------------------------------------------------- |
-| className           | string   | ''           | CSS class of video element                                                              |
 | audio               | boolean  | true         | enable/disable audio                                                                    |
-| height              | number   | 480          | height of video element                                                                 |
-| width               | number   | 640          | width of video element                                                                  |
-| minScreenshotWidth  | number   |              | min width of screenshot                                                                 |
+| audioConstraints    | object   |              | MediaStreamConstraint(s) for the audio                                                  |
+| imageSmoothing      | boolean  | true         | pixel smoothing of the screenshot taken                                                 å|
 | minScreenshotHeight | number   |              | min height of screenshot                                                                |
-| style               | object   |              | style prop passed to video element                                                      |
-| screenshotFormat    | string   | 'image/webp' | format of screenshot                                                                    |
-| imageSmoothing    | boolean   | true | pixel smoothing of the screenshot taken                                                                   |
+| minScreenshotWidth  | number   |              | min width of screenshot                                                                 |
 | onUserMedia         | function | noop         | callback for when component receives a media stream                                     |
 | onUserMediaError    | function | noop         | callback for when component can't receive a media stream with MediaStreamError param    |
+| screenshotFormat    | string   | 'image/webp' | format of screenshot                                                                    |
 | screenshotQuality   | number   | 0.92         | quality of screenshot(0 to 1)                                                           |
-| audioConstraints    | object   |              | MediaStreamConstraint(s) for the audio                                                  |
 | videoConstraints    | object   |              | MediaStreamConstraints(s) for the video                                                 |
 
 ### Methods
@@ -77,10 +75,10 @@ class WebcamCapture extends React.Component {
       <div>
         <Webcam
           audio={false}
-          height={350}
+          height={720}
           ref={this.setRef}
           screenshotFormat="image/jpeg"
-          width={350}
+          width={1280}
           videoConstraints={videoConstraints}
         />
         <button onClick={this.capture}>Capture photo</button>
@@ -122,9 +120,9 @@ class WebcamCapture extends React.Component {
 
 For more information on `facingMode`, please see the MDN web docs [https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints/facingMode](https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints/facingMode)
 
-## Using in iframes
+## Using within an iframe
 
-The Webcam component will fail to load when used inside cross-origin iframes in newer version of Chrome (> 64). In order to overcome this security restriction a special `allow` attribute needs to be added to the iframe tag specifying `microphone` and `camera` as the required permissions like in the below example:
+The Webcam component will fail to load when used inside a cross-origin iframe in newer version of Chrome (> 64). In order to overcome this security restriction a special `allow` attribute needs to be added to the iframe tag specifying `microphone` and `camera` as the required permissions like in the below example:
 
 ```
 <iframe src="https://my-website.com/page-with-webcam" allow="camera; microphone;"/>
@@ -133,10 +131,6 @@ The Webcam component will fail to load when used inside cross-origin iframes in 
 ## License
 
 MIT
-
-## Credits
-
-Many thanks to @cezary for his work on this component.
 
 [build-badge]: https://img.shields.io/travis/com/mozmorris/react-webcam.svg?style=flat-square
 [build]: https://travis-ci.com/mozmorris/react-webcam
