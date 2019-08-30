@@ -32,10 +32,11 @@ module.exports = {
   },
   output: {
     library: "Webcam",
-    libraryTarget: 'umd',
+    libraryTarget: "umd",
     filename:
       process.env.NODE_ENV === "production"
         ? "react-webcam.min.js"
-        : "react-webcam.js"
+        : "react-webcam.js",
+    globalObject: "this"
   }
 };
