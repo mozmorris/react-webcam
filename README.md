@@ -26,11 +26,7 @@ https://codepen.io/mozmorris/pen/JLZdoP
 import React from "react";
 import Webcam from "react-webcam";
 
-class Component extends React.Component {
-  render() {
-    return <Webcam />;
-  }
-}
+const WebcamComponent = () => <Webcam />;
 ```
 
 ### Props
@@ -54,38 +50,39 @@ The props here are specific to this component but one can pass any prop to the u
 
 `getScreenshot` - Returns a base64 encoded string of the current webcam image. Example:
 
+[CodePen demo](https://codepen.io/mozmorris/pen/wvwqm)
+
 ```javascript
-class WebcamCapture extends React.Component {
-  setRef = webcam => {
-    this.webcam = webcam;
-  };
+const videoConstraints = {
+  width: 1280,
+  height: 720,
+  facingMode: "user"
+};
 
-  capture = () => {
-    const imageSrc = this.webcam.getScreenshot();
-  };
+const WebcamCapture = () => {
+  const webcamRef = React.useRef(null);
 
-  render() {
-    const videoConstraints = {
-      width: 1280,
-      height: 720,
-      facingMode: "user"
-    };
+  const capture = React.useCallback(
+    () => {
+      const imageSrc = webcamRef.current.getScreenshot();
+    },
+    [webcamRef]
+  );
 
-    return (
-      <div>
-        <Webcam
-          audio={false}
-          height={720}
-          ref={this.setRef}
-          screenshotFormat="image/jpeg"
-          width={1280}
-          videoConstraints={videoConstraints}
-        />
-        <button onClick={this.capture}>Capture photo</button>
-      </div>
-    );
-  }
-}
+  return (
+    <>
+      <Webcam
+        audio={false}
+        height={720}
+        ref={webcamRef}
+        screenshotFormat="image/jpeg"
+        width={1280}
+        videoConstraints={videoConstraints}
+      />
+      <button onClick={capture}>Capture photo</button>
+    </>
+  );
+};
 ```
 
 ## Choosing a camera
