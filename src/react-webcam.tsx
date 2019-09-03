@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import * as React from "react"
+import * as PropTypes from 'prop-types';
 
 function hasGetUserMedia() {
   return !!(
@@ -10,97 +10,48 @@ function hasGetUserMedia() {
   );
 }
 
-const constrainStringType = PropTypes.oneOfType([
-  PropTypes.string,
-  PropTypes.arrayOf(PropTypes.string),
-  PropTypes.shape({
-    exact: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.arrayOf(PropTypes.string),
-    ]),
-  }),
-  PropTypes.shape({
-    ideal: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.arrayOf(PropTypes.string),
-    ]),
-  }),
-]);
-
-const constrainBooleanType = PropTypes.oneOfType([
-  PropTypes.shape({
-    exact: PropTypes.bool,
-  }),
-  PropTypes.shape({
-    ideal: PropTypes.bool,
-  }),
-]);
-
-const constrainLongType = PropTypes.oneOfType([
-  PropTypes.number,
-  PropTypes.shape({
-    exact: PropTypes.number,
-    ideal: PropTypes.number,
-    min: PropTypes.number,
-    max: PropTypes.number,
-  }),
-]);
-
-const constrainDoubleType = constrainLongType;
-
-const audioConstraintType = PropTypes.shape({
-  deviceId: constrainStringType,
-  groupId: constrainStringType,
-  autoGainControl: constrainBooleanType,
-  channelCount: constrainLongType,
-  latency: constrainDoubleType,
-  noiseSuppression: constrainBooleanType,
-  sampleRate: constrainLongType,
-  sampleSize: constrainLongType,
-  volume: constrainDoubleType,
-});
-
-const videoConstraintType = PropTypes.shape({
-  deviceId: constrainStringType,
-  groupId: constrainStringType,
-  aspectRatio: constrainDoubleType,
-  facingMode: constrainStringType,
-  frameRate: constrainDoubleType,
-  height: constrainLongType,
-  width: constrainLongType,
-});
-
-const propTypes = {
-  audio: PropTypes.bool,
-  onUserMedia: PropTypes.func,
-  onUserMediaError: PropTypes.func,
-  screenshotFormat: PropTypes.oneOf(['image/webp', 'image/png', 'image/jpeg']),
-  screenshotQuality: PropTypes.number,
-  minScreenshotWidth: PropTypes.number,
-  minScreenshotHeight: PropTypes.number,
-  audioConstraints: audioConstraintType,
-  videoConstraints: videoConstraintType,
-  imageSmoothing: PropTypes.bool,
+interface WebcamProps {
+  audio: boolean;
+  onUserMedia: () => void;
+  onUserMediaError: (error: string) => void;
+  screenshotFormat: 'image/webp' | 'image/png' | 'image/jpeg';
+  screenshotQuality: number;
+  minScreenshotWidth: number;
+  minScreenshotHeight: number;
+  audioConstraints: MediaTrackConstraints,
+  videoConstraints: MediaTrackConstraints,
+  imageSmoothing: boolean;
 };
 
-export default class Webcam extends Component {
+interface WebcamState {
+  hasUserMedia: boolean;
+  src?: string
+}
+
+export default class Webcam extends React.Component<WebcamProps, WebcamState> {
   static defaultProps = {
     audio: true,
     imageSmoothing: true,
-    onUserMedia: () => {},
-    onUserMediaError: () => {},
+    onUserMedia: () => { },
+    onUserMediaError: () => { },
     screenshotFormat: 'image/webp',
     screenshotQuality: 0.92,
   };
 
-  static propTypes = propTypes;
-
-  static mountedInstances = [];
+  static mountedInstances: Webcam[] = [];
 
   static userMediaRequested = false;
 
-  constructor() {
-    super();
+  canvas: HTMLCanvasElement
+
+  ctx: CanvasRenderingContext2D | null = null;
+
+  stream: MediaStream;
+
+  video: HTMLVideoElement | null;
+
+  constructor(props) {
+    super(props);
     this.state = {
       hasUserMedia: false,
     };
@@ -141,9 +92,13 @@ export default class Webcam extends Component {
         this.stream.getVideoTracks().map(track => track.stop());
         this.stream.getAudioTracks().map(track => track.stop());
       } else {
+        // @ts-ignore: deprecated api
         this.stream.stop();
       }
-      window.URL.revokeObjectURL(state.src);
+
+      if (state.src) {
+        window.URL.revokeObjectURL(state.src);
+      }
     }
   }
 
@@ -164,6 +119,10 @@ export default class Webcam extends Component {
 
   getCanvas() {
     const { state, props } = this;
+
+    if (!this.video) {
+      return;
+    }
 
     if (!state.hasUserMedia || !this.video.videoHeight) return null;
 
@@ -187,8 +146,11 @@ export default class Webcam extends Component {
     }
 
     const { ctx, canvas } = this;
-    ctx.imageSmoothingEnabled = props.imageSmoothing;
-    ctx.drawImage(this.video, 0, 0, canvas.width, canvas.height);
+
+    if (ctx) {
+      ctx.imageSmoothingEnabled = props.imageSmoothing;
+      ctx.drawImage(this.video, 0, 0, canvas.width, canvas.height);
+    }
 
     return canvas;
   }
@@ -202,7 +164,7 @@ export default class Webcam extends Component {
       || navigator.msGetUserMedia;
 
     const sourceSelected = (audioConstraints, videoConstraints) => {
-      const constraints = {
+      const constraints: MediaStreamConstraints = {
         video: typeof videoConstraints !== 'undefined' ? videoConstraints : true,
       };
 
@@ -226,7 +188,7 @@ export default class Webcam extends Component {
       const optionalSource = id => ({ optional: [{ sourceId: id }] });
 
       const constraintToSourceId = (constraint) => {
-        const { deviceId } = constraint || {};
+        const { deviceId } = constraint;
 
         if (typeof deviceId === 'string') {
           return deviceId;
@@ -243,6 +205,7 @@ export default class Webcam extends Component {
         return null;
       };
 
+      // @ts-ignore: deprecated api
       MediaStreamTrack.getSources((sources) => {
         let audioSource = null;
         let videoSource = null;
@@ -275,10 +238,10 @@ export default class Webcam extends Component {
     Webcam.userMediaRequested = true;
   }
 
-  handleUserMedia(err, stream) {
+  handleUserMedia(err, stream?: MediaStream) {
     const { props } = this;
 
-    if (err) {
+    if (err || !stream) {
       this.setState({ hasUserMedia: false });
       props.onUserMediaError(err);
 
@@ -288,7 +251,9 @@ export default class Webcam extends Component {
     this.stream = stream;
 
     try {
-      this.video.srcObject = stream;
+      if (this.video) {
+        this.video.srcObject = stream;
+      }
       this.setState({ hasUserMedia: true });
     } catch (error) {
       this.setState({
@@ -303,28 +268,30 @@ export default class Webcam extends Component {
   render() {
     const { state, props } = this;
 
-    const passThroughProps = Object.entries(props).reduce((result, [key, value]) => {
-      if (Object.prototype.hasOwnProperty.call(propTypes, key)) {
-        return result;
-      }
-
-      return {
-        ...result,
-        [key]: value,
-      };
-    },
-    {});
+    const {
+      audio,
+      onUserMedia,
+      onUserMediaError,
+      screenshotFormat,
+      screenshotQuality,
+      minScreenshotWidth,
+      minScreenshotHeight,
+      audioConstraints,
+      videoConstraints,
+      imageSmoothing,
+      ...rest
+    } = props;
 
     return (
       <video
         autoPlay
         src={state.src}
-        muted={props.audio}
+        muted={audio}
         playsInline
         ref={(ref) => {
           this.video = ref;
         }}
-        {...passThroughProps}
+        {...rest}
       />
     );
   }

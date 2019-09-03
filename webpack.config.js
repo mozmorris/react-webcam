@@ -22,11 +22,15 @@ module.exports = {
       }
     }
   ],
+  entry: "./src/react-webcam.tsx",
+  resolve: {
+    extensions: [".ts", ".tsx", ".js", ".jsx"]
+  },
   module: {
     rules: [
       {
-        test: /\.js$/,
-        use: "babel-loader"
+        test: /\.(t|j)sx?$/,
+        use: "awesome-typescript-loader"
       }
     ]
   },
@@ -37,6 +41,7 @@ module.exports = {
       process.env.NODE_ENV === "production"
         ? "react-webcam.min.js"
         : "react-webcam.js",
-    globalObject: "this"
+    globalObject: "this",
+    libraryExport: "default"
   }
 };

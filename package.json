@@ -5,8 +5,8 @@
   "main": "dist/react-webcam.js",
   "scripts": {
     "prepublish": "npm run build:production",
-    "build": "NODE_ENV=development webpack-cli src/react-webcam.js",
-    "build:production": "npm run build && NODE_ENV=production webpack-cli src/react-webcam.js",
+    "build": "NODE_ENV=development webpack-cli",
+    "build:production": "npm run build && NODE_ENV=production webpack-cli",
     "lint": "eslint src",
     "test": "jest"
   },
@@ -30,13 +30,10 @@
     "react-dom": ">=15.3.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.4.5",
-    "@babel/preset-env": "^7.4.5",
-    "@babel/preset-react": "^7.0.0",
-    "babel-eslint": "^10.0.1",
-    "babel-loader": "^8.0.6",
-    "babel-plugin-add-module-exports": "^1.0.2",
-    "babel-plugin-transform-class-properties": "^6.24.1",
+    "@types/prop-types": "^15.7.1",
+    "@types/react": "^16.9.2",
+    "@types/react-dom": "^16.9.0",
+    "awesome-typescript-loader": "^5.2.1",
     "eslint": "^5.16.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-import": "^2.17.3",
@@ -47,6 +44,8 @@
     "react": "^16.3.1",
     "react-dom": "^16.3.1",
     "react-test-renderer": "^16.8.6",
+    "source-map-loader": "^0.2.4",
+    "typescript": "^3.6.2",
     "webpack": "^4.32.2",
     "webpack-cli": "^3.3.2"
   },
