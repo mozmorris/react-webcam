@@ -51,8 +51,5 @@
     "typescript": "^3.6.2",
     "webpack": "^4.32.2",
     "webpack-cli": "^3.3.2"
-  },
-  "dependencies": {
-    "prop-types": "^15.7.2"
   }
 }
