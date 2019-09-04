@@ -11,7 +11,7 @@ function hasGetUserMedia() {
 
 interface WebcamProps {
   audio: boolean;
-  audioConstraints?: MediaTrackConstraints,
+  audioConstraints?: MediaTrackConstraints;
   imageSmoothing: boolean;
   minScreenshotHeight?: number;
   minScreenshotWidth?: number;
@@ -19,20 +19,20 @@ interface WebcamProps {
   onUserMediaError: (error: string) => void;
   screenshotFormat: 'image/webp' | 'image/png' | 'image/jpeg';
   screenshotQuality: number;
-  videoConstraints?: MediaTrackConstraints,
+  videoConstraints?: MediaTrackConstraints;
 };
 
 interface WebcamState {
   hasUserMedia: boolean;
-  src?: string
+  src?: string;
 }
 
 export default class Webcam extends React.Component<WebcamProps, WebcamState> {
   static defaultProps = {
     audio: true,
     imageSmoothing: true,
-    onUserMedia: () => { },
-    onUserMediaError: () => { },
+    onUserMedia: () => {},
+    onUserMediaError: () => {},
     screenshotFormat: 'image/webp',
     screenshotQuality: 0.92,
   };
@@ -91,8 +91,7 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
         this.stream.getVideoTracks().map(track => track.stop());
         this.stream.getAudioTracks().map(track => track.stop());
       } else {
-        // @ts-ignore: deprecated api
-        this.stream.stop();
+        (this.stream as unknown as MediaStreamTrack).stop();
       }
 
       if (state.src) {
@@ -120,7 +119,7 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
     const { state, props } = this;
 
     if (!this.video) {
-      return;
+      return null;
     }
 
     if (!state.hasUserMedia || !this.video.videoHeight) return null;
