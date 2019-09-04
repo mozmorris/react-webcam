@@ -1,11 +1,11 @@
-import * as React from "react"
+import * as React from "react";
 
 function hasGetUserMedia() {
   return !!(
-    (navigator.mediaDevices && navigator.mediaDevices.getUserMedia)
-    || navigator.webkitGetUserMedia
-    || navigator.mozGetUserMedia
-    || navigator.msGetUserMedia
+    (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) ||
+    navigator.webkitGetUserMedia ||
+    navigator.mozGetUserMedia ||
+    navigator.msGetUserMedia
   );
 }
 
@@ -17,10 +17,10 @@ interface WebcamProps {
   minScreenshotWidth?: number;
   onUserMedia: () => void;
   onUserMediaError: (error: string) => void;
-  screenshotFormat: 'image/webp' | 'image/png' | 'image/jpeg';
+  screenshotFormat: "image/webp" | "image/png" | "image/jpeg";
   screenshotQuality: number;
   videoConstraints?: MediaTrackConstraints;
-};
+}
 
 interface WebcamState {
   hasUserMedia: boolean;
@@ -33,15 +33,15 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
     imageSmoothing: true,
     onUserMedia: () => {},
     onUserMediaError: () => {},
-    screenshotFormat: 'image/webp',
-    screenshotQuality: 0.92,
+    screenshotFormat: "image/webp",
+    screenshotQuality: 0.92
   };
 
   static mountedInstances: Webcam[] = [];
 
   static userMediaRequested = false;
 
-  canvas: HTMLCanvasElement
+  canvas: HTMLCanvasElement;
 
   ctx: CanvasRenderingContext2D | null = null;
 
@@ -52,7 +52,7 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
   constructor(props) {
     super(props);
     this.state = {
-      hasUserMedia: false,
+      hasUserMedia: false
     };
   }
 
@@ -71,10 +71,10 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
   componentDidUpdate(nextProps) {
     const { props } = this;
     if (
-      JSON.stringify(nextProps.audioConstraints)
-        !== JSON.stringify(props.audioConstraints)
-      || JSON.stringify(nextProps.videoConstraints)
-        !== JSON.stringify(props.videoConstraints)
+      JSON.stringify(nextProps.audioConstraints) !==
+        JSON.stringify(props.audioConstraints) ||
+      JSON.stringify(nextProps.videoConstraints) !==
+        JSON.stringify(props.videoConstraints)
     ) {
       this.requestUserMedia();
     }
@@ -91,7 +91,7 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
         this.stream.getVideoTracks().map(track => track.stop());
         this.stream.getAudioTracks().map(track => track.stop());
       } else {
-        (this.stream as unknown as MediaStreamTrack).stop();
+        ((this.stream as unknown) as MediaStreamTrack).stop();
       }
 
       if (state.src) {
@@ -107,11 +107,8 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
 
     const canvas = this.getCanvas();
     return (
-      canvas
-      && canvas.toDataURL(
-        props.screenshotFormat,
-        props.screenshotQuality,
-      )
+      canvas &&
+      canvas.toDataURL(props.screenshotFormat, props.screenshotQuality)
     );
   }
 
@@ -125,13 +122,16 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
     if (!state.hasUserMedia || !this.video.videoHeight) return null;
 
     if (!this.ctx) {
-      const canvas = document.createElement('canvas');
+      const canvas = document.createElement("canvas");
       const aspectRatio = this.video.videoWidth / this.video.videoHeight;
 
       let canvasWidth = props.minScreenshotWidth || this.video.clientWidth;
       let canvasHeight = canvasWidth / aspectRatio;
 
-      if (props.minScreenshotHeight && (canvasHeight < props.minScreenshotHeight)) {
+      if (
+        props.minScreenshotHeight &&
+        canvasHeight < props.minScreenshotHeight
+      ) {
         canvasHeight = props.minScreenshotHeight;
         canvasWidth = canvasHeight * aspectRatio;
       }
@@ -140,7 +140,7 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
       canvas.height = canvasHeight;
 
       this.canvas = canvas;
-      this.ctx = canvas.getContext('2d');
+      this.ctx = canvas.getContext("2d");
     }
 
     const { ctx, canvas } = this;
@@ -156,39 +156,45 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
   requestUserMedia() {
     const { props } = this;
 
-    navigator.getUserMedia = navigator.mediaDevices.getUserMedia
-      || navigator.webkitGetUserMedia
-      || navigator.mozGetUserMedia
-      || navigator.msGetUserMedia;
+    navigator.getUserMedia =
+      navigator.mediaDevices.getUserMedia ||
+      navigator.webkitGetUserMedia ||
+      navigator.mozGetUserMedia ||
+      navigator.msGetUserMedia;
 
     const sourceSelected = (audioConstraints, videoConstraints) => {
       const constraints: MediaStreamConstraints = {
-        video: typeof videoConstraints !== 'undefined' ? videoConstraints : true,
+        video: typeof videoConstraints !== "undefined" ? videoConstraints : true
       };
 
       if (props.audio) {
-        constraints.audio = typeof audioConstraints !== 'undefined' ? audioConstraints : true;
+        constraints.audio =
+          typeof audioConstraints !== "undefined" ? audioConstraints : true;
       }
 
       navigator.mediaDevices
         .getUserMedia(constraints)
-        .then((stream) => {
-          Webcam.mountedInstances.forEach(instance => instance.handleUserMedia(null, stream));
+        .then(stream => {
+          Webcam.mountedInstances.forEach(instance =>
+            instance.handleUserMedia(null, stream)
+          );
         })
-        .catch((e) => {
-          Webcam.mountedInstances.forEach(instance => instance.handleUserMedia(e));
+        .catch(e => {
+          Webcam.mountedInstances.forEach(instance =>
+            instance.handleUserMedia(e)
+          );
         });
     };
 
-    if ('mediaDevices' in navigator) {
+    if ("mediaDevices" in navigator) {
       sourceSelected(props.audioConstraints, props.videoConstraints);
     } else {
       const optionalSource = id => ({ optional: [{ sourceId: id }] });
 
-      const constraintToSourceId = (constraint) => {
+      const constraintToSourceId = constraint => {
         const { deviceId } = constraint;
 
-        if (typeof deviceId === 'string') {
+        if (typeof deviceId === "string") {
           return deviceId;
         }
 
@@ -196,7 +202,7 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
           return deviceId[0];
         }
 
-        if (typeof deviceId === 'object' && deviceId.ideal) {
+        if (typeof deviceId === "object" && deviceId.ideal) {
           return deviceId.ideal;
         }
 
@@ -204,14 +210,14 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
       };
 
       // @ts-ignore: deprecated api
-      MediaStreamTrack.getSources((sources) => {
+      MediaStreamTrack.getSources(sources => {
         let audioSource = null;
         let videoSource = null;
 
-        sources.forEach((source) => {
-          if (source.kind === 'audio') {
+        sources.forEach(source => {
+          if (source.kind === "audio") {
             audioSource = source.id;
-          } else if (source.kind === 'video') {
+          } else if (source.kind === "video") {
             videoSource = source.id;
           }
         });
@@ -228,7 +234,7 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
 
         sourceSelected(
           optionalSource(audioSource),
-          optionalSource(videoSource),
+          optionalSource(videoSource)
         );
       });
     }
@@ -256,7 +262,7 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
     } catch (error) {
       this.setState({
         hasUserMedia: true,
-        src: window.URL.createObjectURL(stream),
+        src: window.URL.createObjectURL(stream)
       });
     }
 
@@ -286,7 +292,7 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
         src={state.src}
         muted={audio}
         playsInline
-        ref={(ref) => {
+        ref={ref => {
           this.video = ref;
         }}
         {...rest}
