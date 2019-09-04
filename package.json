@@ -3,6 +3,7 @@
   "version": "2.0.1",
   "description": "React webcam component",
   "main": "dist/react-webcam.js",
+  "types": "dist/react-webcam.d.ts",
   "scripts": {
     "prepublish": "npm run build:production",
     "build": "NODE_ENV=development webpack-cli",
@@ -31,7 +32,6 @@
   },
   "devDependencies": {
     "@types/jest": "^24.0.18",
-    "@types/prop-types": "^15.7.1",
     "@types/react": "^16.9.2",
     "@types/react-dom": "^16.9.0",
     "@types/react-test-renderer": "^16.9.0",
