@@ -1,5 +1,4 @@
 import * as React from "react"
-import * as PropTypes from 'prop-types';
 
 function hasGetUserMedia() {
   return !!(
@@ -12,15 +11,15 @@ function hasGetUserMedia() {
 
 interface WebcamProps {
   audio: boolean;
+  audioConstraints?: MediaTrackConstraints,
+  imageSmoothing: boolean;
+  minScreenshotHeight?: number;
+  minScreenshotWidth?: number;
   onUserMedia: () => void;
   onUserMediaError: (error: string) => void;
   screenshotFormat: 'image/webp' | 'image/png' | 'image/jpeg';
   screenshotQuality: number;
-  minScreenshotWidth: number;
-  minScreenshotHeight: number;
-  audioConstraints: MediaTrackConstraints,
-  videoConstraints: MediaTrackConstraints,
-  imageSmoothing: boolean;
+  videoConstraints?: MediaTrackConstraints,
 };
 
 interface WebcamState {
