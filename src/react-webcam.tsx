@@ -11,7 +11,7 @@ function hasGetUserMedia() {
 
 interface WebcamProps {
   audio: boolean;
-  audioConstraints?: MediaTrackConstraints;
+  audioConstraints?: MediaStreamConstraints["audio"];
   imageSmoothing: boolean;
   minScreenshotHeight?: number;
   minScreenshotWidth?: number;
@@ -19,7 +19,7 @@ interface WebcamProps {
   onUserMediaError: (error: string) => void;
   screenshotFormat: "image/webp" | "image/png" | "image/jpeg";
   screenshotQuality: number;
-  videoConstraints?: MediaTrackConstraints;
+  videoConstraints?: MediaStreamConstraints["video"];
 }
 
 interface WebcamState {

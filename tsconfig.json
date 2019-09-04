@@ -6,8 +6,9 @@
     "module": "es6",
     "jsx": "react",
     "target": "es2017",
-    "allowJs": true,
-    "moduleResolution": "node"
+    "allowJs": false,
+    "moduleResolution": "node",
+    "declaration": true
   },
   "include": [
     "./src/"
