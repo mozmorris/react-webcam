@@ -3,7 +3,3 @@ interface Navigator {
   mozGetUserMedia: () => void;
   msGetUserMedia: () => void;
 }
-
-interface MediaStreamTrack {
-  getSources: () => void;
-}
