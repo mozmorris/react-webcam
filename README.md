@@ -38,6 +38,7 @@ The props here are specific to this component but one can pass any prop to the u
 | audio               | boolean  | true         | enable/disable audio                                                                    |
 | audioConstraints    | object   |              | MediaStreamConstraint(s) for the audio                                                  |
 | imageSmoothing      | boolean  | true         | pixel smoothing of the screenshot taken                                                 å|
+| mirrored            | boolean  | false        | show camera preview and get the screenshot mirrored                                     |
 | minScreenshotHeight | number   |              | min height of screenshot                                                                |
 | minScreenshotWidth  | number   |              | min width of screenshot                                                                 |
 | onUserMedia         | function | noop         | callback for when component receives a media stream                                     |
