@@ -20,6 +20,7 @@ interface WebcamProps {
   screenshotFormat: "image/webp" | "image/png" | "image/jpeg";
   screenshotQuality: number;
   videoConstraints?: MediaStreamConstraints["video"];
+  mirrored?: boolean;
 }
 
 interface WebcamState {
@@ -34,7 +35,8 @@ export default class Webcam extends React.Component<WebcamProps & React.HTMLAttr
     onUserMedia: () => {},
     onUserMediaError: () => {},
     screenshotFormat: "image/webp",
-    screenshotQuality: 0.92
+    screenshotQuality: 0.92,
+    mirrored: false
   };
 
   static mountedInstances: Webcam[] = [];
@@ -146,6 +148,13 @@ export default class Webcam extends React.Component<WebcamProps & React.HTMLAttr
     const { ctx, canvas } = this;
 
     if (ctx) {
+      if (props.mirrored) {
+        ctx.translate(canvas.width, 0);
+        ctx.scale(-1, 1);
+      } else {
+        ctx.translate(0, 0);
+        ctx.scale(1, 1);
+      }
       ctx.imageSmoothingEnabled = props.imageSmoothing;
       ctx.drawImage(this.video, 0, 0, canvas.width, canvas.height);
     }
@@ -283,8 +292,12 @@ export default class Webcam extends React.Component<WebcamProps & React.HTMLAttr
       audioConstraints,
       videoConstraints,
       imageSmoothing,
+      mirrored,
+      style,
       ...rest
     } = props;
+
+    const videoStyle = mirrored ? { ...style, transform: "scaleX(-1)" } : style;
 
     return (
       <video
@@ -295,6 +308,7 @@ export default class Webcam extends React.Component<WebcamProps & React.HTMLAttr
         ref={ref => {
           this.video = ref;
         }}
+        style={videoStyle}
         {...rest}
       />
     );
