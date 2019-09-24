@@ -13,6 +13,7 @@ interface WebcamProps {
   audio: boolean;
   audioConstraints?: MediaStreamConstraints["audio"];
   imageSmoothing: boolean;
+  mirrored?: boolean;
   minScreenshotHeight?: number;
   minScreenshotWidth?: number;
   onUserMedia: () => void;
@@ -20,7 +21,6 @@ interface WebcamProps {
   screenshotFormat: "image/webp" | "image/png" | "image/jpeg";
   screenshotQuality: number;
   videoConstraints?: MediaStreamConstraints["video"];
-  mirrored?: boolean;
 }
 
 interface WebcamState {
@@ -34,9 +34,9 @@ export default class Webcam extends React.Component<WebcamProps & React.HTMLAttr
     imageSmoothing: true,
     onUserMedia: () => {},
     onUserMediaError: () => {},
+    mirrored: false,
     screenshotFormat: "image/webp",
     screenshotQuality: 0.92,
-    mirrored: false
   };
 
   static mountedInstances: Webcam[] = [];
