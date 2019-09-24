@@ -293,11 +293,11 @@ export default class Webcam extends React.Component<WebcamProps & React.HTMLAttr
       videoConstraints,
       imageSmoothing,
       mirrored,
-      style,
+      style = {},
       ...rest
     } = props;
 
-    const videoStyle = mirrored ? { ...style, transform: "scaleX(-1)" } : style;
+    const videoStyle = mirrored ? { ...style, transform: `${style.transform || ""} scaleX(-1)` } : style;
 
     return (
       <video
