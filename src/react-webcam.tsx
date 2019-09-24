@@ -32,9 +32,9 @@ export default class Webcam extends React.Component<WebcamProps & React.HTMLAttr
   static defaultProps = {
     audio: true,
     imageSmoothing: true,
+    mirrored: false,
     onUserMedia: () => {},
     onUserMediaError: () => {},
-    mirrored: false,
     screenshotFormat: "image/webp",
     screenshotQuality: 0.92,
   };
