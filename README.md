@@ -51,7 +51,7 @@ The props here are specific to this component but one can pass any prop to the u
 
 `getScreenshot` - Returns a base64 encoded string of the current webcam image. Example:
 
-[CodePen demo](https://codepen.io/mozmorris/pen/wvwqmQb)
+[CodePen demo](https://codepen.io/mozmorris/pen/gOOoqpw)
 
 ```javascript
 const videoConstraints = {
