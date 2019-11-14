@@ -42,12 +42,12 @@ type State = {
 const permissionErrors = ['PermissionDeniedError', 'NotAllowedError','NotFoundError'];
 
 const stopStreamTracks = (stream: MediaStream) => {
-  if (stream.getVideoTracks) {
+  if (stream && stream.getVideoTracks) {    // #HACK check for stream first AND stream.getVideoTracks
     for (let track of stream.getVideoTracks()) {
       track.stop();
     }
   }
-  if (stream.getAudioTracks) {
+  if (stream && stream.getAudioTracks) {    // #HACK check for stream first AND stream.getAudioTracks
     for (let track of stream.getAudioTracks()) {
       track.stop();
     }
@@ -160,7 +160,7 @@ export default class Webcam extends Component<CameraType, State> {
 
   handleUserMedia(stream: MediaStream) {
     this.stream = stream;
-    const videoSettings = stream.getVideoTracks()[0].getSettings();
+    const videoSettings = stream ? stream.getVideoTracks()[0].getSettings() : {}; // #HACK check for stream
     debugConsole('video track settings', videoSettings);
     this.setState({
       hasUserMedia: true,

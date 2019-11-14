@@ -1,3 +1,7 @@
+## 0.1.13
+### Added
+- Check for stream first before trying for `getVideoTracks` or `getAudioTracks`
+
 ## 0.1.12
 ### Changed
 - Internal: Upgraded to babel 7 and runtime to corejs3
