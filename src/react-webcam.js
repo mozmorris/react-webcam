@@ -42,12 +42,12 @@ type State = {
 const permissionErrors = ['PermissionDeniedError', 'NotAllowedError','NotFoundError'];
 
 const stopStreamTracks = (stream: MediaStream) => {
-  if (stream.getVideoTracks) {
+  if (stream && stream.getVideoTracks) {    // check for stream first AND stream.getVideoTracks
     for (let track of stream.getVideoTracks()) {
       track.stop();
     }
   }
-  if (stream.getAudioTracks) {
+  if (stream && stream.getAudioTracks) {    // check for stream first AND stream.getAudioTracks
     for (let track of stream.getAudioTracks()) {
       track.stop();
     }
@@ -87,9 +87,9 @@ export default class Webcam extends Component<CameraType, State> {
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     Webcam.mountedInstances.push(this);
-    this.requestUserMedia();
+    await this.requestUserMedia();
   }
 
   getConstraints(width: *, height: *, facingMode?: facingModeType, audio?: boolean): Object {
@@ -121,7 +121,7 @@ export default class Webcam extends Component<CameraType, State> {
     return constraints;
   }
 
-  requestUserMedia() {
+  async requestUserMedia() {
     if (!getUserMedia || !mediaDevices || Webcam.userMediaRequested) return;
     const { width, height, facingMode, audio, fallbackWidth, fallbackHeight } = this.props;
 
@@ -131,24 +131,32 @@ export default class Webcam extends Component<CameraType, State> {
     const logError = e => console.log('error', e, typeof e);
 
     const onSuccess = stream => {
-      Webcam.userMediaRequested = false;
-      Webcam.mountedInstances.forEach((instance) => instance.handleUserMedia(stream));
+        Webcam.userMediaRequested = false;
+        Webcam.mountedInstances.forEach((instance) => instance.handleUserMedia(stream));
     };
 
     let hasTriedFallbackConstraints;
     const onError = e => {
-      Webcam.userMediaRequested = false;
-      logError(e);
-      const isPermissionError = permissionErrors.includes(e.name);
-      if (isPermissionError || hasTriedFallbackConstraints) {
-        Webcam.mountedInstances.forEach((instance) => instance.handleError(e));
-      } else {
-        hasTriedFallbackConstraints = true;
-        getUserMedia(fallbackConstraints).then(onSuccess).catch(onError);
-      }
+        Webcam.userMediaRequested = false;
+        logError(e);
+        const isPermissionError = permissionErrors.includes(e.name);
+        if (isPermissionError || hasTriedFallbackConstraints) {
+            Webcam.mountedInstances.forEach((instance) => instance.handleError(e));
+        } else {
+            hasTriedFallbackConstraints = true;
+            getUserMedia(fallbackConstraints).then(onSuccess).catch(onError);
+        }
     };
     Webcam.userMediaRequested = true;
-    getUserMedia(constraints).then(onSuccess).catch(onError);
+    try {
+        this.stream = await getUserMedia(constraints);
+        if (this.stream) {
+            onSuccess(this.stream);
+        }
+    } catch (e) {
+        onError(e);
+    }
+
   }
 
   handleError(error: Object) {
@@ -159,8 +167,7 @@ export default class Webcam extends Component<CameraType, State> {
   }
 
   handleUserMedia(stream: MediaStream) {
-    this.stream = stream;
-    const videoSettings = stream.getVideoTracks()[0].getSettings();
+    const videoSettings = stream ? stream.getVideoTracks()[0].getSettings() : {}; // check for stream, assign empty object if none
     debugConsole('video track settings', videoSettings);
     this.setState({
       hasUserMedia: true,

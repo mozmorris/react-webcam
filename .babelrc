@@ -9,7 +9,7 @@
       {
         "corejs": 3,
         "helpers": true,
-        "regenerator": false
+        "regenerator": true
       }
     ],
     "@babel/plugin-transform-react-jsx",
