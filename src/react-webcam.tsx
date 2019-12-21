@@ -59,9 +59,13 @@ export default class Webcam extends React.Component<WebcamProps & React.HTMLAttr
   }
 
   componentDidMount() {
-    if (!hasGetUserMedia()) return;
+    const { state, props } = this;
 
-    const { state } = this;
+    if (!hasGetUserMedia()) {
+      props.onUserMediaError("getUserMedia not supported");
+
+      return;
+    }
 
     Webcam.mountedInstances.push(this);
 
@@ -72,6 +76,13 @@ export default class Webcam extends React.Component<WebcamProps & React.HTMLAttr
 
   componentDidUpdate(nextProps) {
     const { props } = this;
+
+    if (!hasGetUserMedia()) {
+      props.onUserMediaError("getUserMedia not supported");
+
+      return;
+    }
+
     if (
       JSON.stringify(nextProps.audioConstraints) !==
         JSON.stringify(props.audioConstraints) ||
