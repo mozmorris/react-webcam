@@ -43,7 +43,7 @@ export default class Webcam extends React.Component<WebcamProps & React.HTMLAttr
 
   static userMediaRequested = false;
 
-  canvas: HTMLCanvasElement;
+  canvas: HTMLCanvasElement | null = null;
 
   ctx: CanvasRenderingContext2D | null = null;
 
@@ -83,12 +83,25 @@ export default class Webcam extends React.Component<WebcamProps & React.HTMLAttr
       return;
     }
 
-    if (
+    const audioConstraintsChanged =
       JSON.stringify(nextProps.audioConstraints) !==
-      JSON.stringify(props.audioConstraints) ||
+      JSON.stringify(props.audioConstraints);
+    const videoConstraintsChanged =
       JSON.stringify(nextProps.videoConstraints) !==
-      JSON.stringify(props.videoConstraints)
+      JSON.stringify(props.videoConstraints);
+    const minScreenshotWidthChanged =
+      nextProps.minScreenshotWidth !== props.minScreenshotWidth;
+    const minScreenshotHeightChanged =
+      nextProps.minScreenshotHeight !== props.minScreenshotHeight;
+    if (
+      videoConstraintsChanged ||
+      minScreenshotWidthChanged ||
+      minScreenshotHeightChanged
     ) {
+      this.canvas = null;
+      this.ctx = null;
+    }
+    if (audioConstraintsChanged || videoConstraintsChanged) {
       this.requestUserMedia();
     }
   }
@@ -158,7 +171,7 @@ export default class Webcam extends React.Component<WebcamProps & React.HTMLAttr
 
     const { ctx, canvas } = this;
 
-    if (ctx) {
+    if (ctx && canvas) {
       // mirror the screenshot
       if (props.mirrored) {
         ctx.translate(canvas.width, 0);
