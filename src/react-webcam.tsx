@@ -12,6 +12,7 @@ function hasGetUserMedia() {
 interface WebcamProps {
   audio: boolean;
   audioConstraints?: MediaStreamConstraints["audio"];
+  forceScreenshotSourceSize?: boolean;
   imageSmoothing: boolean;
   mirrored?: boolean;
   minScreenshotHeight?: number;
@@ -31,6 +32,7 @@ interface WebcamState {
 export default class Webcam extends React.Component<WebcamProps & React.HTMLAttributes<HTMLVideoElement>, WebcamState> {
   static defaultProps = {
     audio: true,
+    forceScreenshotSourceSize: false,
     imageSmoothing: true,
     mirrored: false,
     onUserMedia: () => { },
@@ -148,25 +150,27 @@ export default class Webcam extends React.Component<WebcamProps & React.HTMLAttr
     if (!state.hasUserMedia || !this.video.videoHeight) return null;
 
     if (!this.ctx) {
-      const canvas = document.createElement("canvas");
-      const aspectRatio = this.video.videoWidth / this.video.videoHeight;
+      let canvasWidth = this.video.videoWidth;
+      let canvasHeight = this.video.videoHeight;
+      if (!this.props.forceScreenshotSourceSize) {
+        const aspectRatio = canvasWidth / canvasHeight;
 
-      let canvasWidth = props.minScreenshotWidth || this.video.clientWidth;
-      let canvasHeight = canvasWidth / aspectRatio;
+        canvasWidth = props.minScreenshotWidth || this.video.clientWidth;
+        canvasHeight = canvasWidth / aspectRatio;
 
-      if (
-        props.minScreenshotHeight &&
-        canvasHeight < props.minScreenshotHeight
-      ) {
-        canvasHeight = props.minScreenshotHeight;
-        canvasWidth = canvasHeight * aspectRatio;
+        if (
+          props.minScreenshotHeight &&
+          canvasHeight < props.minScreenshotHeight
+        ) {
+          canvasHeight = props.minScreenshotHeight;
+          canvasWidth = canvasHeight * aspectRatio;
+        }
       }
 
-      canvas.width = canvasWidth;
-      canvas.height = canvasHeight;
-
-      this.canvas = canvas;
-      this.ctx = canvas.getContext("2d");
+      this.canvas = document.createElement("canvas");
+      this.canvas.width = canvasWidth;
+      this.canvas.height = canvasHeight;
+      this.ctx = this.canvas.getContext("2d");
     }
 
     const { ctx, canvas } = this;
@@ -312,6 +316,7 @@ export default class Webcam extends React.Component<WebcamProps & React.HTMLAttr
 
     const {
       audio,
+      forceScreenshotSourceSize,
       onUserMedia,
       onUserMediaError,
       screenshotFormat,

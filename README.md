@@ -33,19 +33,20 @@ const WebcamComponent = () => <Webcam />;
 
 The props here are specific to this component but one can pass any prop to the underlying video tag eg `className` or `style`
 
-| prop                | type     | default      | notes                                                                                   |
-| -----------------   | -------- | ------------ | --------------------------------------------------------------------------------------- |
-| audio               | boolean  | true         | enable/disable audio                                                                    |
-| audioConstraints    | object   |              | MediaStreamConstraint(s) for the audio                                                  |
-| imageSmoothing      | boolean  | true         | pixel smoothing of the screenshot taken                                                 å|
-| mirrored            | boolean  | false        | show camera preview and get the screenshot mirrored                                     |
-| minScreenshotHeight | number   |              | min height of screenshot                                                                |
-| minScreenshotWidth  | number   |              | min width of screenshot                                                                 |
-| onUserMedia         | function | noop         | callback for when component receives a media stream                                     |
-| onUserMediaError    | function | noop         | callback for when component can't receive a media stream with MediaStreamError param    |
-| screenshotFormat    | string   | 'image/webp' | format of screenshot                                                                    |
-| screenshotQuality   | number   | 0.92         | quality of screenshot(0 to 1)                                                           |
-| videoConstraints    | object   |              | MediaStreamConstraints(s) for the video                                                 |
+| prop                      | type     | default      | notes                                                                                   |
+| ------------------------- | -------- | ------------ | --------------------------------------------------------------------------------------- |
+| audio                     | boolean  | true         | enable/disable audio                                                                    |
+| audioConstraints          | object   |              | MediaStreamConstraint(s) for the audio                                                  |
+| forceScreenshotSourceSize | boolean  | false        | uses size of underlying source video stream (and thus ignores other size related props) |
+| imageSmoothing            | boolean  | true         | pixel smoothing of the screenshot taken                                                 |
+| mirrored                  | boolean  | false        | show camera preview and get the screenshot mirrored                                     |
+| minScreenshotHeight       | number   |              | min height of screenshot                                                                |
+| minScreenshotWidth        | number   |              | min width of screenshot                                                                 |
+| onUserMedia               | function | noop         | callback for when component receives a media stream                                     |
+| onUserMediaError          | function | noop         | callback for when component can't receive a media stream with MediaStreamError param    |
+| screenshotFormat          | string   | 'image/webp' | format of screenshot                                                                    |
+| screenshotQuality         | number   | 0.92         | quality of screenshot(0 to 1)                                                           |
+| videoConstraints          | object   |              | MediaStreamConstraints(s) for the video                                                 |
 
 ### Methods
 
