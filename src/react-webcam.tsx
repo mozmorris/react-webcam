@@ -33,8 +33,8 @@ export default class Webcam extends React.Component<WebcamProps & React.HTMLAttr
     audio: true,
     imageSmoothing: true,
     mirrored: false,
-    onUserMedia: () => {},
-    onUserMediaError: () => {},
+    onUserMedia: () => { },
+    onUserMediaError: () => { },
     screenshotFormat: "image/webp",
     screenshotQuality: 0.92,
   };
@@ -85,9 +85,9 @@ export default class Webcam extends React.Component<WebcamProps & React.HTMLAttr
 
     if (
       JSON.stringify(nextProps.audioConstraints) !==
-        JSON.stringify(props.audioConstraints) ||
+      JSON.stringify(props.audioConstraints) ||
       JSON.stringify(nextProps.videoConstraints) !==
-        JSON.stringify(props.videoConstraints)
+      JSON.stringify(props.videoConstraints)
     ) {
       this.requestUserMedia();
     }
@@ -159,15 +159,20 @@ export default class Webcam extends React.Component<WebcamProps & React.HTMLAttr
     const { ctx, canvas } = this;
 
     if (ctx) {
+      // mirror the screenshot
       if (props.mirrored) {
         ctx.translate(canvas.width, 0);
         ctx.scale(-1, 1);
-      } else {
-        ctx.translate(0, 0);
-        ctx.scale(1, 1);
       }
+
       ctx.imageSmoothingEnabled = props.imageSmoothing;
       ctx.drawImage(this.video, 0, 0, canvas.width, canvas.height);
+
+      // invert mirroring
+      if (props.mirrored) {
+        ctx.scale(-1, 1);
+        ctx.translate(-canvas.width, 0);
+      }
     }
 
     return canvas;
