@@ -39,12 +39,12 @@ function hasGetUserMedia() {
   return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
 }
 
-interface WebcamProps {
+export interface WebcamProps {
   audio: boolean;
   audioConstraints?: MediaStreamConstraints["audio"];
-  forceScreenshotSourceSize?: boolean;
+  forceScreenshotSourceSize: boolean;
   imageSmoothing: boolean;
-  mirrored?: boolean;
+  mirrored: boolean;
   minScreenshotHeight?: number;
   minScreenshotWidth?: number;
   onUserMedia: () => void;
@@ -71,15 +71,15 @@ export default class Webcam extends React.Component<WebcamProps & React.HTMLAttr
     screenshotQuality: 0.92,
   };
 
-  static mountedInstances: Webcam[] = [];
+  private static mountedInstances: Webcam[] = [];
 
-  static userMediaRequested = false;
+  private static userMediaRequested = false;
 
-  canvas: HTMLCanvasElement | null = null;
+  private canvas: HTMLCanvasElement | null = null;
 
-  ctx: CanvasRenderingContext2D | null = null;
+  private ctx: CanvasRenderingContext2D | null = null;
 
-  stream: MediaStream;
+  stream: MediaStream | null;
 
   video: HTMLVideoElement | null;
 
@@ -145,11 +145,13 @@ export default class Webcam extends React.Component<WebcamProps & React.HTMLAttr
 
     Webcam.userMediaRequested = false;
     if (Webcam.mountedInstances.length === 0 && state.hasUserMedia) {
-      if (this.stream.getVideoTracks && this.stream.getAudioTracks) {
-        this.stream.getVideoTracks().map(track => track.stop());
-        this.stream.getAudioTracks().map(track => track.stop());
-      } else {
-        ((this.stream as unknown) as MediaStreamTrack).stop();
+      if (this.stream) {
+        if (this.stream.getVideoTracks && this.stream.getAudioTracks) {
+          this.stream.getVideoTracks().map(track => track.stop());
+          this.stream.getAudioTracks().map(track => track.stop());
+        } else {
+          ((this.stream as unknown) as MediaStreamTrack).stop();
+        }
       }
 
       if (state.src) {
@@ -225,7 +227,7 @@ export default class Webcam extends React.Component<WebcamProps & React.HTMLAttr
     return canvas;
   }
 
-  requestUserMedia() {
+  private requestUserMedia() {
     const { props } = this;
 
     const sourceSelected = (audioConstraints, videoConstraints) => {
@@ -308,7 +310,7 @@ export default class Webcam extends React.Component<WebcamProps & React.HTMLAttr
     Webcam.userMediaRequested = true;
   }
 
-  handleUserMedia(err, stream?: MediaStream) {
+  private handleUserMedia(err, stream?: MediaStream) {
     const { props } = this;
 
     if (err || !stream) {
