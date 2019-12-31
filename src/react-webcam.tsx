@@ -42,6 +42,7 @@ function hasGetUserMedia() {
 interface WebcamProps {
   audio: boolean;
   audioConstraints?: MediaStreamConstraints["audio"];
+  forceScreenshotSourceSize?: boolean;
   imageSmoothing: boolean;
   mirrored?: boolean;
   minScreenshotHeight?: number;
@@ -61,6 +62,7 @@ interface WebcamState {
 export default class Webcam extends React.Component<WebcamProps & React.HTMLAttributes<HTMLVideoElement>, WebcamState> {
   static defaultProps = {
     audio: true,
+    forceScreenshotSourceSize: false,
     imageSmoothing: true,
     mirrored: false,
     onUserMedia: () => { },
@@ -73,7 +75,7 @@ export default class Webcam extends React.Component<WebcamProps & React.HTMLAttr
 
   static userMediaRequested = false;
 
-  canvas: HTMLCanvasElement;
+  canvas: HTMLCanvasElement | null = null;
 
   ctx: CanvasRenderingContext2D | null = null;
 
@@ -113,12 +115,25 @@ export default class Webcam extends React.Component<WebcamProps & React.HTMLAttr
       return;
     }
 
-    if (
+    const audioConstraintsChanged =
       JSON.stringify(nextProps.audioConstraints) !==
-      JSON.stringify(props.audioConstraints) ||
+      JSON.stringify(props.audioConstraints);
+    const videoConstraintsChanged =
       JSON.stringify(nextProps.videoConstraints) !==
-      JSON.stringify(props.videoConstraints)
+      JSON.stringify(props.videoConstraints);
+    const minScreenshotWidthChanged =
+      nextProps.minScreenshotWidth !== props.minScreenshotWidth;
+    const minScreenshotHeightChanged =
+      nextProps.minScreenshotHeight !== props.minScreenshotHeight;
+    if (
+      videoConstraintsChanged ||
+      minScreenshotWidthChanged ||
+      minScreenshotHeightChanged
     ) {
+      this.canvas = null;
+      this.ctx = null;
+    }
+    if (audioConstraintsChanged || videoConstraintsChanged) {
       this.requestUserMedia();
     }
   }
@@ -165,30 +180,32 @@ export default class Webcam extends React.Component<WebcamProps & React.HTMLAttr
     if (!state.hasUserMedia || !this.video.videoHeight) return null;
 
     if (!this.ctx) {
-      const canvas = document.createElement("canvas");
-      const aspectRatio = this.video.videoWidth / this.video.videoHeight;
+      let canvasWidth = this.video.videoWidth;
+      let canvasHeight = this.video.videoHeight;
+      if (!this.props.forceScreenshotSourceSize) {
+        const aspectRatio = canvasWidth / canvasHeight;
 
-      let canvasWidth = props.minScreenshotWidth || this.video.clientWidth;
-      let canvasHeight = canvasWidth / aspectRatio;
+        canvasWidth = props.minScreenshotWidth || this.video.clientWidth;
+        canvasHeight = canvasWidth / aspectRatio;
 
-      if (
-        props.minScreenshotHeight &&
-        canvasHeight < props.minScreenshotHeight
-      ) {
-        canvasHeight = props.minScreenshotHeight;
-        canvasWidth = canvasHeight * aspectRatio;
+        if (
+          props.minScreenshotHeight &&
+          canvasHeight < props.minScreenshotHeight
+        ) {
+          canvasHeight = props.minScreenshotHeight;
+          canvasWidth = canvasHeight * aspectRatio;
+        }
       }
 
-      canvas.width = canvasWidth;
-      canvas.height = canvasHeight;
-
-      this.canvas = canvas;
-      this.ctx = canvas.getContext("2d");
+      this.canvas = document.createElement("canvas");
+      this.canvas.width = canvasWidth;
+      this.canvas.height = canvasHeight;
+      this.ctx = this.canvas.getContext("2d");
     }
 
     const { ctx, canvas } = this;
 
-    if (ctx) {
+    if (ctx && canvas) {
       // mirror the screenshot
       if (props.mirrored) {
         ctx.translate(canvas.width, 0);
@@ -323,6 +340,7 @@ export default class Webcam extends React.Component<WebcamProps & React.HTMLAttr
 
     const {
       audio,
+      forceScreenshotSourceSize,
       onUserMedia,
       onUserMediaError,
       screenshotFormat,
