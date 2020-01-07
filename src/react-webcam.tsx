@@ -2,6 +2,10 @@ import * as React from "react";
 
 // polyfill based on https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
 (function polyfillGetUserMedia() {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
   // Older browsers might not implement mediaDevices at all, so we set an empty object first
   if (navigator.mediaDevices === undefined) {
     (navigator as any).mediaDevices = {};
