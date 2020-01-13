@@ -247,14 +247,10 @@ export default class Webcam extends React.Component<WebcamProps & React.HTMLAttr
       navigator.mediaDevices
         .getUserMedia(constraints)
         .then(stream => {
-          Webcam.mountedInstances.forEach(instance =>
-            instance.handleUserMedia(null, stream)
-          );
+          this.handleUserMedia(null, stream);
         })
         .catch(e => {
-          Webcam.mountedInstances.forEach(instance =>
-            instance.handleUserMedia(e)
-          );
+          this.handleUserMedia(e);
         });
     };
 
