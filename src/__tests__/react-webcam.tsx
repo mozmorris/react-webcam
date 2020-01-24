@@ -25,6 +25,8 @@ it('renders correctly', () => {
           height: 120,
           frameRate: 15
         }}
+        height={1000}
+        width={1000}
       />
     )
     .toJSON();

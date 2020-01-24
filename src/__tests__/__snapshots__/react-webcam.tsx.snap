@@ -4,6 +4,7 @@ exports[`renders correctly 1`] = `
 <video
   autoPlay={true}
   className="react-webcam"
+  height={1000}
   muted={false}
   playsInline={true}
   style={
@@ -11,5 +12,6 @@ exports[`renders correctly 1`] = `
       "transform": "rotate(180deg)",
     }
   }
+  width={1000}
 />
 `;

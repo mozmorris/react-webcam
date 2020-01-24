@@ -43,7 +43,7 @@ function hasGetUserMedia() {
   return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
 }
 
-export interface WebcamProps {
+export interface WebcamProps extends React.HTMLProps<HTMLVideoElement> {
   audio: boolean;
   audioConstraints?: MediaStreamConstraints["audio"];
   forceScreenshotSourceSize: boolean;
