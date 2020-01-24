@@ -63,7 +63,7 @@ interface WebcamState {
   src?: string;
 }
 
-export default class Webcam extends React.Component<WebcamProps & React.HTMLAttributes<HTMLVideoElement>, WebcamState> {
+export default class Webcam extends React.Component<WebcamProps, WebcamState> {
   static defaultProps = {
     audio: true,
     forceScreenshotSourceSize: false,
