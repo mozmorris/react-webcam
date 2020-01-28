@@ -75,10 +75,6 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
     screenshotQuality: 0.92,
   };
 
-  private static mountedInstances: Webcam[] = [];
-
-  private static userMediaRequested = false;
-
   private canvas: HTMLCanvasElement | null = null;
 
   private ctx: CanvasRenderingContext2D | null = null;
@@ -103,9 +99,7 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
       return;
     }
 
-    Webcam.mountedInstances.push(this);
-
-    if (!state.hasUserMedia && !Webcam.userMediaRequested) {
+    if (!state.hasUserMedia) {
       this.requestUserMedia();
     }
   }
@@ -144,11 +138,8 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
 
   componentWillUnmount() {
     const { state } = this;
-    const index = Webcam.mountedInstances.indexOf(this);
-    Webcam.mountedInstances.splice(index, 1);
 
-    Webcam.userMediaRequested = false;
-    if (Webcam.mountedInstances.length === 0 && state.hasUserMedia) {
+    if (state.hasUserMedia) {
       if (this.stream) {
         if (this.stream.getVideoTracks && this.stream.getAudioTracks) {
           this.stream.getVideoTracks().map(track => track.stop());
@@ -247,14 +238,10 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
       navigator.mediaDevices
         .getUserMedia(constraints)
         .then(stream => {
-          Webcam.mountedInstances.forEach(instance =>
-            instance.handleUserMedia(null, stream)
-          );
+          this.handleUserMedia(null, stream);
         })
         .catch(e => {
-          Webcam.mountedInstances.forEach(instance =>
-            instance.handleUserMedia(e)
-          );
+          this.handleUserMedia(e);
         });
     };
 
@@ -310,8 +297,6 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
         );
       });
     }
-
-    Webcam.userMediaRequested = true;
   }
 
   private handleUserMedia(err, stream?: MediaStream) {
