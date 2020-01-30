@@ -1,6 +1,7 @@
 /* @flow */
 import React, { Component } from 'react';
 import { createMediaRecorder, startRecording } from './video';
+import enumerateDevices from 'enumerate-devices';
 
 /*
 Deliberately ignoring the old api, due to very inconsistent behaviour
@@ -8,6 +9,35 @@ Deliberately ignoring the old api, due to very inconsistent behaviour
 const mediaDevices = navigator.mediaDevices;
 const getUserMedia = mediaDevices && mediaDevices.getUserMedia ? mediaDevices.getUserMedia.bind(mediaDevices) : null;
 const hasGetUserMedia = !!(getUserMedia);
+
+const isChrome = navigator.vendor === 'Google Inc.';
+const isWindows = navigator.platform === 'Win32';
+/*
+Chrome on Surface Pro will not respect the facingMode constraint.
+This function will filter devices to find the deviceId of the rear camera and use that as a constraint instead.
+*/
+const environmentCamConstraint = (constraints) => {
+  if (constraints && typeof constraints.video === 'object') {
+    let face = constraints.video.facingMode;
+    face = face && ((typeof face === 'object') ? face : {ideal: face});
+    let matches = [];
+    if (face.exact === 'environment' || face.ideal === 'environment') {
+      matches = ['back', 'rear'];
+    }
+    if (matches) {
+      return enumerateDevices().then(devices => {
+        devices = devices.filter(d => d.kind === 'videoinput');
+        let dev = devices.find(d => matches.some(match =>
+          d.label.toLocaleLowerCase().includes(match)));
+        if (dev) {
+          constraints.video.deviceId = face.exact ? {exact: dev.deviceId} : {ideal: dev.deviceId};
+          delete constraints.video.facingMode;
+        }
+        return constraints;
+      });
+    }
+  }
+};
 
 const DEBUG = false;
 const debugConsole = (...args) => {
@@ -149,7 +179,11 @@ export default class Webcam extends Component<CameraType, State> {
     };
     Webcam.userMediaRequested = true;
     try {
+      if (isChrome && isWindows && (facingMode === "environment" || (facingMode && facingMode.exact === "environment" ))) {
+        this.stream = await getUserMedia(await environmentCamConstraint(constraints));
+      } else {
         this.stream = await getUserMedia(constraints);
+      }
         if (this.stream) {
             onSuccess(this.stream);
         }
