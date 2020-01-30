@@ -1,3 +1,7 @@
+## 0.1.14
+### Added
+- Added alternative constraint workaround to evoke the rear camera on Surface Pro since it will not respect facingMode constraint
+
 ## 0.1.13
 ### Added
 - Check for stream first before trying for `getVideoTracks` or `getAudioTracks`
