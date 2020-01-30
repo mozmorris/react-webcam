@@ -119,6 +119,40 @@ class WebcamCapture extends React.Component {
 
 For more information on `facingMode`, please see the MDN web docs [https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints/facingMode](https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints/facingMode)
 
+## Show all cameras by deviceId 
+
+```javascript
+const WebcamCapture = () => {
+  const [deviceId, setDeviceId] = React.useState({});
+  const [devices, setDevices] = React.useState([]);
+
+  const handleDevices = React.useCallback(
+    mediaDevices =>
+      setDevices(mediaDevices.filter(({ kind }) => kind === "videoinput")),
+    [setDevices]
+  );
+
+  React.useEffect(
+    () => {
+      navigator.mediaDevices.enumerateDevices().then(handleDevices);
+    },
+    [handleDevices]
+  );
+
+  return (
+    <>
+      {devices.map((device, key) => (
+          <div>
+            <Webcam audio={false} videoConstraints={{ deviceId: device.deviceId }} />
+            {device.label || `Device ${key + 1}`}
+          </div>
+
+        ))}
+    </>
+  );
+};
+```
+
 ## Using within an iframe
 
 The Webcam component will fail to load when used inside a cross-origin iframe in newer version of Chrome (> 64). In order to overcome this security restriction a special `allow` attribute needs to be added to the iframe tag specifying `microphone` and `camera` as the required permissions like in the below example:
