@@ -1,3 +1,7 @@
+## 0.1.14
+### Fixed
+- Update WebM container for VP8 video to include Opus audio so that MediaRecorder works for Firefox >= 71
+
 ## 0.1.13
 ### Added
 - Check for stream first before trying for `getVideoTracks` or `getAudioTracks`
