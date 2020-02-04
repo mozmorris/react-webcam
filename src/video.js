@@ -11,7 +11,12 @@ const handleStop = (event) => {
 };
 
 const videoOptions = () => {
-  let mimeTypes = ['video/webm;codecs=vp9', 'video/webm;codecs=vp8,opus', 'video/webm'];
+  let mimeTypes = [
+    'video/webm;codecs=vp9',
+    'video/webm;codecs=vp8,opus',
+    'video/webm;codecs=vp8',
+    'video/webm'
+  ];
   let mimeType = '';
   for (let type in mimeTypes) {
     if (MediaRecorder.isTypeSupported(mimeTypes[type])) {
