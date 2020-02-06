@@ -1,6 +1,10 @@
 ## 0.1.14
+
 ### Added
 - Added alternative constraint workaround to evoke the rear camera on Surface Pro since it will not respect facingMode constraint
+
+### Fixed
+- Added WebM container for VP8 video to include Opus audio so that MediaRecorder works for Firefox >= 71
 
 ## 0.1.13
 ### Added
