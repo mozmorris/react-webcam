@@ -132,11 +132,16 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
       this.ctx = null;
     }
     if (audioConstraintsChanged || videoConstraintsChanged) {
+      this.stopAndCleanup();
       this.requestUserMedia();
     }
   }
 
   componentWillUnmount() {
+    this.stopAndCleanup();
+  }
+
+  private stopAndCleanup() {
     const { state } = this;
 
     if (state.hasUserMedia) {
