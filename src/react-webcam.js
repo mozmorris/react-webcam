@@ -10,12 +10,6 @@ const mediaDevices = navigator.mediaDevices;
 const getUserMedia = mediaDevices && mediaDevices.getUserMedia ? mediaDevices.getUserMedia.bind(mediaDevices) : null;
 const hasGetUserMedia = !!(getUserMedia);
 
-// These detections are necessary to determine when to apply the workaround on Chrome for Surface.
-const isChrome = navigator.vendor === 'Google Inc.';
-// To detect an environment or rear facing camera, the constraint can be passed in as {facingMode: "environment"} or {facingMode: {exact: "environment"}};
-// this will account for either situation. "facingMode &&" is necessary before checking facingMode.exact to avoid an error if facingMode is undefined
-const isHybrid = navigator.platform === 'Win32' && (facingMode === "environment" || (facingMode && facingMode.exact === "environment" ));
-
 /*
 Chrome on Surface Pro will not respect the facingMode constraint.
 This function will filter devices to find the deviceId of the rear camera and use that as a constraint instead.
@@ -158,6 +152,12 @@ export default class Webcam extends Component<CameraType, State> {
   async requestUserMedia() {
     if (!getUserMedia || !mediaDevices || Webcam.userMediaRequested) return;
     const { width, height, facingMode, audio, fallbackWidth, fallbackHeight } = this.props;
+
+    // These detections are necessary to determine when to apply the workaround on Chrome for Surface.
+    const isChrome = navigator.vendor === 'Google Inc.';
+    // To detect an environment or rear facing camera, the constraint can be passed in as {facingMode: "environment"} or {facingMode: {exact: "environment"}};
+    // this will account for either situation. "facingMode && facingMode.exact &&" is necessary before checking facingMode.exact to avoid an error if facingMode is undefined or doesn't contain the exact key
+    const isHybrid = navigator.platform === 'Win32' && (facingMode === "environment" || (facingMode && facingMode.exact && facingMode.exact === "environment" ));
 
     const constraints = this.getConstraints(width, height, facingMode, audio);
     const fallbackConstraints = this.getConstraints(fallbackWidth, fallbackHeight, facingMode, audio);
