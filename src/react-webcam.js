@@ -1,6 +1,7 @@
 /* @flow */
 import React, { Component } from 'react';
 import { createMediaRecorder, startRecording } from './video';
+import enumerateDevices from 'enumerate-devices';
 
 /*
 Deliberately ignoring the old api, due to very inconsistent behaviour
@@ -8,6 +9,33 @@ Deliberately ignoring the old api, due to very inconsistent behaviour
 const mediaDevices = navigator.mediaDevices;
 const getUserMedia = mediaDevices && mediaDevices.getUserMedia ? mediaDevices.getUserMedia.bind(mediaDevices) : null;
 const hasGetUserMedia = !!(getUserMedia);
+
+/*
+Chrome on Surface Pro will not respect the facingMode constraint.
+This function will filter devices to find the deviceId of the rear camera and use that as a constraint instead.
+*/
+const environmentCamConstraint = (constraints) => {
+  if (constraints && typeof constraints.video === 'object') {
+    let facingMode = constraints.video.facingMode;
+    facingMode = facingMode && ((typeof facingMode === 'object') ? facingMode : {ideal: facingMode});
+    let matches = [];
+    if (facingMode.exact === 'environment' || facingMode.ideal === 'environment') {
+      matches = ['back', 'rear'];
+    }
+    if (matches) {
+      return enumerateDevices().then(devices => {
+        devices = devices.filter(d => d.kind === 'videoinput');
+        let device = devices.find(d => matches.some(match =>
+          d.label.toLocaleLowerCase().includes(match)));
+        if (device) {
+          constraints.video.deviceId = facingMode.exact ? {exact: device.deviceId} : {ideal: device.deviceId};
+          delete constraints.video.facingMode;
+        }
+        return constraints;
+      });
+    }
+  }
+};
 
 const DEBUG = false;
 const debugConsole = (...args) => {
@@ -125,6 +153,12 @@ export default class Webcam extends Component<CameraType, State> {
     if (!getUserMedia || !mediaDevices || Webcam.userMediaRequested) return;
     const { width, height, facingMode, audio, fallbackWidth, fallbackHeight } = this.props;
 
+    // These detections are necessary to determine when to apply the workaround on Chrome for Surface.
+    const isChrome = navigator.vendor === 'Google Inc.';
+    // To detect an environment or rear facing camera, the constraint can be passed in as {facingMode: "environment"} or {facingMode: {exact: "environment"}};
+    // this will account for either situation. "facingMode && facingMode.exact &&" is necessary before checking facingMode.exact to avoid an error if facingMode is undefined or doesn't contain the exact key
+    const isHybrid = navigator.platform === 'Win32' && (facingMode === "environment" || (facingMode && facingMode.exact && facingMode.exact === "environment" ));
+
     const constraints = this.getConstraints(width, height, facingMode, audio);
     const fallbackConstraints = this.getConstraints(fallbackWidth, fallbackHeight, facingMode, audio);
 
@@ -149,7 +183,11 @@ export default class Webcam extends Component<CameraType, State> {
     };
     Webcam.userMediaRequested = true;
     try {
+      if (isChrome && isHybrid) {
+        this.stream = await getUserMedia(await environmentCamConstraint(constraints));
+      } else {
         this.stream = await getUserMedia(constraints);
+      }
         if (this.stream) {
             onSuccess(this.stream);
         }
