@@ -16,10 +16,10 @@ This function will filter devices to find the deviceId of the rear camera and us
 */
 const environmentCamConstraint = (constraints) => {
   if (constraints && typeof constraints.video === 'object') {
-    let face = constraints.video.facingMode;
-    face = face && ((typeof face === 'object') ? face : {ideal: face});
+    let facingMode = constraints.video.facingMode;
+    facingMode = facingMode && ((typeof facingMode === 'object') ? facingMode : {ideal: facingMode});
     let matches = [];
-    if (face.exact === 'environment' || face.ideal === 'environment') {
+    if (facingMode.exact === 'environment' || facingMode.ideal === 'environment') {
       matches = ['back', 'rear'];
     }
     if (matches) {
@@ -28,7 +28,7 @@ const environmentCamConstraint = (constraints) => {
         let device = devices.find(d => matches.some(match =>
           d.label.toLocaleLowerCase().includes(match)));
         if (device) {
-          constraints.video.deviceId = face.exact ? {exact: device.deviceId} : {ideal: device.deviceId};
+          constraints.video.deviceId = facingMode.exact ? {exact: device.deviceId} : {ideal: device.deviceId};
           delete constraints.video.facingMode;
         }
         return constraints;
