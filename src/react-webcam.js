@@ -10,8 +10,12 @@ const mediaDevices = navigator.mediaDevices;
 const getUserMedia = mediaDevices && mediaDevices.getUserMedia ? mediaDevices.getUserMedia.bind(mediaDevices) : null;
 const hasGetUserMedia = !!(getUserMedia);
 
+// These detections are necessary to determine when to apply the workaround on Chrome for Surface.
 const isChrome = navigator.vendor === 'Google Inc.';
-const isWindows = navigator.platform === 'Win32';
+// To detect an environment or rear facing camera, the constraint can be passed in as {facingMode: "environment"} or {facingMode: {exact: "environment"}};
+// this will account for either situation. "facingMode &&" is necessary before checking facingMode.exact to avoid an error if facingMode is undefined
+const isHybrid = navigator.platform === 'Win32' && (facingMode === "environment" || (facingMode && facingMode.exact === "environment" ));
+
 /*
 Chrome on Surface Pro will not respect the facingMode constraint.
 This function will filter devices to find the deviceId of the rear camera and use that as a constraint instead.
@@ -27,10 +31,10 @@ const environmentCamConstraint = (constraints) => {
     if (matches) {
       return enumerateDevices().then(devices => {
         devices = devices.filter(d => d.kind === 'videoinput');
-        let dev = devices.find(d => matches.some(match =>
+        let device = devices.find(d => matches.some(match =>
           d.label.toLocaleLowerCase().includes(match)));
-        if (dev) {
-          constraints.video.deviceId = face.exact ? {exact: dev.deviceId} : {ideal: dev.deviceId};
+        if (device) {
+          constraints.video.deviceId = face.exact ? {exact: device.deviceId} : {ideal: device.deviceId};
           delete constraints.video.facingMode;
         }
         return constraints;
@@ -179,7 +183,7 @@ export default class Webcam extends Component<CameraType, State> {
     };
     Webcam.userMediaRequested = true;
     try {
-      if (isChrome && isWindows && (facingMode === "environment" || (facingMode && facingMode.exact === "environment" ))) {
+      if (isChrome && isHybrid) {
         this.stream = await getUserMedia(await environmentCamConstraint(constraints));
       } else {
         this.stream = await getUserMedia(constraints);
