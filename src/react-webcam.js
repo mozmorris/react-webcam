@@ -207,12 +207,18 @@ export default class Webcam extends Component<CameraType, State> {
   handleUserMedia(stream: MediaStream) {
     const videoSettings = stream ? stream.getVideoTracks()[0].getSettings() : {}; // check for stream, assign empty object if none
     debugConsole('video track settings', videoSettings);
+    const facingMode = this.props.facingMode;
+    /* If the facingMode for the webcam was passed in as "environment" or {exact: "environment"} we don't want to mirror the video stream,
+    since we will be seeing  the stream of the rear camera*/
+    const isVideoStreamForRearCamera = (facingMode === "environment" || (facingMode && facingMode.exact && facingMode.exact === "environment" ));
+
     this.setState({
       hasUserMedia: true,
-      mirrored: videoSettings.facingMode === 'user'
+      mirrored: !isVideoStreamForRearCamera
+                && (videoSettings.facingMode === 'user'
                 /* #HACK desktop cameras seem to have `facingMode` undefined,
                 therefore we are assuming all desktop cameras are user facing*/
-                || !videoSettings.facingMode
+                || !videoSettings.facingMode)
     });
 
     this.props.onUserMedia();

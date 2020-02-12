@@ -1,3 +1,7 @@
+## 0.1.16
+### Fixed
+- Resolved the video stream mirroring problem for the rear camera on certain browsers
+
 ## 0.1.15
 ### Added
 - Added alternative constraint workaround to evoke the rear camera of Surface Pro in Chrome since it will not respect facingMode constraint
