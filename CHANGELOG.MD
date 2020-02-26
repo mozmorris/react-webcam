@@ -1,3 +1,7 @@
+## 0.1.17
+### Fixed
+- Added label option to the Chrome workaround to support HP Elite X2
+
 ## 0.1.16
 ### Fixed
 - Resolved the video stream mirroring problem for the rear camera on certain browsers

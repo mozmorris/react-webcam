@@ -20,7 +20,7 @@ const environmentCamConstraint = (constraints) => {
     facingMode = facingMode && ((typeof facingMode === 'object') ? facingMode : {ideal: facingMode});
     let matches = [];
     if (facingMode.exact === 'environment' || facingMode.ideal === 'environment') {
-      matches = ['back', 'rear'];
+      matches = ['back', 'rear', 'world'];
     }
     if (matches) {
       return enumerateDevices().then(devices => {
