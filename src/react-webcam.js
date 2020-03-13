@@ -153,6 +153,9 @@ export default class Webcam extends Component<CameraType, State> {
     if (!getUserMedia || !mediaDevices || Webcam.userMediaRequested) return;
     const { width, height, facingMode, audio, fallbackWidth, fallbackHeight } = this.props;
 
+    // See comment below (lines 240-255) RE: stopDelay value
+    const stopDelay = 1000;
+
     // These detections are necessary to determine when to apply the workaround on Chrome for Surface.
     const isChrome = navigator.vendor === 'Google Inc.';
     // To detect an environment or rear facing camera, the constraint can be passed in as {facingMode: "environment"} or {facingMode: {exact: "environment"}};
@@ -178,10 +181,18 @@ export default class Webcam extends Component<CameraType, State> {
             Webcam.mountedInstances.forEach((instance) => instance.handleError(e));
         } else {
             hasTriedFallbackConstraints = true;
+            if (this.stream) {
+              console.warn('retrying getUserMedia with fallback constraints - stream active',this.stream);
+              setTimeout(() => stopStreamTracks(this.stream), stopDelay);
+            }
             getUserMedia(fallbackConstraints).then(onSuccess).catch(onError);
         }
     };
     Webcam.userMediaRequested = true;
+    if (this.stream) {
+      console.warn('trying getUserMedia - stream active',this.stream);
+      setTimeout(() => stopStreamTracks(this.stream), stopDelay);
+    }
     try {
       if (isChrome && isHybrid) {
         this.stream = await getUserMedia(await environmentCamConstraint(constraints));
