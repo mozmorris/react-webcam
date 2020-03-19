@@ -153,6 +153,13 @@ export default class Webcam extends Component<CameraType, State> {
     if (!getUserMedia || !mediaDevices || Webcam.userMediaRequested) return;
     const { width, height, facingMode, audio, fallbackWidth, fallbackHeight } = this.props;
 
+    // See comment below (lines 240-255) RE: stopDelay value
+    const stopDelay = 1000;
+    if (this.stream) {
+      console.warn('requestUserMedia: this.stream active - stopping stream tracks first...',this.stream);
+      setTimeout(() => stopStreamTracks(this.stream), stopDelay);
+    }
+
     // These detections are necessary to determine when to apply the workaround on Chrome for Surface.
     const isChrome = navigator.vendor === 'Google Inc.';
     // To detect an environment or rear facing camera, the constraint can be passed in as {facingMode: "environment"} or {facingMode: {exact: "environment"}};
@@ -171,9 +178,11 @@ export default class Webcam extends Component<CameraType, State> {
 
     let hasTriedFallbackConstraints;
     const onError = e => {
+        console.log('requestUserMedia onError - error:',e);
         Webcam.userMediaRequested = false;
         logError(e);
         const isPermissionError = permissionErrors.includes(e.name);
+        console.log('requestUserMedia - isPermissionError:',isPermissionError);
         if (isPermissionError || hasTriedFallbackConstraints) {
             Webcam.mountedInstances.forEach((instance) => instance.handleError(e));
         } else {
@@ -206,6 +215,7 @@ export default class Webcam extends Component<CameraType, State> {
 
   handleUserMedia(stream: MediaStream) {
     const videoSettings = stream ? stream.getVideoTracks()[0].getSettings() : {}; // check for stream, assign empty object if none
+    console.log('video track settings', videoSettings);
     debugConsole('video track settings', videoSettings);
     const facingMode = this.props.facingMode;
     /* If the facingMode for the webcam was passed in as "environment" or {exact: "environment"} we don't want to mirror the video stream,
