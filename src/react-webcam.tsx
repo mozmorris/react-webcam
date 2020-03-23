@@ -59,8 +59,11 @@ export default class Webcam extends React.Component<WebcamProps & React.HTMLAttr
   }
 
   componentDidMount() {
-    if (!hasGetUserMedia()) return;
-
+    if (!hasGetUserMedia()) {
+      this.props.onUserMediaError('There is not userMedia available');
+      return;
+    }
+  
     const { state } = this;
 
     Webcam.mountedInstances.push(this);
