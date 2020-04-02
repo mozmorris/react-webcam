@@ -43,8 +43,8 @@ const debugConsole = (...args) => {
 };
 
 type constraintTypes = number | Object;
-type facingModeLiterals = 'user' | 'environment'
-type facingModeType = facingModeLiterals | { exact: facingModeLiterals}
+type facingModeLiterals = 'user' | 'environment';
+type facingModeType = facingModeLiterals | { exact: facingModeLiterals};
 
 type CameraType = {
   audio?: boolean,
@@ -198,7 +198,7 @@ export default class Webcam extends Component<CameraType, State> {
         this.stream = await getUserMedia(constraints);
       }
         if (this.stream) {
-            onSuccess(this.stream);
+          onSuccess(this.stream);
         }
     } catch (e) {
         onError(e);
