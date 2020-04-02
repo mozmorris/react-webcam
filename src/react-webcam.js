@@ -178,11 +178,9 @@ export default class Webcam extends Component<CameraType, State> {
 
     let hasTriedFallbackConstraints;
     const onError = e => {
-        console.log('requestUserMedia onError - error:',e);
         Webcam.userMediaRequested = false;
         logError(e);
         const isPermissionError = permissionErrors.includes(e.name);
-        console.log('requestUserMedia - isPermissionError:',isPermissionError);
         if (isPermissionError || hasTriedFallbackConstraints) {
             Webcam.mountedInstances.forEach((instance) => instance.handleError(e));
         } else {
