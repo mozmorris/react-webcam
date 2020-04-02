@@ -1,3 +1,7 @@
+## 0.1.18
+### Fixed
+- Fixed camera stream not getting on some Android devices, e.g. Motorola G5, Samsung Galaxy A6
+
 ## 0.1.17
 ### Fixed
 - Added label option to the Chrome workaround to support HP Elite X2
