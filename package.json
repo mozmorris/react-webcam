@@ -1,6 +1,6 @@
 {
   "name": "react-webcam-onfido",
-  "version": "0.1.17",
+  "version": "0.1.18",
   "description": "React webcam component",
   "main": "dist/react-webcam.js",
   "scripts": {
@@ -34,7 +34,7 @@
     "preact-compat": ">=3.0.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.4.3",
+    "@babel/cli": "^7.8.4",
     "@babel/core": "^7.0.0",
     "@babel/plugin-proposal-class-properties": "^7.0.0",
     "@babel/plugin-proposal-decorators": "^7.0.0",
@@ -59,7 +59,7 @@
     "html-webpack-plugin": "^2.29.0",
     "travis-weigh-in": "^1.0.2",
     "webpack": "^3.10.0",
-    "webpack-dev-server": "^2.9.6"
+    "webpack-dev-server": "^2.11.5"
   },
   "dependencies": {
     "@babel/runtime-corejs3": "^7.4.3",

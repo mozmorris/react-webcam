@@ -43,8 +43,8 @@ const debugConsole = (...args) => {
 };
 
 type constraintTypes = number | Object;
-type facingModeLiterals = 'user' | 'environment'
-type facingModeType = facingModeLiterals | { exact: facingModeLiterals}
+type facingModeLiterals = 'user' | 'environment';
+type facingModeType = facingModeLiterals | { exact: facingModeLiterals};
 
 type CameraType = {
   audio?: boolean,
@@ -189,7 +189,7 @@ export default class Webcam extends Component<CameraType, State> {
         this.stream = await getUserMedia(constraints);
       }
         if (this.stream) {
-            onSuccess(this.stream);
+          onSuccess(this.stream);
         }
     } catch (e) {
         onError(e);
@@ -206,6 +206,7 @@ export default class Webcam extends Component<CameraType, State> {
 
   handleUserMedia(stream: MediaStream) {
     const videoSettings = stream ? stream.getVideoTracks()[0].getSettings() : {}; // check for stream, assign empty object if none
+    this.stream = stream;
     debugConsole('video track settings', videoSettings);
     const facingMode = this.props.facingMode;
     /* If the facingMode for the webcam was passed in as "environment" or {exact: "environment"} we don't want to mirror the video stream,
