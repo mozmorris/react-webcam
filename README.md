@@ -54,6 +54,15 @@ The props here are specific to this component but one can pass any prop to the u
 
 [CodePen demo](https://codepen.io/mozmorris/pen/gOOoqpw)
 
+### The Constraints
+
+We can build a constraints object by passing it to the videoConstraints prop. This gets passed into getUserMedia method. Please take a look at the MDN docs to get an understanding how this works.
+
+https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
+https://developer.mozilla.org/en-US/docs/Web/API/Media_Streams_API/Constraints
+
+As an example take a look at this [CodePen demo](https://codepen.io/mozmorris/pen/GRpEQwK?editors=0010) which shows how to build a custom aspect ratio for the video.
+
 ```javascript
 const videoConstraints = {
   width: 1280,
@@ -119,7 +128,7 @@ class WebcamCapture extends React.Component {
 
 For more information on `facingMode`, please see the MDN web docs [https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints/facingMode](https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints/facingMode)
 
-## Show all cameras by deviceId 
+## Show all cameras by deviceId
 
 ```javascript
 const WebcamCapture = () => {
