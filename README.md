@@ -22,7 +22,7 @@ https://codepen.io/mozmorris/pen/JLZdoP
 
 ## Usage
 
-```javascript
+```jsx
 import React from "react";
 import Webcam from "react-webcam";
 
@@ -63,7 +63,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/Media_Streams_API/Constraints
 
 As an example take a look at this [CodePen demo](https://codepen.io/mozmorris/pen/GRpEQwK?editors=0010) which shows how to build a custom aspect ratio for the video.
 
-```javascript
+```jsx
 const videoConstraints = {
   width: 1280,
   height: 720,
@@ -100,7 +100,7 @@ const WebcamCapture = () => {
 
 ### User/Selfie/forward facing camera
 
-```javascript
+```jsx
 class WebcamCapture extends React.Component {
   render() {
     const videoConstraints = {
@@ -114,7 +114,7 @@ class WebcamCapture extends React.Component {
 
 ### Environment/Facing-Out camera
 
-```javascript
+```jsx
 class WebcamCapture extends React.Component {
   render() {
     const videoConstraints = {
@@ -130,7 +130,7 @@ For more information on `facingMode`, please see the MDN web docs [https://devel
 
 ## Show all cameras by deviceId
 
-```javascript
+```jsx
 const WebcamCapture = () => {
   const [deviceId, setDeviceId] = React.useState({});
   const [devices, setDevices] = React.useState([]);
@@ -170,7 +170,7 @@ https://codepen.io/mozmorris/pen/yLYKzyp?editors=0011
 
 The Webcam component will fail to load when used inside a cross-origin iframe in newer version of Chrome (> 64). In order to overcome this security restriction a special `allow` attribute needs to be added to the iframe tag specifying `microphone` and `camera` as the required permissions like in the below example:
 
-```
+```html
 <iframe src="https://my-website.com/page-with-webcam" allow="camera; microphone;"/>
 ```
 
