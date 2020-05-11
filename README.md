@@ -61,7 +61,7 @@ We can build a constraints object by passing it to the videoConstraints prop. Th
 https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
 https://developer.mozilla.org/en-US/docs/Web/API/Media_Streams_API/Constraints
 
-As an example take a look at this [CodePen demo](https://codepen.io/mozmorris/pen/GRpEQwK?editors=0010) which shows how to build a custom aspect ratio for the video.
+As an example take a look at this [CodePen demo https://codepen.io/mozmorris/pen/GRpEQwK?editors=0010](https://codepen.io/mozmorris/pen/GRpEQwK?editors=0010) which shows how to build a custom aspect ratio for the video.
 
 ```jsx
 const videoConstraints = {
