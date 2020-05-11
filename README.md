@@ -162,6 +162,10 @@ const WebcamCapture = () => {
 };
 ```
 
+## Recording a stream
+
+https://codepen.io/mozmorris/pen/yLYKzyp?editors=0011
+
 ## Using within an iframe
 
 The Webcam component will fail to load when used inside a cross-origin iframe in newer version of Chrome (> 64). In order to overcome this security restriction a special `allow` attribute needs to be added to the iframe tag specifying `microphone` and `camera` as the required permissions like in the below example:
