@@ -23,6 +23,8 @@ const environmentCamConstraint = (constraints) => {
       matches = ['back', 'rear', 'world'];
     }
     if (matches) {
+      // WARN: there is a bug in Safari 13.1 that affects subsequent calls to navigator.mediaDevices.enumerateDevices()
+      // https://bugs.webkit.org/show_bug.cgi?id=209580
       return enumerateDevices().then(devices => {
         devices = devices.filter(d => d.kind === 'videoinput');
         let device = devices.find(d => matches.some(match =>
