@@ -96,6 +96,12 @@ const WebcamCapture = () => {
 };
 ```
 
+## Capturing video
+
+It is posible to capture video with `<Webcam />` using the [MediaStream Recording API](https://developer.mozilla.org/en-US/docs/Web/API/MediaStream_Recording_API).
+
+You can find an exammple [here](https://codepen.io/mozmorris/pen/yLYKzyp?editors=0010).
+
 ## Choosing a camera
 
 ### User/Selfie/forward facing camera
