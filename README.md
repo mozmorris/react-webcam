@@ -5,6 +5,8 @@
 
 <img src="Logotype primary.png" width="70%" height="70%" />
 
+https://www.npmjs.com/package/react-webcam
+
 Webcam component for React. See [http://caniuse.com/#feat=stream](http://caniuse.com/#feat=stream)
 for browser compatibility.
 
