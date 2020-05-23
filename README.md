@@ -5,7 +5,7 @@
 
 <img src="Logotype primary.png" width="70%" height="70%" />
 
-Webcam component for React. See [this](http://caniuse.com/#feat=stream)
+Webcam component for React. See [http://caniuse.com/#feat=stream](http://caniuse.com/#feat=stream)
 for browser compatibility.
 
 Note: Browsers will throw an error if the page is loaded from insecure origin. I.e. Use https.
@@ -52,7 +52,7 @@ The props here are specific to this component but one can pass any prop to the u
 
 `getScreenshot` - Returns a base64 encoded string of the current webcam image. Example:
 
-[CodePen demo](https://codepen.io/mozmorris/pen/gOOoqpw)
+[https://codepen.io/mozmorris/pen/gOOoqpw](https://codepen.io/mozmorris/pen/gOOoqpw)
 
 ### The Constraints
 
@@ -100,7 +100,7 @@ const WebcamCapture = () => {
 
 It is posible to capture video with `<Webcam />` using the [MediaStream Recording API](https://developer.mozilla.org/en-US/docs/Web/API/MediaStream_Recording_API).
 
-You can find an exammple [here](https://codepen.io/mozmorris/pen/yLYKzyp?editors=0010).
+You can find an exammple [https://codepen.io/mozmorris/pen/yLYKzyp?editors=0010](https://codepen.io/mozmorris/pen/yLYKzyp?editors=0010).
 
 ## Choosing a camera
 
