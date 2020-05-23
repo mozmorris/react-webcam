@@ -1,4 +1,4 @@
-# Please follow the general troubleshooting steps first:
+## Please follow the general troubleshooting steps first:
 
 - [ ] Is your app running over HTTPS?
 - [ ] Have you tried running the demo (https://codepen.io/mozmorris/pen/JLZdoP) on your device?
