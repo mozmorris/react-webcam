@@ -51,7 +51,7 @@ export interface WebcamProps extends React.HTMLProps<HTMLVideoElement> {
   mirrored: boolean;
   minScreenshotHeight?: number;
   minScreenshotWidth?: number;
-  onUserMedia: () => void;
+  onUserMedia: (stream: MediaStream) => void;
   onUserMediaError: (error: string) => void;
   screenshotFormat: "image/webp" | "image/png" | "image/jpeg";
   screenshotQuality: number;
@@ -328,7 +328,7 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
       });
     }
 
-    props.onUserMedia();
+    props.onUserMedia(stream);
   }
 
   render() {
