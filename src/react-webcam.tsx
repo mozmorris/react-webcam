@@ -165,7 +165,7 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
     }
   }
 
-  getScreenshot(screenshotDimensions: ScreenshotDimensions | null = null) {
+  getScreenshot(screenshotDimensions?: ScreenshotDimensions) {
     const { state, props } = this;
 
     if (!state.hasUserMedia) return null;
@@ -177,7 +177,7 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
     );
   }
 
-  getCanvas(screenshotDimensions: ScreenshotDimensions | null = null) {
+  getCanvas(screenshotDimensions?: ScreenshotDimensions) {
     const { state, props } = this;
 
     if (!this.video) {
