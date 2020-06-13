@@ -43,6 +43,11 @@ function hasGetUserMedia() {
   return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
 }
 
+interface ScreenshotDimensions {
+  width: number;
+  height: number;
+}
+
 export interface WebcamProps extends React.HTMLProps<HTMLVideoElement> {
   audio: boolean;
   audioConstraints?: MediaStreamConstraints["audio"];
@@ -160,19 +165,19 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
     }
   }
 
-  getScreenshot() {
+  getScreenshot(screenshotDimensions?: ScreenshotDimensions) {
     const { state, props } = this;
 
     if (!state.hasUserMedia) return null;
 
-    const canvas = this.getCanvas();
+    const canvas = this.getCanvas(screenshotDimensions);
     return (
       canvas &&
       canvas.toDataURL(props.screenshotFormat, props.screenshotQuality)
     );
   }
 
-  getCanvas() {
+  getCanvas(screenshotDimensions?: ScreenshotDimensions) {
     const { state, props } = this;
 
     if (!this.video) {
@@ -200,8 +205,8 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
       }
 
       this.canvas = document.createElement("canvas");
-      this.canvas.width = canvasWidth;
-      this.canvas.height = canvasHeight;
+      this.canvas.width = screenshotDimensions?.width ||  canvasWidth;
+      this.canvas.height = screenshotDimensions?.height || canvasHeight;
       this.ctx = this.canvas.getContext("2d");
     }
 

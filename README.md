@@ -56,6 +56,12 @@ The props here are specific to this component but one can pass any prop to the u
 
 [https://codepen.io/mozmorris/pen/gOOoqpw](https://codepen.io/mozmorris/pen/gOOoqpw)
 
+You may also pass in an optional `dimensions` object:
+
+```
+getScreenshot({width: 1920, height: 1080});
+```
+
 ### The Constraints
 
 We can build a constraints object by passing it to the videoConstraints prop. This gets passed into getUserMedia method. Please take a look at the MDN docs to get an understanding how this works.
