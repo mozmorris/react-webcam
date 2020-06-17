@@ -220,7 +220,7 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
       }
 
       ctx.imageSmoothingEnabled = props.imageSmoothing;
-      ctx.drawImage(this.video, 0, 0, canvas.width, canvas.height);
+      ctx.drawImage(this.video, 0, 0, screenshotDimensions?.width || canvas.width, screenshotDimensions?.height || canvas.height);
 
       // invert mirroring
       if (props.mirrored) {
