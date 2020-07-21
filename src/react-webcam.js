@@ -53,7 +53,7 @@ const extractCamerasFromDevices = (devices) => {
       }
 
       const label = videoDevice.label !== null ? videoDevice.label : "";
-      const camera = { 
+      const camera = {
         deviceId: videoDevice.deviceId,
         label,
         cameraType: isBackCameraLabel(label) ? 'back' : 'front'
@@ -199,7 +199,6 @@ export default class Webcam extends Component<CameraType, State> {
     // if `{facingMode: 'user'}` Firefox will still allow the user to choose which camera to use (Front camera will be the first option)
     // if `{facingMode: {exact: 'user'}}` Firefox won't give the user a choice and will show the front camera
     const constraints: Object = { video: { facingMode }, audio };
-    console.log(facingMode)
 
     if (width) {
       constraints.video.width = parseInt(width, 10) || width; // some devices need a Number type
@@ -234,7 +233,6 @@ export default class Webcam extends Component<CameraType, State> {
         if (isPermissionError || hasTriedFallbackConstraints) {
             Webcam.mountedInstances.forEach((instance) => instance.handleError(e));
         } else {
-          console.log('about to try constraint')
             hasTriedFallbackConstraints = true;
             getUserMedia(fallbackConstraints).then(onSuccess).catch(onError);
         }
@@ -259,7 +257,6 @@ export default class Webcam extends Component<CameraType, State> {
   }
 
   handleUserMedia(stream: MediaStream) {
-    console.log('gothere');
     const videoSettings = stream ? stream.getVideoTracks()[0].getSettings() : {}; // check for stream, assign empty object if none
     this.stream = stream;
     debugConsole('video track settings', videoSettings);

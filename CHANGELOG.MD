@@ -1,3 +1,7 @@
+## 0.1.20
+### Fixed
+- Support multiple rear cameras
+
 ## 0.1.19
 ### Added
 - Added warning about Safari 13.1 bug that affects devices result from multiple calls to navigator.mediaDevices.enumerateDevices()
