@@ -11,8 +11,14 @@ const mediaDevices = navigator.mediaDevices;
 const getUserMedia = mediaDevices && mediaDevices.getUserMedia ? mediaDevices.getUserMedia.bind(mediaDevices) : null;
 const hasGetUserMedia = !!(getUserMedia);
 
-const environmentCamConstraint = (constraints) => {
-  if (constraints && typeof constraints.video === 'object') {
+const handleFacingModeConstraints = (constraints) => {
+  const {video} = constraints;
+  const {facingMode} = video;
+  if (constraints && typeof video === 'object') {
+    // To detect an environment or rear facing camera, the constraint can be passed in as {facingMode: "environment"} or {facingMode: {exact: "environment"}};
+    // this will account for either situation. "facingMode && facingMode.exact &&" is necessary before checking facingMode.exact to avoid an error if facingMode is undefined or doesn't contain the exact key
+    const shouldUseBackCam = facingMode === "environment" || (facingMode && facingMode.exact && facingMode.exact === "environment" );
+    if (!shouldUseBackCam) return constraints;
     return enumerateDevices().then(devices => {
       const cameras = extractCamerasFromDevices(devices);
       const mainBackCam = mainBackCamera(cameras);
@@ -210,12 +216,6 @@ export default class Webcam extends Component<CameraType, State> {
     if (!getUserMedia || !mediaDevices || Webcam.userMediaRequested) return;
     const { width, height, facingMode, audio, fallbackWidth, fallbackHeight } = this.props;
 
-    // These detections are necessary to determine when to apply the workaround on Chrome for Surface.
-    const isChrome = navigator.vendor === 'Google Inc.';
-    // To detect an environment or rear facing camera, the constraint can be passed in as {facingMode: "environment"} or {facingMode: {exact: "environment"}};
-    // this will account for either situation. "facingMode && facingMode.exact &&" is necessary before checking facingMode.exact to avoid an error if facingMode is undefined or doesn't contain the exact key
-    const shouldUseBackCam = facingMode === "environment" || (facingMode && facingMode.exact && facingMode.exact === "environment" );
-
     const constraints = this.getConstraints(width, height, facingMode, audio);
     const fallbackConstraints = this.getConstraints(fallbackWidth, fallbackHeight, facingMode, audio);
 
@@ -230,7 +230,6 @@ export default class Webcam extends Component<CameraType, State> {
     const onError = e => {
         Webcam.userMediaRequested = false;
         logError(e);
-        console.log(Webcam.userMediaRequested)
         const isPermissionError = permissionErrors.includes(e.name);
         if (isPermissionError || hasTriedFallbackConstraints) {
             Webcam.mountedInstances.forEach((instance) => instance.handleError(e));
@@ -242,14 +241,10 @@ export default class Webcam extends Component<CameraType, State> {
     };
     Webcam.userMediaRequested = true;
     try {
-      if (isChrome && shouldUseBackCam) {
-        this.stream = await getUserMedia(await environmentCamConstraint(constraints));
-      } else {
-        this.stream = await getUserMedia(constraints);
+      this.stream = await getUserMedia(await handleFacingModeConstraints(constraints));
+      if (this.stream) {
+        onSuccess(this.stream);
       }
-        if (this.stream) {
-          onSuccess(this.stream);
-        }
     } catch (e) {
         onError(e);
     }
