@@ -20,11 +20,19 @@ const handleFacingModeConstraints = (constraints) => {
     if (!shouldUseBackCam) return constraints;
     return enumerateDevices().then(devices => {
       const cameras = extractCamerasFromDevices(devices);
+      
+      if (cameras.length === 1 && cameras[0].cameraType === 'front') {
+        // if there is only one camera, and it's the front camera, use the front camera
+          constraints.video.facingMode = "user";
+          return constraints;
+      }
+
       const mainBackCam = mainBackCamera(cameras);
-      if (mainBackCam.deviceId) {
-        constraints.facingMode = { ideal: "environment" };
+      if (mainBackCam && mainBackCam.deviceId) {
+        constraints.video.facingMode = { ideal: "environment" };
       } else {
-        constraints.video.deviceId = { exact: mainBackCam.deviceId };
+        const deviceId = mainBackCam && mainBackCam.deviceId ? mainBackCam.deviceId : cameras[0].deviceId;
+        constraints.video.deviceId = { exact: deviceId };
       }
       return constraints;
     });
