@@ -21,7 +21,7 @@ const handleFacingModeConstraints = (constraints) => {
     return enumerateDevices().then(devices => {
       const cameras = extractCamerasFromDevices(devices);
       const mainBackCam = mainBackCamera(cameras);
-      if (mainBackCam.deviceId === "") {
+      if (mainBackCam.deviceId) {
         constraints.facingMode = { ideal: "environment" };
       } else {
         constraints.video.deviceId = { exact: mainBackCam.deviceId };
@@ -58,7 +58,7 @@ const extractCamerasFromDevices = (devices) => {
         cameraType: isBackCameraLabel(label) ? 'back' : 'front'
       };
 
-      if (label !== "") {
+      if (label) {
         cameraObjects.set(videoDevice.deviceId, camera);
       }
 
@@ -76,7 +76,7 @@ const extractCamerasFromDevices = (devices) => {
 
     const cameraResolutions = cameras.map(camera => {
       const match = camera.label.match(/\b([0-9]+)MP?\b/i);
-      if (match !== null) {
+      if (match) {
         return parseInt(match[1], 10);
       }
 
