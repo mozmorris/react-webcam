@@ -12,12 +12,11 @@ const getUserMedia = mediaDevices && mediaDevices.getUserMedia ? mediaDevices.ge
 const hasGetUserMedia = !!(getUserMedia);
 
 const handleFacingModeConstraints = (constraints) => {
-  const {video} = constraints;
-  const {facingMode} = video;
-  if (constraints && typeof video === 'object') {
+  if (constraints && typeof constraints.video === 'object') {
+    const { facingMode } = constraints.video;
     // To detect an environment or rear facing camera, the constraint can be passed in as {facingMode: "environment"} or {facingMode: {exact: "environment"}};
     // this will account for either situation. "facingMode && facingMode.exact &&" is necessary before checking facingMode.exact to avoid an error if facingMode is undefined or doesn't contain the exact key
-    const shouldUseBackCam = facingMode === "environment" || (facingMode && facingMode.exact && facingMode.exact === "environment" );
+    const shouldUseBackCam = facingMode === "environment" || (typeof facingMode === 'object' && facingMode.exact && facingMode.exact === "environment" );
     if (!shouldUseBackCam) return constraints;
     return enumerateDevices().then(devices => {
       const cameras = extractCamerasFromDevices(devices);
@@ -52,7 +51,7 @@ const extractCamerasFromDevices = (devices) => {
         return cameraObjects.get(videoDevice.deviceId);
       }
 
-      const label = videoDevice.label !== null ? videoDevice.label : "";
+      const label = videoDevice.label || "";
       const camera = {
         deviceId: videoDevice.deviceId,
         label,

@@ -35,7 +35,6 @@ export const backCameraKeywords = [
     "bak",
     "tylny",
     "takakamera",
-    "belakang",
     "אחורית",
     "πίσω",
     "spate",
