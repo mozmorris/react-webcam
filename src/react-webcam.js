@@ -1,6 +1,7 @@
 /* @flow */
 import React, { Component } from 'react';
 import { createMediaRecorder, startRecording } from './video';
+import { backCameraKeywords } from './utils';
 import enumerateDevices from 'enumerate-devices';
 
 /*
@@ -10,34 +11,92 @@ const mediaDevices = navigator.mediaDevices;
 const getUserMedia = mediaDevices && mediaDevices.getUserMedia ? mediaDevices.getUserMedia.bind(mediaDevices) : null;
 const hasGetUserMedia = !!(getUserMedia);
 
-/*
-Chrome on Surface Pro will not respect the facingMode constraint.
-This function will filter devices to find the deviceId of the rear camera and use that as a constraint instead.
-*/
-const environmentCamConstraint = (constraints) => {
+const handleFacingModeConstraints = (constraints) => {
   if (constraints && typeof constraints.video === 'object') {
-    let facingMode = constraints.video.facingMode;
-    facingMode = facingMode && ((typeof facingMode === 'object') ? facingMode : {ideal: facingMode});
-    let matches = [];
-    if (facingMode.exact === 'environment' || facingMode.ideal === 'environment') {
-      matches = ['back', 'rear', 'world'];
-    }
-    if (matches) {
-      // WARN: there is a bug in Safari 13.1 that affects subsequent calls to navigator.mediaDevices.enumerateDevices()
-      // https://bugs.webkit.org/show_bug.cgi?id=209580
-      return enumerateDevices().then(devices => {
-        devices = devices.filter(d => d.kind === 'videoinput');
-        let device = devices.find(d => matches.some(match =>
-          d.label.toLocaleLowerCase().includes(match)));
-        if (device) {
-          constraints.video.deviceId = facingMode.exact ? {exact: device.deviceId} : {ideal: device.deviceId};
-          delete constraints.video.facingMode;
-        }
-        return constraints;
-      });
-    }
+    const { facingMode } = constraints.video;
+    // To detect an environment or rear facing camera, the constraint can be passed in as {facingMode: "environment"} or {facingMode: {exact: "environment"}};
+    // this will account for either situation. "facingMode && facingMode.exact &&" is necessary before checking facingMode.exact to avoid an error if facingMode is undefined or doesn't contain the exact key
+    const shouldUseBackCam = facingMode === "environment" || (typeof facingMode === 'object' && facingMode.exact && facingMode.exact === "environment" );
+    if (!shouldUseBackCam) return constraints;
+    return enumerateDevices().then(devices => {
+      const cameras = extractCamerasFromDevices(devices);
+      const mainBackCam = mainBackCamera(cameras);
+      if (mainBackCam.deviceId) {
+        constraints.facingMode = { ideal: "environment" };
+      } else {
+        constraints.video.deviceId = { exact: mainBackCam.deviceId };
+      }
+      return constraints;
+    });
   }
 };
+
+const isBackCameraLabel = (label) => {
+  const lowercaseLabel = label.toLowerCase();
+
+  return backCameraKeywords.some(keyword => {
+    return lowercaseLabel.includes(keyword);
+  });
+};
+
+const cameraObjects = new Map();
+
+const extractCamerasFromDevices = (devices) => {
+  const cameras = devices
+    .filter(device => {
+      return device.kind === "videoinput";
+    })
+    .map(videoDevice => {
+      if (cameraObjects.has(videoDevice.deviceId)) {
+        return cameraObjects.get(videoDevice.deviceId);
+      }
+
+      const label = videoDevice.label || "";
+      const camera = {
+        deviceId: videoDevice.deviceId,
+        label,
+        cameraType: isBackCameraLabel(label) ? 'back' : 'front'
+      };
+
+      if (label) {
+        cameraObjects.set(videoDevice.deviceId, camera);
+      }
+
+      return camera;
+    });
+  if (
+    cameras.length > 1 &&
+    !cameras.some(camera => {
+      return camera.cameraType === 'back';
+    })
+  ) {
+    // Check if cameras are labeled with resolution information, take the higher-resolution one in that case
+    // Otherwise pick the last camera
+    let backCameraIndex = cameras.length - 1;
+
+    const cameraResolutions = cameras.map(camera => {
+      const match = camera.label.match(/\b([0-9]+)MP?\b/i);
+      if (match) {
+        return parseInt(match[1], 10);
+      }
+
+      return NaN;
+    });
+    if (
+      !cameraResolutions.some(cameraResolution => {
+        return isNaN(cameraResolution);
+      })
+    ) {
+      backCameraIndex = cameraResolutions.lastIndexOf(Math.max(...cameraResolutions));
+    }
+    (cameras[backCameraIndex]).cameraType = 'back';
+  }
+
+  return cameras;
+};
+
+const mainBackCamera = (cameras) => cameras.filter(camera => camera.cameraType === 'back')
+  .sort((camera1, camera2) => camera1.label.localeCompare(camera2.label))[0];
 
 const DEBUG = false;
 const debugConsole = (...args) => {
@@ -155,12 +214,6 @@ export default class Webcam extends Component<CameraType, State> {
     if (!getUserMedia || !mediaDevices || Webcam.userMediaRequested) return;
     const { width, height, facingMode, audio, fallbackWidth, fallbackHeight } = this.props;
 
-    // These detections are necessary to determine when to apply the workaround on Chrome for Surface.
-    const isChrome = navigator.vendor === 'Google Inc.';
-    // To detect an environment or rear facing camera, the constraint can be passed in as {facingMode: "environment"} or {facingMode: {exact: "environment"}};
-    // this will account for either situation. "facingMode && facingMode.exact &&" is necessary before checking facingMode.exact to avoid an error if facingMode is undefined or doesn't contain the exact key
-    const isHybrid = navigator.platform === 'Win32' && (facingMode === "environment" || (facingMode && facingMode.exact && facingMode.exact === "environment" ));
-
     const constraints = this.getConstraints(width, height, facingMode, audio);
     const fallbackConstraints = this.getConstraints(fallbackWidth, fallbackHeight, facingMode, audio);
 
@@ -185,14 +238,10 @@ export default class Webcam extends Component<CameraType, State> {
     };
     Webcam.userMediaRequested = true;
     try {
-      if (isChrome && isHybrid) {
-        this.stream = await getUserMedia(await environmentCamConstraint(constraints));
-      } else {
-        this.stream = await getUserMedia(constraints);
+      this.stream = await getUserMedia(await handleFacingModeConstraints(constraints));
+      if (this.stream) {
+        onSuccess(this.stream);
       }
-        if (this.stream) {
-          onSuccess(this.stream);
-        }
     } catch (e) {
         onError(e);
     }
