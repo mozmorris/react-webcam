@@ -1,3 +1,11 @@
+## 0.1.23
+### Fixed
+- Fixed issues introduced in versions 0.1.21 and 0.1.22. Fixed multiple rear cameras support
+
+## 0.1.22
+### Fixed
+- Fixed missing constraint video object
+
 ## 0.1.21
 ### Fixed
 - Support multiple rear cameras
