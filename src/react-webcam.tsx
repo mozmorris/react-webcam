@@ -84,6 +84,8 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
 
   private ctx: CanvasRenderingContext2D | null = null;
 
+  private unmounted = false;
+
   stream: MediaStream | null;
 
   video: HTMLVideoElement | null;
@@ -143,21 +145,26 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
   }
 
   componentWillUnmount() {
+    this.unmounted = true;
     this.stopAndCleanup();
+  }
+
+  private static stopMediaStream(stream) {
+    if (stream) {
+      if (stream.getVideoTracks && stream.getAudioTracks) {
+        stream.getVideoTracks().map(track => track.stop());
+        stream.getAudioTracks().map(track => track.stop());
+      } else {
+        ((stream as unknown) as MediaStreamTrack).stop();
+      }
+    }
   }
 
   private stopAndCleanup() {
     const { state } = this;
 
     if (state.hasUserMedia) {
-      if (this.stream) {
-        if (this.stream.getVideoTracks && this.stream.getAudioTracks) {
-          this.stream.getVideoTracks().map(track => track.stop());
-          this.stream.getAudioTracks().map(track => track.stop());
-        } else {
-          ((this.stream as unknown) as MediaStreamTrack).stop();
-        }
-      }
+      Webcam.stopMediaStream(this.stream);
 
       if (state.src) {
         window.URL.revokeObjectURL(state.src);
@@ -248,7 +255,11 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
       navigator.mediaDevices
         .getUserMedia(constraints)
         .then(stream => {
-          this.handleUserMedia(null, stream);
+          if (this.unmounted) {
+            Webcam.stopMediaStream(stream);
+          } else {
+            this.handleUserMedia(null, stream);
+          }
         })
         .catch(e => {
           this.handleUserMedia(e);
