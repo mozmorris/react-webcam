@@ -1,7 +1,8 @@
 ## Please follow the general troubleshooting steps first:
 
-- [ ] Is your app running over HTTPS?
+- [ ] Is your app running over HTTPS? (please provide the URL if possible)
 - [ ] Have you tried running the demo (https://codepen.io/mozmorris/pen/JLZdoP) on your device?
+- [ ] Checked the latest "Can I use" compatbility table? (https://caniuse.com/stream)
 
 ### Bug reports:
 
