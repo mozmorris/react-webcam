@@ -48,7 +48,7 @@ interface ScreenshotDimensions {
   height: number;
 }
 
-export interface WebcamProps extends React.HTMLProps<HTMLVideoElement> {
+export type WebcamProps = Omit<React.HTMLProps<HTMLVideoElement>, "ref"> & {
   audio: boolean;
   audioConstraints?: MediaStreamConstraints["audio"];
   forceScreenshotSourceSize: boolean;
@@ -74,8 +74,8 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
     forceScreenshotSourceSize: false,
     imageSmoothing: true,
     mirrored: false,
-    onUserMedia: () => { },
-    onUserMediaError: () => { },
+    onUserMedia: () => undefined,
+    onUserMediaError: () => undefined,
     screenshotFormat: "image/webp",
     screenshotQuality: 0.92,
   };
@@ -90,7 +90,7 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
 
   video: HTMLVideoElement | null;
 
-  constructor(props) {
+  constructor(props: WebcamProps) {
     super(props);
     this.state = {
       hasUserMedia: false
@@ -111,7 +111,7 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
     }
   }
 
-  componentDidUpdate(nextProps) {
+  componentDidUpdate(nextProps: WebcamProps) {
     const { props } = this;
 
     if (!hasGetUserMedia()) {
@@ -149,7 +149,7 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
     this.stopAndCleanup();
   }
 
-  private static stopMediaStream(stream) {
+  private static stopMediaStream(stream: MediaStream | null) {
     if (stream) {
       if (stream.getVideoTracks && stream.getAudioTracks) {
         stream.getVideoTracks().map(track => track.stop());
@@ -242,7 +242,10 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
   private requestUserMedia() {
     const { props } = this;
 
-    const sourceSelected = (audioConstraints, videoConstraints) => {
+    const sourceSelected = (
+      audioConstraints: boolean | MediaTrackConstraints | undefined,
+      videoConstraints: boolean | MediaTrackConstraints | undefined,
+    ) => {
       const constraints: MediaStreamConstraints = {
         video: typeof videoConstraints !== "undefined" ? videoConstraints : true
       };
@@ -269,9 +272,9 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
     if ("mediaDevices" in navigator) {
       sourceSelected(props.audioConstraints, props.videoConstraints);
     } else {
-      const optionalSource = id => ({ optional: [{ sourceId: id }] });
+      const optionalSource = (id: string | null) => ({ optional: [{ sourceId: id }] }) as MediaTrackConstraints;
 
-      const constraintToSourceId = constraint => {
+      const constraintToSourceId = (constraint) => {
         const { deviceId } = constraint;
 
         if (typeof deviceId === "string") {
@@ -291,10 +294,10 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
 
       // @ts-ignore: deprecated api
       MediaStreamTrack.getSources(sources => {
-        let audioSource = null;
-        let videoSource = null;
+        let audioSource: string | null = null;
+        let videoSource: string | null = null;
 
-        sources.forEach(source => {
+        sources.forEach((source: MediaStreamTrack) => {
           if (source.kind === "audio") {
             audioSource = source.id;
           } else if (source.kind === "video") {

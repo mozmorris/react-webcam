@@ -8,10 +8,10 @@
     "target": "es5",
     "allowJs": false,
     "moduleResolution": "node",
+    "skipLibCheck": true,
     "declaration": true,
+    "noEmit": true,
     "lib": ["dom", "es5", "scripthost", "es6"]
   },
-  "include": [
-    "./src/"
-  ]
+  "include": ["./src/", "./tests"]
 }
