@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from "react";
-import Webcam from "../src/react-webcam";
+import Webcam from "../react-webcam";
 
 /**
  * This file doesn't get executed, it's just compiled by typescript

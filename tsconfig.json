@@ -13,5 +13,5 @@
     "noEmit": true,
     "lib": ["dom", "es5", "scripthost", "es6"]
   },
-  "include": ["./src/", "./tests"]
+  "include": ["./src/"]
 }
