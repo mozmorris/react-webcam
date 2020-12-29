@@ -12,7 +12,7 @@ https://www.npmjs.com/package/react-webcam
 Webcam component for React. See [http://caniuse.com/#feat=stream](http://caniuse.com/#feat=stream)
 for browser compatibility.
 
-Note: Browsers will throw an error if the page is loaded from insecure origin. I.e. Use https.
+**Note: Browsers will throw an error if the page is loaded from insecure origin. I.e. Use https.**
 
 ## Installation
 
