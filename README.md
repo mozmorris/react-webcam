@@ -5,7 +5,7 @@
 
 <img src="Logotype primary.png" width="70%" height="70%" />
 
-DEMO: https://codepen.io/mozmorris/pen/JLZdoP
+**DEMO:** https://codepen.io/mozmorris/pen/JLZdoP
 
 https://www.npmjs.com/package/react-webcam
 
