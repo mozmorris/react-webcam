@@ -18,7 +18,7 @@ for browser compatibility.
 
 ```sh
 // with npm
-npm install --save react-webcam
+npm install react-webcam
 
 // with yarn
 yarn add react-webcam
