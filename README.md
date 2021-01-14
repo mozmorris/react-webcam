@@ -18,6 +18,7 @@ for browser compatibility.
 
 ```
 npm install react-webcam
+yarn add react-webcam
 ```
 
 ## Demo
