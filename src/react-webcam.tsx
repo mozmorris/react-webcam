@@ -84,6 +84,8 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
 
   private ctx: CanvasRenderingContext2D | null = null;
 
+  private requestUserMediaId = 0;
+
   private unmounted = false;
 
   stream: MediaStream | null;
@@ -255,10 +257,13 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
           typeof audioConstraints !== "undefined" ? audioConstraints : true;
       }
 
+      this.requestUserMediaId++
+      const myRequestUserMediaId = this.requestUserMediaId
+
       navigator.mediaDevices
         .getUserMedia(constraints)
         .then(stream => {
-          if (this.unmounted) {
+          if (this.unmounted || myRequestUserMediaId !== this.requestUserMediaId) {
             Webcam.stopMediaStream(stream);
           } else {
             this.handleUserMedia(null, stream);
