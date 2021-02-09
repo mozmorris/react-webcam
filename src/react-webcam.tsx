@@ -57,7 +57,7 @@ export type WebcamProps = Omit<React.HTMLProps<HTMLVideoElement>, "ref"> & {
   minScreenshotHeight?: number;
   minScreenshotWidth?: number;
   onUserMedia: (stream: MediaStream) => void;
-  onUserMediaError: (error: string) => void;
+  onUserMediaError: (error: DOMException) => void;
   screenshotFormat: "image/webp" | "image/png" | "image/jpeg";
   screenshotQuality: number;
   videoConstraints?: MediaStreamConstraints["video"];
