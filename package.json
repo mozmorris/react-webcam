@@ -1,6 +1,6 @@
 {
   "name": "react-webcam",
-  "version": "5.2.3",
+  "version": "5.2.4",
   "description": "React webcam component",
   "main": "dist/react-webcam.js",
   "types": "dist/react-webcam.d.ts",
