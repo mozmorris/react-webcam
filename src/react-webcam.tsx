@@ -86,12 +86,13 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
 
   private unmounted = false;
 
-  stream: MediaStream | null;
+  public stream: MediaStream | null = null;
 
-  video: HTMLVideoElement | null;
+  public readonly videoRef: React.RefObject<HTMLVideoElement>;
 
   constructor(props: WebcamProps) {
     super(props);
+    this.videoRef = React.createRef();
     this.state = {
       hasUserMedia: false
     };
@@ -193,19 +194,19 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
   getCanvas(screenshotDimensions?: ScreenshotDimensions) {
     const { state, props } = this;
 
-    if (!this.video) {
+    if (!this.videoRef.current) {
       return null;
     }
 
-    if (!state.hasUserMedia || !this.video.videoHeight) return null;
+    if (!state.hasUserMedia || !this.videoRef.current.videoHeight) return null;
 
     if (!this.ctx) {
-      let canvasWidth = this.video.videoWidth;
-      let canvasHeight = this.video.videoHeight;
+      let canvasWidth = this.videoRef.current.videoWidth;
+      let canvasHeight = this.videoRef.current.videoHeight;
       if (!this.props.forceScreenshotSourceSize) {
         const aspectRatio = canvasWidth / canvasHeight;
 
-        canvasWidth = props.minScreenshotWidth || this.video.clientWidth;
+        canvasWidth = props.minScreenshotWidth || this.videoRef.current.clientWidth;
         canvasHeight = canvasWidth / aspectRatio;
 
         if (
@@ -233,7 +234,7 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
       }
 
       ctx.imageSmoothingEnabled = props.imageSmoothing;
-      ctx.drawImage(this.video, 0, 0, screenshotDimensions?.width || canvas.width, screenshotDimensions?.height || canvas.height);
+      ctx.drawImage(this.videoRef.current, 0, 0, screenshotDimensions?.width || canvas.width, screenshotDimensions?.height || canvas.height);
 
       // invert mirroring
       if (props.mirrored) {
@@ -342,8 +343,8 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
     this.stream = stream;
 
     try {
-      if (this.video) {
-        this.video.srcObject = stream;
+      if (this.videoRef.current) {
+        this.videoRef.current.srcObject = stream;
       }
       this.setState({ hasUserMedia: true });
     } catch (error) {
@@ -384,9 +385,7 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
         src={state.src}
         muted={audio}
         playsInline
-        ref={ref => {
-          this.video = ref;
-        }}
+        ref={this.videoRef}
         style={videoStyle}
         {...rest}
       />
