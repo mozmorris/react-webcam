@@ -382,7 +382,7 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
       <video
         autoPlay
         src={state.src}
-        muted={audio}
+        muted={!audio}
         playsInline
         ref={ref => {
           this.video = ref;
