@@ -70,7 +70,7 @@ interface WebcamState {
 
 export default class Webcam extends React.Component<WebcamProps, WebcamState> {
   static defaultProps = {
-    audio: true,
+    audio: false,
     forceScreenshotSourceSize: false,
     imageSmoothing: true,
     mirrored: false,

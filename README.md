@@ -39,11 +39,11 @@ const WebcamComponent = () => <Webcam />;
 
 ### Props
 
-The props here are specific to this component but one can pass any prop to the underlying video tag eg `className` or `style`
+The props here are specific to this component but one can pass any prop to the underlying video tag eg `className`, `style`, `muted`, etc
 
 | prop                      | type     | default      | notes                                                                                   |
 | ------------------------- | -------- | ------------ | --------------------------------------------------------------------------------------- |
-| audio                     | boolean  | true         | enable/disable audio                                                                    |
+| audio                     | boolean  | false        | enable/disable audio                                                                    |
 | audioConstraints          | object   |              | MediaStreamConstraint(s) for the audio                                                  |
 | forceScreenshotSourceSize | boolean  | false        | uses size of underlying source video stream (and thus ignores other size related props) |
 | imageSmoothing            | boolean  | true         | pixel smoothing of the screenshot taken                                                 |
