@@ -5,7 +5,7 @@ exports[`renders correctly 1`] = `
   autoPlay={true}
   className="react-webcam"
   height={1000}
-  muted={false}
+  muted={true}
   playsInline={true}
   style={
     Object {
