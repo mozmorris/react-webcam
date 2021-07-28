@@ -16,11 +16,11 @@ for browser compatibility.
 
 ## Installation
 
-```sh
-// with npm
+```shell
+# with npm
 npm install react-webcam
 
-// with yarn
+# with yarn
 yarn add react-webcam
 ```
 
