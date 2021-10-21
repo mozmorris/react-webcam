@@ -48,6 +48,10 @@ interface ScreenshotDimensions {
   height: number;
 }
 
+interface ChildrenProps {
+  getScreenshot: (screenshotDimensions?: ScreenshotDimensions) => string | null;
+}
+
 export type WebcamProps = Omit<React.HTMLProps<HTMLVideoElement>, "ref"> & {
   audio: boolean;
   audioConstraints?: MediaStreamConstraints["audio"];
@@ -61,6 +65,7 @@ export type WebcamProps = Omit<React.HTMLProps<HTMLVideoElement>, "ref"> & {
   screenshotFormat: "image/webp" | "image/png" | "image/jpeg";
   screenshotQuality: number;
   videoConstraints?: MediaStreamConstraints["video"];
+  children?: (childrenProps: ChildrenProps) => any;
 }
 
 interface WebcamState {
@@ -108,6 +113,10 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
 
     if (!state.hasUserMedia) {
       this.requestUserMedia();
+    }
+
+    if (props.children && typeof props.children != 'function') {
+      console.warn("children must be a function");
     }
   }
 
@@ -373,23 +382,31 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
       imageSmoothing,
       mirrored,
       style = {},
+      children,
       ...rest
     } = props;
 
     const videoStyle = mirrored ? { ...style, transform: `${style.transform || ""} scaleX(-1)` } : style;
 
+    const childrenProps: ChildrenProps = {
+      getScreenshot: this.getScreenshot.bind(this),
+    };
+
     return (
-      <video
-        autoPlay
-        src={state.src}
-        muted={!audio}
-        playsInline
-        ref={ref => {
-          this.video = ref;
-        }}
-        style={videoStyle}
-        {...rest}
-      />
+      <>
+        <video
+          autoPlay
+          src={state.src}
+          muted={!audio}
+          playsInline
+          ref={ref => {
+            this.video = ref;
+          }}
+          style={videoStyle}
+          {...rest}
+        />
+        {children && children(childrenProps)}
+      </>
     );
   }
 }
