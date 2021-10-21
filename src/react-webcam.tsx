@@ -65,7 +65,7 @@ export type WebcamProps = Omit<React.HTMLProps<HTMLVideoElement>, "ref"> & {
   screenshotFormat: "image/webp" | "image/png" | "image/jpeg";
   screenshotQuality: number;
   videoConstraints?: MediaStreamConstraints["video"];
-  children?: (childrenProps: ChildrenProps) => any;
+  children?: (childrenProps: ChildrenProps) => JSX.Element;
 }
 
 interface WebcamState {
