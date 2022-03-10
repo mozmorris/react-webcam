@@ -77,6 +77,8 @@ https://developer.mozilla.org/en-US/docs/Web/API/Media_Streams_API/Constraints
 
 As an example take a look at this [CodePen demo https://codepen.io/mozmorris/pen/GRpEQwK?editors=0010](https://codepen.io/mozmorris/pen/GRpEQwK?editors=0010) which shows how to build a custom aspect ratio for the video.
 
+## Screenshot (via render props)
+
 ```jsx
 const videoConstraints = {
   width: 1280,
@@ -103,6 +105,39 @@ const WebcamCapture = () => (
     )}
   </Webcam>
 );
+```
+
+## Screenshot (via ref)
+
+```jsx
+const videoConstraints = {
+  width: 1280,
+  height: 720,
+  facingMode: "user"
+};
+
+const WebcamCapture = () => {
+  const webcamRef = React.useRef(null);
+  const capture = React.useCallback(
+    () => {
+      const imageSrc = webcamRef.current.getScreenshot();
+    },
+    [webcamRef]
+  );
+  return (
+    <>
+      <Webcam
+        audio={false}
+        height={720}
+        ref={webcamRef}
+        screenshotFormat="image/jpeg"
+        width={1280}
+        videoConstraints={videoConstraints}
+      />
+      <button onClick={capture}>Capture photo</button>
+    </>
+  );
+};
 ```
 
 ## Capturing video

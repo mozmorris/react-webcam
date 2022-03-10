@@ -27,8 +27,8 @@
   },
   "homepage": "https://github.com/mozmorris/react-webcam",
   "peerDependencies": {
-    "react": ">=15.3.0",
-    "react-dom": ">=15.3.0"
+    "react": ">=16.2.0",
+    "react-dom": ">=16.2.0"
   },
   "devDependencies": {
     "@types/jest": "^26.0.24",
