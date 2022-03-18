@@ -48,6 +48,10 @@ interface ScreenshotDimensions {
   height: number;
 }
 
+interface ChildrenProps {
+  getScreenshot: (screenshotDimensions?: ScreenshotDimensions) => string | null;
+}
+
 export type WebcamProps = Omit<React.HTMLProps<HTMLVideoElement>, "ref"> & {
   audio: boolean;
   audioConstraints?: MediaStreamConstraints["audio"];
@@ -61,6 +65,7 @@ export type WebcamProps = Omit<React.HTMLProps<HTMLVideoElement>, "ref"> & {
   screenshotFormat: "image/webp" | "image/png" | "image/jpeg";
   screenshotQuality: number;
   videoConstraints?: MediaStreamConstraints["video"];
+  children?: (childrenProps: ChildrenProps) => JSX.Element;
 }
 
 interface WebcamState {
@@ -70,7 +75,7 @@ interface WebcamState {
 
 export default class Webcam extends React.Component<WebcamProps, WebcamState> {
   static defaultProps = {
-    audio: true,
+    audio: false,
     forceScreenshotSourceSize: false,
     imageSmoothing: true,
     mirrored: false,
@@ -83,6 +88,8 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
   private canvas: HTMLCanvasElement | null = null;
 
   private ctx: CanvasRenderingContext2D | null = null;
+
+  private requestUserMediaId = 0;
 
   private unmounted = false;
 
@@ -109,6 +116,10 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
 
     if (!state.hasUserMedia) {
       this.requestUserMedia();
+    }
+
+    if (props.children && typeof props.children != 'function') {
+      console.warn("children must be a function");
     }
   }
 
@@ -262,10 +273,13 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
           typeof audioConstraints !== "undefined" ? audioConstraints : true;
       }
 
+      this.requestUserMediaId++
+      const myRequestUserMediaId = this.requestUserMediaId
+
       navigator.mediaDevices
         .getUserMedia(constraints)
         .then(stream => {
-          if (this.unmounted) {
+          if (this.unmounted || myRequestUserMediaId !== this.requestUserMediaId) {
             Webcam.stopMediaStream(stream);
           } else {
             this.handleUserMedia(null, stream);
@@ -374,21 +388,29 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
       imageSmoothing,
       mirrored,
       style = {},
+      children,
       ...rest
     } = props;
 
     const videoStyle = mirrored ? { ...style, transform: `${style.transform || ""} scaleX(-1)` } : style;
 
+    const childrenProps: ChildrenProps = {
+      getScreenshot: this.getScreenshot.bind(this),
+    };
+
     return (
-      <video
-        autoPlay
-        src={state.src}
-        muted={audio}
-        playsInline
-        ref={this.videoRef}
-        style={videoStyle}
-        {...rest}
-      />
+      <>
+        <video
+          autoPlay
+          src={state.src}
+          muted={!audio}
+          playsInline
+          ref={this.videoRef}
+          style={videoStyle}
+          {...rest}
+        />
+        {children && children(childrenProps)}
+      </>
     );
   }
 }

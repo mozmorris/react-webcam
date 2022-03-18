@@ -16,11 +16,11 @@ for browser compatibility.
 
 ## Installation
 
-```sh
-// with npm
+```shell
+# with npm
 npm install react-webcam
 
-// with yarn
+# with yarn
 yarn add react-webcam
 ```
 
@@ -39,11 +39,11 @@ const WebcamComponent = () => <Webcam />;
 
 ### Props
 
-The props here are specific to this component but one can pass any prop to the underlying video tag eg `className` or `style`
+The props here are specific to this component but one can pass any prop to the underlying video tag eg `className`, `style`, `muted`, etc
 
 | prop                      | type     | default      | notes                                                                                   |
 | ------------------------- | -------- | ------------ | --------------------------------------------------------------------------------------- |
-| audio                     | boolean  | true         | enable/disable audio                                                                    |
+| audio                     | boolean  | false        | enable/disable audio                                                                    |
 | audioConstraints          | object   |              | MediaStreamConstraint(s) for the audio                                                  |
 | forceScreenshotSourceSize | boolean  | false        | uses size of underlying source video stream (and thus ignores other size related props) |
 | imageSmoothing            | boolean  | true         | pixel smoothing of the screenshot taken                                                 |
@@ -77,6 +77,38 @@ https://developer.mozilla.org/en-US/docs/Web/API/Media_Streams_API/Constraints
 
 As an example take a look at this [CodePen demo https://codepen.io/mozmorris/pen/GRpEQwK?editors=0010](https://codepen.io/mozmorris/pen/GRpEQwK?editors=0010) which shows how to build a custom aspect ratio for the video.
 
+## Screenshot (via render props)
+
+```jsx
+const videoConstraints = {
+  width: 1280,
+  height: 720,
+  facingMode: "user"
+};
+
+const WebcamCapture = () => (
+  <Webcam
+    audio={false}
+    height={720}
+    screenshotFormat="image/jpeg"
+    width={1280}
+    videoConstraints={videoConstraints}
+  >
+    {({ getScreenshot }) => (
+      <button
+        onClick={() => {
+          const imageSrc = getScreenshot()
+        }}
+      >
+        Capture photo
+      </button>
+    )}
+  </Webcam>
+);
+```
+
+## Screenshot (via ref)
+
 ```jsx
 const videoConstraints = {
   width: 1280,
@@ -86,14 +118,12 @@ const videoConstraints = {
 
 const WebcamCapture = () => {
   const webcamRef = React.useRef(null);
-
   const capture = React.useCallback(
     () => {
       const imageSrc = webcamRef.current.getScreenshot();
     },
     [webcamRef]
   );
-
   return (
     <>
       <Webcam

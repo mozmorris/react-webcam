@@ -58,8 +58,8 @@
 </head>
 <body>
   <div id="root"></div>
-  <script src="https://unpkg.com/react@15.5.4/dist/react.js"></script>
-  <script src="https://unpkg.com/react-dom@15.5.4/dist/react-dom.js"></script>
+  <script src="https://unpkg.com/react@16.3.1/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@16.3.1/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/prop-types@15.6.1/prop-types.js"></script>
   <script src="https://unpkg.com/babel-transform-in-browser@6.4.6/dist/btib.min.js"></script>
   <script src="../dist/react-webcam.js"></script>
@@ -85,69 +85,77 @@
           <div>
             <h1>react-webcam</h1>
             <Webcam
-              audio={false}
               ref={node => this.webcam = node}
             />
             <div>
               <h2>CSS Filters & style prop</h2>
               <div className='webcams'>
                 <Webcam
-                  audio={false}
                   width='212'
                   height='160'
                 />
                 <Webcam
-                  audio={false}
-                  width='212'
-                  height='160'
-                  style={{ transform: 'rotate(180deg)' }}
-                />
-                <Webcam
-                  audio={false}
-                  width='212'
-                  height='160'
-                />
-                <Webcam
-                  audio={false}
                   width='212'
                   height='160'
                   style={{ transform: 'rotate(180deg)' }}
                 />
                 <Webcam
-                  audio={false}
                   width='212'
                   height='160'
                 />
                 <Webcam
-                  audio={false}
                   width='212'
                   height='160'
                   style={{ transform: 'rotate(180deg)' }}
                 />
                 <Webcam
-                  audio={false}
                   width='212'
                   height='160'
                 />
                 <Webcam
-                  audio={false}
+                  width='212'
+                  height='160'
+                  style={{ transform: 'rotate(180deg)' }}
+                />
+                <Webcam
+                  width='212'
+                  height='160'
+                />
+                <Webcam
                   width='212'
                   height='160'
                   style={{ transform: 'rotate(180deg)' }}/>
                 <Webcam
-                  audio={false}
                   width='212'
                   height='160'
                 />
               </div>
             </div>
             <div>
-              <h2>Screenshots</h2>
+              <h2>Screenshot (via ref)</h2>
               <div className='screenshots'>
                 <div className='controls'>
                   <button onClick={this.handleClick}>capture</button>
                 </div>
                 {this.state.screenshot ? <img src={this.state.screenshot} /> : null}
+              </div>
+            </div>
+            <div>
+              <h2>Screenshot (via render props)</h2>
+              <div className='screenshots'>
+                <Webcam
+              >
+                {({ getScreenshot }) => (
+                  <button
+                    onClick={() => {
+                      const screenshot = getScreenshot()
+                      this.setState({ screenshot });
+                    }}
+                  >
+                    Capture photo
+                  </button>
+                )}
+              </Webcam>
               </div>
             </div>
           </div>

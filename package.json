@@ -1,6 +1,6 @@
 {
   "name": "react-webcam",
-  "version": "5.2.4",
+  "version": "7.0.0",
   "description": "React webcam component",
   "main": "dist/react-webcam.js",
   "types": "dist/react-webcam.d.ts",
@@ -27,11 +27,11 @@
   },
   "homepage": "https://github.com/mozmorris/react-webcam",
   "peerDependencies": {
-    "react": ">=15.3.0",
-    "react-dom": ">=15.3.0"
+    "react": ">=16.2.0",
+    "react-dom": ">=16.2.0"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.18",
+    "@types/jest": "^26.0.24",
     "@types/react": "^16.9.2",
     "@types/react-dom": "^16.9.0",
     "@types/react-test-renderer": "^16.9.0",
@@ -40,12 +40,12 @@
     "awesome-typescript-loader": "^5.2.1",
     "eslint": "^6.3.0",
     "eslint-plugin-react": "^7.14.3",
-    "jest": "^24.8.0",
+    "jest": "^27.0.6",
     "react": "^16.3.1",
     "react-dom": "^16.3.1",
     "react-test-renderer": "^16.8.6",
     "source-map-loader": "^0.2.4",
-    "ts-jest": "^24.0.2",
+    "ts-jest": "^27.0.4",
     "typescript": "^3.6.2",
     "webpack": "^4.32.2",
     "webpack-cli": "^3.3.2"
