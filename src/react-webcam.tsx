@@ -106,6 +106,7 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
 
   componentDidMount() {
     const { state, props } = this;
+    this.unmounted = false;
 
     if (!hasGetUserMedia()) {
       props.onUserMediaError("getUserMedia not supported");
