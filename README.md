@@ -224,6 +224,17 @@ The Webcam component will fail to load when used inside a cross-origin iframe in
 <iframe src="https://my-website.com/page-with-webcam" allow="camera; microphone;"/>
 ```
 
+## Mirrored video but non-mirrored screenshot
+
+Add `mirrored` prop to the component will make the video and the screenshot be mirrored, but sometimes you need to show a mirrored video but take a non-mirrored screenshot, to accomplish that, you just need to add this CSS to your project:
+
+```css
+video {
+  transform: scaleX(-1);
+}
+```
+You can find an example at [https://codepen.io/mozmorris/pen/oNygXwz?editors=0110](https://codepen.io/mozmorris/pen/oNygXwz?editors=0110).
+
 ## License
 
 MIT
