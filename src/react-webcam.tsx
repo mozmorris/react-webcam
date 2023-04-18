@@ -238,6 +238,11 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
     const { ctx, canvas } = this;
 
     if (ctx && canvas) {
+
+      // adjust the height and width of the canvas to the given dimensions
+      canvas.width = screenshotDimensions?.width ||  canvas.width;
+      canvas.height = screenshotDimensions?.height || canvas.height;
+
       // mirror the screenshot
       if (props.mirrored) {
         ctx.translate(canvas.width, 0);
