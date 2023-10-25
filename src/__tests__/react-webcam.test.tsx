@@ -63,3 +63,35 @@ it('sets <video/> muted to false when props.audio is true', () => {
 
   expect(tree.root.findByType('video').props.muted).toBe(false)
 })
+
+it('sets <video/> disablePictureInPicture to true when props.disablePictureInPicture is true', () => {
+  const tree = renderer
+    .create(
+      <Webcam
+        audio={false}
+        audioConstraints={{
+          sampleSize: 8,
+          echoCancellation: true
+        }}
+        className="react-webcam"
+        disablePictureInPicture={true}
+        imageSmoothing={false}
+        minScreenshotHeight={1000}
+        minScreenshotWidth={1000}
+        onUserMedia={() => {}}
+        onUserMediaError={() => {}}
+        screenshotFormat="image/png"
+        screenshotQuality={1}
+        style={{transform: 'rotate(180deg)'}}
+        videoConstraints={{
+          width: 160,
+          height: 120,
+          frameRate: 15
+        }}
+        height={1000}
+        width={1000}
+      />
+    )
+
+  expect(tree.root.findByType('video').props.disablePictureInPicture).toBe(true)
+})

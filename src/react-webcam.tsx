@@ -55,6 +55,7 @@ interface ChildrenProps {
 export type WebcamProps = Omit<React.HTMLProps<HTMLVideoElement>, "ref"> & {
   audio: boolean;
   audioConstraints?: MediaStreamConstraints["audio"];
+  disablePictureInPicture: boolean;
   forceScreenshotSourceSize: boolean;
   imageSmoothing: boolean;
   mirrored: boolean;
@@ -76,6 +77,7 @@ interface WebcamState {
 export default class Webcam extends React.Component<WebcamProps, WebcamState> {
   static defaultProps = {
     audio: false,
+    disablePictureInPicture: false,
     forceScreenshotSourceSize: false,
     imageSmoothing: true,
     mirrored: false,
@@ -382,6 +384,7 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
     const {
       audio,
       forceScreenshotSourceSize,
+      disablePictureInPicture,
       onUserMedia,
       onUserMediaError,
       screenshotFormat,
@@ -407,6 +410,7 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
       <>
         <video
           autoPlay
+          disablePictureInPicture={disablePictureInPicture}
           src={state.src}
           muted={!audio}
           playsInline

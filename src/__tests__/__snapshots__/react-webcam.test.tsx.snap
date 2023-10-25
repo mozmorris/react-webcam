@@ -4,6 +4,7 @@ exports[`renders correctly 1`] = `
 <video
   autoPlay={true}
   className="react-webcam"
+  disablePictureInPicture={false}
   height={1000}
   muted={true}
   playsInline={true}
