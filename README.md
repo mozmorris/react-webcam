@@ -45,7 +45,7 @@ The props here are specific to this component but one can pass any prop to the u
 |---------------------------|----------|--------------|-----------------------------------------------------------------------------------------|
 | audio                     | boolean  | false        | enable/disable audio                                                                    |
 | audioConstraints          | object   |              | MediaStreamConstraint(s) for the audio                                                  |
-| disablePictureInPicture   | boolean  | true         | disable Picture-in-Picture                                                              |
+| disablePictureInPicture   | boolean  | false        | disable Picture-in-Picture                                                              |
 | forceScreenshotSourceSize | boolean  | false        | uses size of underlying source video stream (and thus ignores other size related props) |
 | imageSmoothing            | boolean  | true         | pixel smoothing of the screenshot taken                                                 |
 | mirrored                  | boolean  | false        | show camera preview and get the screenshot mirrored                                     |
