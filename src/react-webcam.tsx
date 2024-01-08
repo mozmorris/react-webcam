@@ -53,18 +53,18 @@ interface ChildrenProps {
 }
 
 export type WebcamProps = Omit<React.HTMLProps<HTMLVideoElement>, "ref"> & {
-  audio: boolean;
+  audio?: boolean;
   audioConstraints?: MediaStreamConstraints["audio"];
-  disablePictureInPicture: boolean;
-  forceScreenshotSourceSize: boolean;
-  imageSmoothing: boolean;
-  mirrored: boolean;
+  disablePictureInPicture?: boolean;
+  forceScreenshotSourceSize?: boolean;
+  imageSmoothing?: boolean;
+  mirrored?: boolean;
   minScreenshotHeight?: number;
   minScreenshotWidth?: number;
-  onUserMedia: (stream: MediaStream) => void;
-  onUserMediaError: (error: string | DOMException) => void;
-  screenshotFormat: "image/webp" | "image/png" | "image/jpeg";
-  screenshotQuality: number;
+  onUserMedia?: (stream: MediaStream) => void;
+  onUserMediaError?: (error: string | DOMException) => void;
+  screenshotFormat?: "image/webp" | "image/png" | "image/jpeg";
+  screenshotQuality?: number;
   videoConstraints?: MediaStreamConstraints["video"];
   children?: (childrenProps: ChildrenProps) => JSX.Element;
 }
@@ -111,7 +111,7 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
     this.unmounted = false;
 
     if (!hasGetUserMedia()) {
-      props.onUserMediaError("getUserMedia not supported");
+      props.onUserMediaError?.("getUserMedia not supported");
 
       return;
     }
@@ -129,7 +129,7 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
     const { props } = this;
 
     if (!hasGetUserMedia()) {
-      props.onUserMediaError("getUserMedia not supported");
+      props.onUserMediaError?.("getUserMedia not supported");
 
       return;
     }
@@ -251,7 +251,7 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
         ctx.scale(-1, 1);
       }
 
-      ctx.imageSmoothingEnabled = props.imageSmoothing;
+      ctx.imageSmoothingEnabled = !!props.imageSmoothing;
       ctx.drawImage(this.video, 0, 0, screenshotDimensions?.width || canvas.width, screenshotDimensions?.height || canvas.height);
 
       // invert mirroring
@@ -356,7 +356,7 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
 
     if (err || !stream) {
       this.setState({ hasUserMedia: false });
-      props.onUserMediaError(err);
+      props.onUserMediaError?.(err);
 
       return;
     }
@@ -375,7 +375,7 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
       });
     }
 
-    props.onUserMedia(stream);
+    props.onUserMedia?.(stream);
   }
 
   render() {
