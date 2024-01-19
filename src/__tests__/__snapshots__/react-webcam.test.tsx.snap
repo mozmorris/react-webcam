@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<video
+  autoPlay={true}
+  className="react-webcam"
+  disablePictureInPicture={false}
+  height={1000}
+  muted={true}
+  playsInline={true}
+  style={
+    Object {
+      "transform": "rotate(180deg)",
+    }
+  }
+  width={1000}
+/>
+`;

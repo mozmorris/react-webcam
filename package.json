@@ -1,13 +1,15 @@
 {
   "name": "react-webcam",
-  "version": "1.0.0",
+  "version": "7.2.0",
   "description": "React webcam component",
   "main": "dist/react-webcam.js",
+  "types": "dist/react-webcam.d.ts",
   "scripts": {
-    "prepublish": "npm run build:umd",
-    "build": "webpack src/react-webcam.js dist/react-webcam.js",
-    "build:umd": "npm run build && NODE_ENV=production webpack src/react-webcam.js dist/react-webcam.min.js",
-    "lint": "eslint src"
+    "prepublish": "npm run build:production",
+    "build": "NODE_ENV=development webpack-cli",
+    "build:production": "npm run build && NODE_ENV=production webpack-cli",
+    "lint": "eslint src/react-webcam.tsx",
+    "test": "tsc && jest"
   },
   "repository": {
     "type": "git",
@@ -25,28 +27,27 @@
   },
   "homepage": "https://github.com/mozmorris/react-webcam",
   "peerDependencies": {
-    "react": ">=15.3.0",
-    "react-dom": ">=15.3.0"
+    "react": ">=16.2.0",
+    "react-dom": ">=16.2.0"
   },
   "devDependencies": {
-    "babel-core": "^6.25.0",
-    "babel-eslint": "^7.2.3",
-    "babel-loader": "^7.1.1",
-    "babel-plugin-add-module-exports": "^0.2.1",
-    "babel-plugin-transform-class-properties": "^6.24.1",
-    "babel-plugin-transform-react-jsx": "^6.24.1",
-    "babel-preset-env": "^1.6.0",
-    "babel-preset-react": "^6.24.1",
-    "eslint": "^3.19.0",
-    "eslint-config-airbnb": "^15.0.2",
-    "eslint-plugin-import": "^2.7.0",
-    "eslint-plugin-jsx-a11y": "^5.1.1",
-    "eslint-plugin-react": "^7.1.0",
+    "@types/jest": "^26.0.24",
+    "@types/react": "^16.9.2",
+    "@types/react-dom": "^16.9.0",
+    "@types/react-test-renderer": "^16.9.0",
+    "@typescript-eslint/eslint-plugin": "^2.1.0",
+    "@typescript-eslint/parser": "^2.1.0",
+    "awesome-typescript-loader": "^5.2.1",
+    "eslint": "^6.3.0",
+    "eslint-plugin-react": "^7.14.3",
+    "jest": "^27.0.6",
     "react": "^16.3.1",
     "react-dom": "^16.3.1",
-    "webpack": "^2.5.1"
-  },
-  "dependencies": {
-    "prop-types": "^15.5.8"
+    "react-test-renderer": "^16.8.6",
+    "source-map-loader": "^0.2.4",
+    "ts-jest": "^27.0.4",
+    "typescript": "^3.6.2",
+    "webpack": "^4.32.2",
+    "webpack-cli": "^3.3.2"
   }
 }
