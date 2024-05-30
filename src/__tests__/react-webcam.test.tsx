@@ -33,7 +33,7 @@ it('renders correctly', () => {
   expect(tree.toJSON()).toMatchSnapshot();
 });
 
-it('sets <video/> muted to false when props.audio is true', () => {
+it('sets <video/> muted to false when props.mutePreview is false', () => {
   const tree = renderer
     .create(
       <Webcam
@@ -46,6 +46,7 @@ it('sets <video/> muted to false when props.audio is true', () => {
         imageSmoothing={false}
         minScreenshotHeight={1000}
         minScreenshotWidth={1000}
+        mutePreview={false}
         onUserMedia={() => {}}
         onUserMediaError={() => {}}
         screenshotFormat="image/png"

@@ -51,6 +51,7 @@ The props here are specific to this component but one can pass any prop to the u
 | mirrored                  | boolean  | false        | show camera preview and get the screenshot mirrored                                     |
 | minScreenshotHeight       | number   |              | min height of screenshot                                                                |
 | minScreenshotWidth        | number   |              | min width of screenshot                                                                 |
+| mutePreview               | boolean  | true         | mute/unmute video preview                                                               |
 | onUserMedia               | function | noop         | callback for when component receives a media stream                                     |
 | onUserMediaError          | function | noop         | callback for when component can't receive a media stream with MediaStreamError param    |
 | screenshotFormat          | string   | 'image/webp' | format of screenshot                                                                    |

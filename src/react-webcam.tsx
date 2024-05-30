@@ -61,6 +61,7 @@ export type WebcamProps = Omit<React.HTMLProps<HTMLVideoElement>, "ref"> & {
   mirrored: boolean;
   minScreenshotHeight?: number;
   minScreenshotWidth?: number;
+  mutePreview?: boolean;
   onUserMedia: (stream: MediaStream) => void;
   onUserMediaError: (error: string | DOMException) => void;
   screenshotFormat: "image/webp" | "image/png" | "image/jpeg";
@@ -391,6 +392,7 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
       screenshotQuality,
       minScreenshotWidth,
       minScreenshotHeight,
+      mutePreview = true,
       audioConstraints,
       videoConstraints,
       imageSmoothing,
@@ -412,7 +414,7 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
           autoPlay
           disablePictureInPicture={disablePictureInPicture}
           src={state.src}
-          muted={!audio}
+          muted={mutePreview}
           playsInline
           ref={ref => {
             this.video = ref;
