@@ -50,6 +50,7 @@ interface ScreenshotDimensions {
 
 interface ChildrenProps {
   getScreenshot: (screenshotDimensions?: ScreenshotDimensions) => string | null;
+  getScreenshotBlob: (screenshotDimensions?: ScreenshotDimensions) => Promise<Blob | null>;
 }
 
 export type WebcamProps = Omit<React.HTMLProps<HTMLVideoElement>, "ref"> & {
@@ -202,6 +203,25 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
       canvas &&
       canvas.toDataURL(props.screenshotFormat, props.screenshotQuality)
     );
+  }
+
+  getScreenshotBlob(screenshotDimensions?: ScreenshotDimensions): Promise<Blob | null> {
+    const { state, props } = this;
+
+    if (!state.hasUserMedia) return Promise.resolve(null);
+
+    const canvas = this.getCanvas(screenshotDimensions);
+    if (!canvas) return Promise.resolve(null);
+
+    return new Promise((resolve) => {
+      canvas.toBlob(
+        (blob) => {
+          resolve(blob);
+        },
+        props.screenshotFormat,
+        props.screenshotQuality
+      );
+    });
   }
 
   getCanvas(screenshotDimensions?: ScreenshotDimensions) {
@@ -404,6 +424,7 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
 
     const childrenProps: ChildrenProps = {
       getScreenshot: this.getScreenshot.bind(this),
+      getScreenshotBlob: this.getScreenshotBlob.bind(this),
     };
 
     return (
