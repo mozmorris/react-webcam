@@ -50,6 +50,7 @@ interface ScreenshotDimensions {
 
 interface ChildrenProps {
   getScreenshot: (screenshotDimensions?: ScreenshotDimensions) => string | null;
+  getScreenshotBlob: (screenshotDimensions?: ScreenshotDimensions) => Promise<Blob | null>;
 }
 
 export type WebcamProps = Omit<React.HTMLProps<HTMLVideoElement>, "ref"> & {
@@ -202,6 +203,37 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
       canvas &&
       canvas.toDataURL(props.screenshotFormat, props.screenshotQuality)
     );
+  }
+
+  async getScreenshotBlob(screenshotDimensions?: ScreenshotDimensions): Promise<Blob | null> {
+    const { state, props } = this;
+
+    if (!state.hasUserMedia) return null;
+
+    const canvas = this.getCanvas(screenshotDimensions);
+    if (!canvas) return null;
+
+    if (typeof canvas.toBlob !== 'function') {
+      throw new Error('Canvas toBlob is not supported');
+    }
+
+    try {
+      const blob = await new Promise<Blob | null>((resolve) => {
+        canvas.toBlob(
+          (blob) => resolve(blob),
+          props.screenshotFormat,
+          props.screenshotQuality
+        );
+      });
+
+      if (!blob) {
+        throw new Error('Failed to convert canvas to blob');
+      }
+
+      return blob;
+    } catch (error) {
+      throw error instanceof Error ? error : new Error('Failed to capture screenshot');
+    }
   }
 
   getCanvas(screenshotDimensions?: ScreenshotDimensions) {
@@ -404,6 +436,7 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
 
     const childrenProps: ChildrenProps = {
       getScreenshot: this.getScreenshot.bind(this),
+      getScreenshotBlob: this.getScreenshotBlob.bind(this),
     };
 
     return (
