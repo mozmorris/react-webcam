@@ -205,35 +205,35 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
     );
   }
 
-  getScreenshotBlob(screenshotDimensions?: ScreenshotDimensions): Promise<Blob | null> {
+  async getScreenshotBlob(screenshotDimensions?: ScreenshotDimensions): Promise<Blob | null> {
     const { state, props } = this;
 
-    if (!state.hasUserMedia) return Promise.resolve(null);
+    if (!state.hasUserMedia) return null;
 
     const canvas = this.getCanvas(screenshotDimensions);
-    if (!canvas) return Promise.resolve(null);
+    if (!canvas) return null;
 
     if (typeof canvas.toBlob !== 'function') {
-      return Promise.reject(new Error('Canvas toBlob is not supported'));
+      throw new Error('Canvas toBlob is not supported');
     }
 
-    return new Promise((resolve, reject) => {
-      try {
+    try {
+      const blob = await new Promise<Blob | null>((resolve) => {
         canvas.toBlob(
-          (blob) => {
-            if (!blob) {
-              reject(new Error('Failed to convert canvas to blob'));
-              return;
-            }
-            resolve(blob);
-          },
+          (blob) => resolve(blob),
           props.screenshotFormat,
           props.screenshotQuality
         );
-      } catch (error) {
-        reject(error instanceof Error ? error : new Error('Failed to capture screenshot'));
+      });
+
+      if (!blob) {
+        throw new Error('Failed to convert canvas to blob');
       }
-    });
+
+      return blob;
+    } catch (error) {
+      throw error instanceof Error ? error : new Error('Failed to capture screenshot');
+    }
   }
 
   getCanvas(screenshotDimensions?: ScreenshotDimensions) {
