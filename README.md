@@ -69,6 +69,29 @@ You may also pass in an optional `dimensions` object:
 getScreenshot({width: 1920, height: 1080});
 ```
 
+`getScreenshotBlob` - Returns a Promise that resolves to a Blob of the current webcam image. This is more efficient than base64 encoding when uploading to a server or processing large images. Example:
+
+```jsx
+const capture = async () => {
+  try {
+    const blob = await webcamRef.current.getScreenshotBlob({width: 1920, height: 1080});
+    if (blob) {
+      // Upload to a server
+      const formData = new FormData();
+      formData.append('image', blob);
+      await fetch('/upload', { method: 'POST', body: formData });
+      
+      // Or create an object URL for display
+      const url = URL.createObjectURL(blob);
+      image.src = url;
+      URL.revokeObjectURL(url); // Clean up when done
+    }
+  } catch (error) {
+    console.error('Failed to capture screenshot:', error);
+  }
+};
+```
+
 ### The Constraints
 
 We can build a constraints object by passing it to the videoConstraints prop. This gets passed into getUserMedia method. Please take a look at the MDN docs to get an understanding how this works.
@@ -95,14 +118,23 @@ const WebcamCapture = () => (
     width={1280}
     videoConstraints={videoConstraints}
   >
-    {({ getScreenshot }) => (
-      <button
-        onClick={() => {
-          const imageSrc = getScreenshot()
-        }}
-      >
-        Capture photo
-      </button>
+    {({ getScreenshot, getScreenshotBlob }) => (
+      <div>
+        <button
+          onClick={() => {
+            const imageSrc = getScreenshot()
+          }}
+        >
+          Capture photo (base64)
+        </button>
+        <button
+          onClick={async () => {
+            const blob = await getScreenshotBlob();
+          }}
+        >
+          Capture photo (blob)
+        </button>
+      </div>
     )}
   </Webcam>
 );
@@ -121,7 +153,7 @@ const WebcamCapture = () => {
   const webcamRef = React.useRef(null);
   const capture = React.useCallback(
     () => {
-      const imageSrc = webcamRef.current.getScreenshot();
+      const imageSrc = webcamRef.current.getScreenshot(); // or getScreenshotBlob()
     },
     [webcamRef]
   );
