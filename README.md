@@ -14,7 +14,7 @@ for browser compatibility.
 
 **Note: Browsers will throw an error if the page is loaded from insecure origin. I.e. Use https.**
 
-## Installation
+##Basic Installation
 
 ```shell
 # with npm
