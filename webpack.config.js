@@ -25,7 +25,14 @@ module.exports = {
     rules: [
       {
         test: /\.(t|j)sx?$/,
-        use: "awesome-typescript-loader"
+        use: {
+          loader: "ts-loader",
+          options: {
+            compilerOptions: {
+              noEmit: false
+            }
+          }
+        }
       }
     ]
   },

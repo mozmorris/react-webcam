@@ -6,8 +6,8 @@
   "types": "dist/react-webcam.d.ts",
   "scripts": {
     "prepublish": "npm run build:production",
-    "build": "NODE_ENV=development webpack-cli",
-    "build:production": "npm run build && NODE_ENV=production webpack-cli",
+    "build": "NODE_OPTIONS=--openssl-legacy-provider NODE_ENV=development webpack-cli",
+    "build:production": "npm run build && NODE_OPTIONS=--openssl-legacy-provider NODE_ENV=production webpack-cli",
     "lint": "eslint src/react-webcam.tsx",
     "test": "tsc && jest"
   },
@@ -37,7 +37,7 @@
     "@types/react-test-renderer": "^16.9.0",
     "@typescript-eslint/eslint-plugin": "^2.1.0",
     "@typescript-eslint/parser": "^2.1.0",
-    "awesome-typescript-loader": "^5.2.1",
+    "ts-loader": "^8.4.0",
     "eslint": "^6.3.0",
     "eslint-plugin-react": "^7.14.3",
     "jest": "^27.0.6",
@@ -46,7 +46,7 @@
     "react-test-renderer": "^16.8.6",
     "source-map-loader": "^0.2.4",
     "ts-jest": "^27.0.4",
-    "typescript": "^3.6.2",
+    "typescript": "^5.6.2",
     "webpack": "^4.32.2",
     "webpack-cli": "^3.3.2"
   }

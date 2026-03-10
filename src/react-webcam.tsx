@@ -18,10 +18,10 @@ import * as React from "react";
     navigator.mediaDevices.getUserMedia = function(constraints) {
       // First get ahold of the legacy getUserMedia, if present
       const getUserMedia =
-        navigator.getUserMedia ||
-        navigator.webkitGetUserMedia ||
-        navigator.mozGetUserMedia ||
-        navigator.msGetUserMedia;
+        (navigator as any).getUserMedia ||
+        (navigator as any).webkitGetUserMedia ||
+        (navigator as any).mozGetUserMedia ||
+        (navigator as any).msGetUserMedia;
 
       // Some browsers just don't implement it - return a rejected promise with an error
       // to keep a consistent interface
@@ -371,7 +371,7 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
     } catch (error) {
       this.setState({
         hasUserMedia: true,
-        src: window.URL.createObjectURL(stream)
+        src: window.URL.createObjectURL(stream as any)
       });
     }
 
