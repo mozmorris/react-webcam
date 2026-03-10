@@ -22,6 +22,24 @@ npm install react-webcam
 
 ```
 
+## Running the example
+
+First build the library:
+
+```shell
+npm run build
+```
+
+Then serve the project locally:
+
+```shell
+npm run serve:example
+```
+
+Open [http://localhost:3000/examples/](http://localhost:3000/examples/) in your browser.
+
+> **Note:** getUserMedia requires a secure context. Most browsers allow `localhost` as an exception, so this should work without HTTPS.
+
 ## Demo
 
 https://codepen.io/mozmorris/pen/JLZdoP

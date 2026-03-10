@@ -9,7 +9,8 @@
     "build": "vite build",
     "build:production": "npm run build && BUILD_MODE=production vite build",
     "lint": "eslint src/react-webcam.tsx",
-    "test": "tsc --noEmit && vitest run"
+    "test": "tsc --noEmit && vitest run",
+    "serve:example": "npx serve ."
   },
   "repository": {
     "type": "git",

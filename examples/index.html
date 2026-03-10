@@ -58,112 +58,104 @@
 </head>
 <body>
   <div id="root"></div>
-  <script src="https://unpkg.com/react@16.3.1/umd/react.production.min.js"></script>
-  <script src="https://unpkg.com/react-dom@16.3.1/umd/react-dom.production.min.js"></script>
-  <script src="https://unpkg.com/prop-types@15.6.1/prop-types.js"></script>
-  <script src="https://unpkg.com/babel-transform-in-browser@6.4.6/dist/btib.min.js"></script>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
   <script src="../dist/react-webcam.js"></script>
-  <script type="text/es2015">
+  <script type="text/babel">
     // getUserMedia only works for secure pages
 
-    class App extends React.Component {
-      constructor(props) {
-        super(props);
-        this.state = {
-          screenshot: null,
-          tab: 0
-        };
-      }
+    function App() {
+      const [screenshot, setScreenshot] = React.useState(null);
+      const webcamRef = React.useRef(null);
 
-      handleClick = () => {
-        const screenshot = this.webcam.getScreenshot();
-        this.setState({ screenshot });
-      }
+      const handleClick = () => {
+        const screenshotData = webcamRef.current.getScreenshot();
+        setScreenshot(screenshotData);
+      };
 
-      render() {
-        return (
+      return (
+        <div>
+          <h1>react-webcam</h1>
+          <Webcam
+            ref={webcamRef}
+          />
           <div>
-            <h1>react-webcam</h1>
-            <Webcam
-              ref={node => this.webcam = node}
-            />
-            <div>
-              <h2>CSS Filters & style prop</h2>
-              <div className='webcams'>
-                <Webcam
-                  width='212'
-                  height='160'
-                />
-                <Webcam
-                  width='212'
-                  height='160'
-                  style={{ transform: 'rotate(180deg)' }}
-                />
-                <Webcam
-                  width='212'
-                  height='160'
-                />
-                <Webcam
-                  width='212'
-                  height='160'
-                  style={{ transform: 'rotate(180deg)' }}
-                />
-                <Webcam
-                  width='212'
-                  height='160'
-                />
-                <Webcam
-                  width='212'
-                  height='160'
-                  style={{ transform: 'rotate(180deg)' }}
-                />
-                <Webcam
-                  width='212'
-                  height='160'
-                />
-                <Webcam
-                  width='212'
-                  height='160'
-                  style={{ transform: 'rotate(180deg)' }}/>
-                <Webcam
-                  width='212'
-                  height='160'
-                />
-              </div>
+            <h2>CSS Filters & style prop</h2>
+            <div className='webcams'>
+              <Webcam
+                width='212'
+                height='160'
+              />
+              <Webcam
+                width='212'
+                height='160'
+                style={{ transform: 'rotate(180deg)' }}
+              />
+              <Webcam
+                width='212'
+                height='160'
+              />
+              <Webcam
+                width='212'
+                height='160'
+                style={{ transform: 'rotate(180deg)' }}
+              />
+              <Webcam
+                width='212'
+                height='160'
+              />
+              <Webcam
+                width='212'
+                height='160'
+                style={{ transform: 'rotate(180deg)' }}
+              />
+              <Webcam
+                width='212'
+                height='160'
+              />
+              <Webcam
+                width='212'
+                height='160'
+                style={{ transform: 'rotate(180deg)' }}/>
+              <Webcam
+                width='212'
+                height='160'
+              />
             </div>
-            <div>
-              <h2>Screenshot (via ref)</h2>
-              <div className='screenshots'>
-                <div className='controls'>
-                  <button onClick={this.handleClick}>capture</button>
-                </div>
-                {this.state.screenshot ? <img src={this.state.screenshot} /> : null}
+          </div>
+          <div>
+            <h2>Screenshot (via ref)</h2>
+            <div className='screenshots'>
+              <div className='controls'>
+                <button onClick={handleClick}>capture</button>
               </div>
+              {screenshot ? <img src={screenshot} /> : null}
             </div>
-            <div>
-              <h2>Screenshot (via render props)</h2>
-              <div className='screenshots'>
-                <Webcam
-              >
+          </div>
+          <div>
+            <h2>Screenshot (via render props)</h2>
+            <div className='screenshots'>
+              <Webcam>
                 {({ getScreenshot }) => (
                   <button
                     onClick={() => {
-                      const screenshot = getScreenshot()
-                      this.setState({ screenshot });
+                      const screenshotData = getScreenshot();
+                      setScreenshot(screenshotData);
                     }}
                   >
                     Capture photo
                   </button>
                 )}
               </Webcam>
-              </div>
             </div>
           </div>
-        );
-      }
+        </div>
+      );
     }
 
-    ReactDOM.render(<App />, document.getElementById('root'));
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
   </script>
 </body>
 </html>
