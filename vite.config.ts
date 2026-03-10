@@ -12,6 +12,7 @@ export default defineConfig({
       insertTypesEntry: false,
       outDir: 'dist',
       include: ['src/react-webcam.tsx'],
+      exclude: ['src/__tests__/**'],
     }),
   ].filter(Boolean),
   build: {
