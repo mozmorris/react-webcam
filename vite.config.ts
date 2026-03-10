@@ -7,7 +7,7 @@ const isMinified = process.env.BUILD_MODE === 'production';
 
 export default defineConfig({
   plugins: [
-    react(),
+    react({ jsxRuntime: 'classic' }),
     !isMinified && dts({
       insertTypesEntry: false,
       outDir: 'dist',
