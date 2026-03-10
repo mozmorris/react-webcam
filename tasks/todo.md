@@ -7,8 +7,8 @@
 - [x] Add `NODE_OPTIONS=--openssl-legacy-provider` to build scripts (webpack 4 + Node.js 22 compatibility)
 - [x] Fix TypeScript 5.x type errors in `src/react-webcam.tsx` (deprecated browser APIs)
 - [x] Override `noEmit: false` in ts-loader options (tsconfig has `noEmit: true` for `tsc` type-check)
-- [x] Verify `yarn build` succeeds
-- [x] Verify `yarn test` passes
+- [x] Verify `npm run build` succeeds
+- [x] Verify `npm test` passes
 
 ## Result
 
