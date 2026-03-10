@@ -1,451 +1,1217 @@
-(function webpackUniversalModuleDefinition(root, factory) {
-	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require("react"));
-	else if(typeof define === 'function' && define.amd)
-		define(["react"], factory);
-	else if(typeof exports === 'object')
-		exports["Webcam"] = factory(require("react"));
-	else
-		root["Webcam"] = factory(root["React"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_react__) {
-return /******/ (function(modules) { // webpackBootstrap
-/******/ 	// The module cache
-/******/ 	var installedModules = {};
-/******/
-/******/ 	// The require function
-/******/ 	function __webpack_require__(moduleId) {
-/******/
-/******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId]) {
-/******/ 			return installedModules[moduleId].exports;
-/******/ 		}
-/******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = installedModules[moduleId] = {
-/******/ 			i: moduleId,
-/******/ 			l: false,
-/******/ 			exports: {}
-/******/ 		};
-/******/
-/******/ 		// Execute the module function
-/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-/******/
-/******/ 		// Flag the module as loaded
-/******/ 		module.l = true;
-/******/
-/******/ 		// Return the exports of the module
-/******/ 		return module.exports;
-/******/ 	}
-/******/
-/******/
-/******/ 	// expose the modules object (__webpack_modules__)
-/******/ 	__webpack_require__.m = modules;
-/******/
-/******/ 	// expose the module cache
-/******/ 	__webpack_require__.c = installedModules;
-/******/
-/******/ 	// define getter function for harmony exports
-/******/ 	__webpack_require__.d = function(exports, name, getter) {
-/******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
-/******/ 		}
-/******/ 	};
-/******/
-/******/ 	// define __esModule on exports
-/******/ 	__webpack_require__.r = function(exports) {
-/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 		}
-/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 	};
-/******/
-/******/ 	// create a fake namespace object
-/******/ 	// mode & 1: value is a module id, require it
-/******/ 	// mode & 2: merge all properties of value into the ns
-/******/ 	// mode & 4: return value when already ns object
-/******/ 	// mode & 8|1: behave like require
-/******/ 	__webpack_require__.t = function(value, mode) {
-/******/ 		if(mode & 1) value = __webpack_require__(value);
-/******/ 		if(mode & 8) return value;
-/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
-/******/ 		var ns = Object.create(null);
-/******/ 		__webpack_require__.r(ns);
-/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
-/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
-/******/ 		return ns;
-/******/ 	};
-/******/
-/******/ 	// getDefaultExport function for compatibility with non-harmony modules
-/******/ 	__webpack_require__.n = function(module) {
-/******/ 		var getter = module && module.__esModule ?
-/******/ 			function getDefault() { return module['default']; } :
-/******/ 			function getModuleExports() { return module; };
-/******/ 		__webpack_require__.d(getter, 'a', getter);
-/******/ 		return getter;
-/******/ 	};
-/******/
-/******/ 	// Object.prototype.hasOwnProperty.call
-/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-/******/
-/******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "";
-/******/
-/******/
-/******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./src/react-webcam.tsx");
-/******/ })
-/************************************************************************/
-/******/ ({
-
-/***/ "./src/react-webcam.tsx":
-/*!******************************!*\
-  !*** ./src/react-webcam.tsx ***!
-  \******************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-var __extends = (undefined && undefined.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __assign = (undefined && undefined.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
+(function(global, factory) {
+  typeof exports === "object" && typeof module !== "undefined" ? module.exports = factory(require("react")) : typeof define === "function" && define.amd ? define(["react"], factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, global.Webcam = factory(global.React));
+})(this, (function(require$$0) {
+  "use strict";
+  function _interopNamespaceDefault(e) {
+    const n = Object.create(null, { [Symbol.toStringTag]: { value: "Module" } });
+    if (e) {
+      for (const k in e) {
+        if (k !== "default") {
+          const d = Object.getOwnPropertyDescriptor(e, k);
+          Object.defineProperty(n, k, d.get ? d : {
+            enumerable: true,
+            get: () => e[k]
+          });
         }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-var __rest = (undefined && undefined.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
+      }
+    }
+    n.default = e;
+    return Object.freeze(n);
+  }
+  const require$$0__namespace = /* @__PURE__ */ _interopNamespaceDefault(require$$0);
+  var jsxRuntime = { exports: {} };
+  var reactJsxRuntime_production_min = {};
+  var hasRequiredReactJsxRuntime_production_min;
+  function requireReactJsxRuntime_production_min() {
+    if (hasRequiredReactJsxRuntime_production_min) return reactJsxRuntime_production_min;
+    hasRequiredReactJsxRuntime_production_min = 1;
+    var f = require$$0, k = /* @__PURE__ */ Symbol.for("react.element"), l = /* @__PURE__ */ Symbol.for("react.fragment"), m = Object.prototype.hasOwnProperty, n = f.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.ReactCurrentOwner, p = { key: true, ref: true, __self: true, __source: true };
+    function q(c, a, g) {
+      var b, d = {}, e = null, h = null;
+      void 0 !== g && (e = "" + g);
+      void 0 !== a.key && (e = "" + a.key);
+      void 0 !== a.ref && (h = a.ref);
+      for (b in a) m.call(a, b) && !p.hasOwnProperty(b) && (d[b] = a[b]);
+      if (c && c.defaultProps) for (b in a = c.defaultProps, a) void 0 === d[b] && (d[b] = a[b]);
+      return { $$typeof: k, type: c, key: e, ref: h, props: d, _owner: n.current };
+    }
+    reactJsxRuntime_production_min.Fragment = l;
+    reactJsxRuntime_production_min.jsx = q;
+    reactJsxRuntime_production_min.jsxs = q;
+    return reactJsxRuntime_production_min;
+  }
+  var reactJsxRuntime_development = {};
+  var hasRequiredReactJsxRuntime_development;
+  function requireReactJsxRuntime_development() {
+    if (hasRequiredReactJsxRuntime_development) return reactJsxRuntime_development;
+    hasRequiredReactJsxRuntime_development = 1;
+    if (process.env.NODE_ENV !== "production") {
+      (function() {
+        var React = require$$0;
+        var REACT_ELEMENT_TYPE = /* @__PURE__ */ Symbol.for("react.element");
+        var REACT_PORTAL_TYPE = /* @__PURE__ */ Symbol.for("react.portal");
+        var REACT_FRAGMENT_TYPE = /* @__PURE__ */ Symbol.for("react.fragment");
+        var REACT_STRICT_MODE_TYPE = /* @__PURE__ */ Symbol.for("react.strict_mode");
+        var REACT_PROFILER_TYPE = /* @__PURE__ */ Symbol.for("react.profiler");
+        var REACT_PROVIDER_TYPE = /* @__PURE__ */ Symbol.for("react.provider");
+        var REACT_CONTEXT_TYPE = /* @__PURE__ */ Symbol.for("react.context");
+        var REACT_FORWARD_REF_TYPE = /* @__PURE__ */ Symbol.for("react.forward_ref");
+        var REACT_SUSPENSE_TYPE = /* @__PURE__ */ Symbol.for("react.suspense");
+        var REACT_SUSPENSE_LIST_TYPE = /* @__PURE__ */ Symbol.for("react.suspense_list");
+        var REACT_MEMO_TYPE = /* @__PURE__ */ Symbol.for("react.memo");
+        var REACT_LAZY_TYPE = /* @__PURE__ */ Symbol.for("react.lazy");
+        var REACT_OFFSCREEN_TYPE = /* @__PURE__ */ Symbol.for("react.offscreen");
+        var MAYBE_ITERATOR_SYMBOL = Symbol.iterator;
+        var FAUX_ITERATOR_SYMBOL = "@@iterator";
+        function getIteratorFn(maybeIterable) {
+          if (maybeIterable === null || typeof maybeIterable !== "object") {
+            return null;
+          }
+          var maybeIterator = MAYBE_ITERATOR_SYMBOL && maybeIterable[MAYBE_ITERATOR_SYMBOL] || maybeIterable[FAUX_ITERATOR_SYMBOL];
+          if (typeof maybeIterator === "function") {
+            return maybeIterator;
+          }
+          return null;
         }
-    return t;
-};
-
-// polyfill based on https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
-(function polyfillGetUserMedia() {
-    if (typeof window === 'undefined') {
-        return;
-    }
-    // Older browsers might not implement mediaDevices at all, so we set an empty object first
-    if (navigator.mediaDevices === undefined) {
-        navigator.mediaDevices = {};
-    }
-    // Some browsers partially implement mediaDevices. We can't just assign an object
-    // with getUserMedia as it would overwrite existing properties.
-    // Here, we will just add the getUserMedia property if it's missing.
-    if (navigator.mediaDevices.getUserMedia === undefined) {
-        navigator.mediaDevices.getUserMedia = function (constraints) {
-            // First get ahold of the legacy getUserMedia, if present
-            var getUserMedia = navigator.getUserMedia ||
-                navigator.webkitGetUserMedia ||
-                navigator.mozGetUserMedia ||
-                navigator.msGetUserMedia;
-            // Some browsers just don't implement it - return a rejected promise with an error
-            // to keep a consistent interface
-            if (!getUserMedia) {
-                return Promise.reject(new Error("getUserMedia is not implemented in this browser"));
+        var ReactSharedInternals = React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+        function error(format) {
+          {
+            {
+              for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+                args[_key2 - 1] = arguments[_key2];
+              }
+              printWarning("error", format, args);
             }
-            // Otherwise, wrap the call to the old navigator.getUserMedia with a Promise
-            return new Promise(function (resolve, reject) {
-                getUserMedia.call(navigator, constraints, resolve, reject);
+          }
+        }
+        function printWarning(level, format, args) {
+          {
+            var ReactDebugCurrentFrame2 = ReactSharedInternals.ReactDebugCurrentFrame;
+            var stack = ReactDebugCurrentFrame2.getStackAddendum();
+            if (stack !== "") {
+              format += "%s";
+              args = args.concat([stack]);
+            }
+            var argsWithFormat = args.map(function(item) {
+              return String(item);
             });
+            argsWithFormat.unshift("Warning: " + format);
+            Function.prototype.apply.call(console[level], console, argsWithFormat);
+          }
+        }
+        var enableScopeAPI = false;
+        var enableCacheElement = false;
+        var enableTransitionTracing = false;
+        var enableLegacyHidden = false;
+        var enableDebugTracing = false;
+        var REACT_MODULE_REFERENCE;
+        {
+          REACT_MODULE_REFERENCE = /* @__PURE__ */ Symbol.for("react.module.reference");
+        }
+        function isValidElementType(type) {
+          if (typeof type === "string" || typeof type === "function") {
+            return true;
+          }
+          if (type === REACT_FRAGMENT_TYPE || type === REACT_PROFILER_TYPE || enableDebugTracing || type === REACT_STRICT_MODE_TYPE || type === REACT_SUSPENSE_TYPE || type === REACT_SUSPENSE_LIST_TYPE || enableLegacyHidden || type === REACT_OFFSCREEN_TYPE || enableScopeAPI || enableCacheElement || enableTransitionTracing) {
+            return true;
+          }
+          if (typeof type === "object" && type !== null) {
+            if (type.$$typeof === REACT_LAZY_TYPE || type.$$typeof === REACT_MEMO_TYPE || type.$$typeof === REACT_PROVIDER_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE || // This needs to include all possible module reference object
+            // types supported by any Flight configuration anywhere since
+            // we don't know which Flight build this will end up being used
+            // with.
+            type.$$typeof === REACT_MODULE_REFERENCE || type.getModuleId !== void 0) {
+              return true;
+            }
+          }
+          return false;
+        }
+        function getWrappedName(outerType, innerType, wrapperName) {
+          var displayName = outerType.displayName;
+          if (displayName) {
+            return displayName;
+          }
+          var functionName = innerType.displayName || innerType.name || "";
+          return functionName !== "" ? wrapperName + "(" + functionName + ")" : wrapperName;
+        }
+        function getContextName(type) {
+          return type.displayName || "Context";
+        }
+        function getComponentNameFromType(type) {
+          if (type == null) {
+            return null;
+          }
+          {
+            if (typeof type.tag === "number") {
+              error("Received an unexpected object in getComponentNameFromType(). This is likely a bug in React. Please file an issue.");
+            }
+          }
+          if (typeof type === "function") {
+            return type.displayName || type.name || null;
+          }
+          if (typeof type === "string") {
+            return type;
+          }
+          switch (type) {
+            case REACT_FRAGMENT_TYPE:
+              return "Fragment";
+            case REACT_PORTAL_TYPE:
+              return "Portal";
+            case REACT_PROFILER_TYPE:
+              return "Profiler";
+            case REACT_STRICT_MODE_TYPE:
+              return "StrictMode";
+            case REACT_SUSPENSE_TYPE:
+              return "Suspense";
+            case REACT_SUSPENSE_LIST_TYPE:
+              return "SuspenseList";
+          }
+          if (typeof type === "object") {
+            switch (type.$$typeof) {
+              case REACT_CONTEXT_TYPE:
+                var context = type;
+                return getContextName(context) + ".Consumer";
+              case REACT_PROVIDER_TYPE:
+                var provider = type;
+                return getContextName(provider._context) + ".Provider";
+              case REACT_FORWARD_REF_TYPE:
+                return getWrappedName(type, type.render, "ForwardRef");
+              case REACT_MEMO_TYPE:
+                var outerName = type.displayName || null;
+                if (outerName !== null) {
+                  return outerName;
+                }
+                return getComponentNameFromType(type.type) || "Memo";
+              case REACT_LAZY_TYPE: {
+                var lazyComponent = type;
+                var payload = lazyComponent._payload;
+                var init = lazyComponent._init;
+                try {
+                  return getComponentNameFromType(init(payload));
+                } catch (x) {
+                  return null;
+                }
+              }
+            }
+          }
+          return null;
+        }
+        var assign = Object.assign;
+        var disabledDepth = 0;
+        var prevLog;
+        var prevInfo;
+        var prevWarn;
+        var prevError;
+        var prevGroup;
+        var prevGroupCollapsed;
+        var prevGroupEnd;
+        function disabledLog() {
+        }
+        disabledLog.__reactDisabledLog = true;
+        function disableLogs() {
+          {
+            if (disabledDepth === 0) {
+              prevLog = console.log;
+              prevInfo = console.info;
+              prevWarn = console.warn;
+              prevError = console.error;
+              prevGroup = console.group;
+              prevGroupCollapsed = console.groupCollapsed;
+              prevGroupEnd = console.groupEnd;
+              var props = {
+                configurable: true,
+                enumerable: true,
+                value: disabledLog,
+                writable: true
+              };
+              Object.defineProperties(console, {
+                info: props,
+                log: props,
+                warn: props,
+                error: props,
+                group: props,
+                groupCollapsed: props,
+                groupEnd: props
+              });
+            }
+            disabledDepth++;
+          }
+        }
+        function reenableLogs() {
+          {
+            disabledDepth--;
+            if (disabledDepth === 0) {
+              var props = {
+                configurable: true,
+                enumerable: true,
+                writable: true
+              };
+              Object.defineProperties(console, {
+                log: assign({}, props, {
+                  value: prevLog
+                }),
+                info: assign({}, props, {
+                  value: prevInfo
+                }),
+                warn: assign({}, props, {
+                  value: prevWarn
+                }),
+                error: assign({}, props, {
+                  value: prevError
+                }),
+                group: assign({}, props, {
+                  value: prevGroup
+                }),
+                groupCollapsed: assign({}, props, {
+                  value: prevGroupCollapsed
+                }),
+                groupEnd: assign({}, props, {
+                  value: prevGroupEnd
+                })
+              });
+            }
+            if (disabledDepth < 0) {
+              error("disabledDepth fell below zero. This is a bug in React. Please file an issue.");
+            }
+          }
+        }
+        var ReactCurrentDispatcher = ReactSharedInternals.ReactCurrentDispatcher;
+        var prefix;
+        function describeBuiltInComponentFrame(name, source, ownerFn) {
+          {
+            if (prefix === void 0) {
+              try {
+                throw Error();
+              } catch (x) {
+                var match = x.stack.trim().match(/\n( *(at )?)/);
+                prefix = match && match[1] || "";
+              }
+            }
+            return "\n" + prefix + name;
+          }
+        }
+        var reentry = false;
+        var componentFrameCache;
+        {
+          var PossiblyWeakMap = typeof WeakMap === "function" ? WeakMap : Map;
+          componentFrameCache = new PossiblyWeakMap();
+        }
+        function describeNativeComponentFrame(fn, construct) {
+          if (!fn || reentry) {
+            return "";
+          }
+          {
+            var frame = componentFrameCache.get(fn);
+            if (frame !== void 0) {
+              return frame;
+            }
+          }
+          var control;
+          reentry = true;
+          var previousPrepareStackTrace = Error.prepareStackTrace;
+          Error.prepareStackTrace = void 0;
+          var previousDispatcher;
+          {
+            previousDispatcher = ReactCurrentDispatcher.current;
+            ReactCurrentDispatcher.current = null;
+            disableLogs();
+          }
+          try {
+            if (construct) {
+              var Fake = function() {
+                throw Error();
+              };
+              Object.defineProperty(Fake.prototype, "props", {
+                set: function() {
+                  throw Error();
+                }
+              });
+              if (typeof Reflect === "object" && Reflect.construct) {
+                try {
+                  Reflect.construct(Fake, []);
+                } catch (x) {
+                  control = x;
+                }
+                Reflect.construct(fn, [], Fake);
+              } else {
+                try {
+                  Fake.call();
+                } catch (x) {
+                  control = x;
+                }
+                fn.call(Fake.prototype);
+              }
+            } else {
+              try {
+                throw Error();
+              } catch (x) {
+                control = x;
+              }
+              fn();
+            }
+          } catch (sample) {
+            if (sample && control && typeof sample.stack === "string") {
+              var sampleLines = sample.stack.split("\n");
+              var controlLines = control.stack.split("\n");
+              var s = sampleLines.length - 1;
+              var c = controlLines.length - 1;
+              while (s >= 1 && c >= 0 && sampleLines[s] !== controlLines[c]) {
+                c--;
+              }
+              for (; s >= 1 && c >= 0; s--, c--) {
+                if (sampleLines[s] !== controlLines[c]) {
+                  if (s !== 1 || c !== 1) {
+                    do {
+                      s--;
+                      c--;
+                      if (c < 0 || sampleLines[s] !== controlLines[c]) {
+                        var _frame = "\n" + sampleLines[s].replace(" at new ", " at ");
+                        if (fn.displayName && _frame.includes("<anonymous>")) {
+                          _frame = _frame.replace("<anonymous>", fn.displayName);
+                        }
+                        {
+                          if (typeof fn === "function") {
+                            componentFrameCache.set(fn, _frame);
+                          }
+                        }
+                        return _frame;
+                      }
+                    } while (s >= 1 && c >= 0);
+                  }
+                  break;
+                }
+              }
+            }
+          } finally {
+            reentry = false;
+            {
+              ReactCurrentDispatcher.current = previousDispatcher;
+              reenableLogs();
+            }
+            Error.prepareStackTrace = previousPrepareStackTrace;
+          }
+          var name = fn ? fn.displayName || fn.name : "";
+          var syntheticFrame = name ? describeBuiltInComponentFrame(name) : "";
+          {
+            if (typeof fn === "function") {
+              componentFrameCache.set(fn, syntheticFrame);
+            }
+          }
+          return syntheticFrame;
+        }
+        function describeFunctionComponentFrame(fn, source, ownerFn) {
+          {
+            return describeNativeComponentFrame(fn, false);
+          }
+        }
+        function shouldConstruct(Component) {
+          var prototype = Component.prototype;
+          return !!(prototype && prototype.isReactComponent);
+        }
+        function describeUnknownElementTypeFrameInDEV(type, source, ownerFn) {
+          if (type == null) {
+            return "";
+          }
+          if (typeof type === "function") {
+            {
+              return describeNativeComponentFrame(type, shouldConstruct(type));
+            }
+          }
+          if (typeof type === "string") {
+            return describeBuiltInComponentFrame(type);
+          }
+          switch (type) {
+            case REACT_SUSPENSE_TYPE:
+              return describeBuiltInComponentFrame("Suspense");
+            case REACT_SUSPENSE_LIST_TYPE:
+              return describeBuiltInComponentFrame("SuspenseList");
+          }
+          if (typeof type === "object") {
+            switch (type.$$typeof) {
+              case REACT_FORWARD_REF_TYPE:
+                return describeFunctionComponentFrame(type.render);
+              case REACT_MEMO_TYPE:
+                return describeUnknownElementTypeFrameInDEV(type.type, source, ownerFn);
+              case REACT_LAZY_TYPE: {
+                var lazyComponent = type;
+                var payload = lazyComponent._payload;
+                var init = lazyComponent._init;
+                try {
+                  return describeUnknownElementTypeFrameInDEV(init(payload), source, ownerFn);
+                } catch (x) {
+                }
+              }
+            }
+          }
+          return "";
+        }
+        var hasOwnProperty = Object.prototype.hasOwnProperty;
+        var loggedTypeFailures = {};
+        var ReactDebugCurrentFrame = ReactSharedInternals.ReactDebugCurrentFrame;
+        function setCurrentlyValidatingElement(element) {
+          {
+            if (element) {
+              var owner = element._owner;
+              var stack = describeUnknownElementTypeFrameInDEV(element.type, element._source, owner ? owner.type : null);
+              ReactDebugCurrentFrame.setExtraStackFrame(stack);
+            } else {
+              ReactDebugCurrentFrame.setExtraStackFrame(null);
+            }
+          }
+        }
+        function checkPropTypes(typeSpecs, values, location, componentName, element) {
+          {
+            var has = Function.call.bind(hasOwnProperty);
+            for (var typeSpecName in typeSpecs) {
+              if (has(typeSpecs, typeSpecName)) {
+                var error$1 = void 0;
+                try {
+                  if (typeof typeSpecs[typeSpecName] !== "function") {
+                    var err = Error((componentName || "React class") + ": " + location + " type `" + typeSpecName + "` is invalid; it must be a function, usually from the `prop-types` package, but received `" + typeof typeSpecs[typeSpecName] + "`.This often happens because of typos such as `PropTypes.function` instead of `PropTypes.func`.");
+                    err.name = "Invariant Violation";
+                    throw err;
+                  }
+                  error$1 = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, "SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED");
+                } catch (ex) {
+                  error$1 = ex;
+                }
+                if (error$1 && !(error$1 instanceof Error)) {
+                  setCurrentlyValidatingElement(element);
+                  error("%s: type specification of %s `%s` is invalid; the type checker function must return `null` or an `Error` but returned a %s. You may have forgotten to pass an argument to the type checker creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and shape all require an argument).", componentName || "React class", location, typeSpecName, typeof error$1);
+                  setCurrentlyValidatingElement(null);
+                }
+                if (error$1 instanceof Error && !(error$1.message in loggedTypeFailures)) {
+                  loggedTypeFailures[error$1.message] = true;
+                  setCurrentlyValidatingElement(element);
+                  error("Failed %s type: %s", location, error$1.message);
+                  setCurrentlyValidatingElement(null);
+                }
+              }
+            }
+          }
+        }
+        var isArrayImpl = Array.isArray;
+        function isArray(a) {
+          return isArrayImpl(a);
+        }
+        function typeName(value) {
+          {
+            var hasToStringTag = typeof Symbol === "function" && Symbol.toStringTag;
+            var type = hasToStringTag && value[Symbol.toStringTag] || value.constructor.name || "Object";
+            return type;
+          }
+        }
+        function willCoercionThrow(value) {
+          {
+            try {
+              testStringCoercion(value);
+              return false;
+            } catch (e) {
+              return true;
+            }
+          }
+        }
+        function testStringCoercion(value) {
+          return "" + value;
+        }
+        function checkKeyStringCoercion(value) {
+          {
+            if (willCoercionThrow(value)) {
+              error("The provided key is an unsupported type %s. This value must be coerced to a string before before using it here.", typeName(value));
+              return testStringCoercion(value);
+            }
+          }
+        }
+        var ReactCurrentOwner = ReactSharedInternals.ReactCurrentOwner;
+        var RESERVED_PROPS = {
+          key: true,
+          ref: true,
+          __self: true,
+          __source: true
         };
+        var specialPropKeyWarningShown;
+        var specialPropRefWarningShown;
+        function hasValidRef(config) {
+          {
+            if (hasOwnProperty.call(config, "ref")) {
+              var getter = Object.getOwnPropertyDescriptor(config, "ref").get;
+              if (getter && getter.isReactWarning) {
+                return false;
+              }
+            }
+          }
+          return config.ref !== void 0;
+        }
+        function hasValidKey(config) {
+          {
+            if (hasOwnProperty.call(config, "key")) {
+              var getter = Object.getOwnPropertyDescriptor(config, "key").get;
+              if (getter && getter.isReactWarning) {
+                return false;
+              }
+            }
+          }
+          return config.key !== void 0;
+        }
+        function warnIfStringRefCannotBeAutoConverted(config, self2) {
+          {
+            if (typeof config.ref === "string" && ReactCurrentOwner.current && self2) ;
+          }
+        }
+        function defineKeyPropWarningGetter(props, displayName) {
+          {
+            var warnAboutAccessingKey = function() {
+              if (!specialPropKeyWarningShown) {
+                specialPropKeyWarningShown = true;
+                error("%s: `key` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you should pass it as a different prop. (https://reactjs.org/link/special-props)", displayName);
+              }
+            };
+            warnAboutAccessingKey.isReactWarning = true;
+            Object.defineProperty(props, "key", {
+              get: warnAboutAccessingKey,
+              configurable: true
+            });
+          }
+        }
+        function defineRefPropWarningGetter(props, displayName) {
+          {
+            var warnAboutAccessingRef = function() {
+              if (!specialPropRefWarningShown) {
+                specialPropRefWarningShown = true;
+                error("%s: `ref` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you should pass it as a different prop. (https://reactjs.org/link/special-props)", displayName);
+              }
+            };
+            warnAboutAccessingRef.isReactWarning = true;
+            Object.defineProperty(props, "ref", {
+              get: warnAboutAccessingRef,
+              configurable: true
+            });
+          }
+        }
+        var ReactElement = function(type, key, ref, self2, source, owner, props) {
+          var element = {
+            // This tag allows us to uniquely identify this as a React Element
+            $$typeof: REACT_ELEMENT_TYPE,
+            // Built-in properties that belong on the element
+            type,
+            key,
+            ref,
+            props,
+            // Record the component responsible for creating this element.
+            _owner: owner
+          };
+          {
+            element._store = {};
+            Object.defineProperty(element._store, "validated", {
+              configurable: false,
+              enumerable: false,
+              writable: true,
+              value: false
+            });
+            Object.defineProperty(element, "_self", {
+              configurable: false,
+              enumerable: false,
+              writable: false,
+              value: self2
+            });
+            Object.defineProperty(element, "_source", {
+              configurable: false,
+              enumerable: false,
+              writable: false,
+              value: source
+            });
+            if (Object.freeze) {
+              Object.freeze(element.props);
+              Object.freeze(element);
+            }
+          }
+          return element;
+        };
+        function jsxDEV(type, config, maybeKey, source, self2) {
+          {
+            var propName;
+            var props = {};
+            var key = null;
+            var ref = null;
+            if (maybeKey !== void 0) {
+              {
+                checkKeyStringCoercion(maybeKey);
+              }
+              key = "" + maybeKey;
+            }
+            if (hasValidKey(config)) {
+              {
+                checkKeyStringCoercion(config.key);
+              }
+              key = "" + config.key;
+            }
+            if (hasValidRef(config)) {
+              ref = config.ref;
+              warnIfStringRefCannotBeAutoConverted(config, self2);
+            }
+            for (propName in config) {
+              if (hasOwnProperty.call(config, propName) && !RESERVED_PROPS.hasOwnProperty(propName)) {
+                props[propName] = config[propName];
+              }
+            }
+            if (type && type.defaultProps) {
+              var defaultProps = type.defaultProps;
+              for (propName in defaultProps) {
+                if (props[propName] === void 0) {
+                  props[propName] = defaultProps[propName];
+                }
+              }
+            }
+            if (key || ref) {
+              var displayName = typeof type === "function" ? type.displayName || type.name || "Unknown" : type;
+              if (key) {
+                defineKeyPropWarningGetter(props, displayName);
+              }
+              if (ref) {
+                defineRefPropWarningGetter(props, displayName);
+              }
+            }
+            return ReactElement(type, key, ref, self2, source, ReactCurrentOwner.current, props);
+          }
+        }
+        var ReactCurrentOwner$1 = ReactSharedInternals.ReactCurrentOwner;
+        var ReactDebugCurrentFrame$1 = ReactSharedInternals.ReactDebugCurrentFrame;
+        function setCurrentlyValidatingElement$1(element) {
+          {
+            if (element) {
+              var owner = element._owner;
+              var stack = describeUnknownElementTypeFrameInDEV(element.type, element._source, owner ? owner.type : null);
+              ReactDebugCurrentFrame$1.setExtraStackFrame(stack);
+            } else {
+              ReactDebugCurrentFrame$1.setExtraStackFrame(null);
+            }
+          }
+        }
+        var propTypesMisspellWarningShown;
+        {
+          propTypesMisspellWarningShown = false;
+        }
+        function isValidElement(object) {
+          {
+            return typeof object === "object" && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
+          }
+        }
+        function getDeclarationErrorAddendum() {
+          {
+            if (ReactCurrentOwner$1.current) {
+              var name = getComponentNameFromType(ReactCurrentOwner$1.current.type);
+              if (name) {
+                return "\n\nCheck the render method of `" + name + "`.";
+              }
+            }
+            return "";
+          }
+        }
+        function getSourceInfoErrorAddendum(source) {
+          {
+            return "";
+          }
+        }
+        var ownerHasKeyUseWarning = {};
+        function getCurrentComponentErrorInfo(parentType) {
+          {
+            var info = getDeclarationErrorAddendum();
+            if (!info) {
+              var parentName = typeof parentType === "string" ? parentType : parentType.displayName || parentType.name;
+              if (parentName) {
+                info = "\n\nCheck the top-level render call using <" + parentName + ">.";
+              }
+            }
+            return info;
+          }
+        }
+        function validateExplicitKey(element, parentType) {
+          {
+            if (!element._store || element._store.validated || element.key != null) {
+              return;
+            }
+            element._store.validated = true;
+            var currentComponentErrorInfo = getCurrentComponentErrorInfo(parentType);
+            if (ownerHasKeyUseWarning[currentComponentErrorInfo]) {
+              return;
+            }
+            ownerHasKeyUseWarning[currentComponentErrorInfo] = true;
+            var childOwner = "";
+            if (element && element._owner && element._owner !== ReactCurrentOwner$1.current) {
+              childOwner = " It was passed a child from " + getComponentNameFromType(element._owner.type) + ".";
+            }
+            setCurrentlyValidatingElement$1(element);
+            error('Each child in a list should have a unique "key" prop.%s%s See https://reactjs.org/link/warning-keys for more information.', currentComponentErrorInfo, childOwner);
+            setCurrentlyValidatingElement$1(null);
+          }
+        }
+        function validateChildKeys(node, parentType) {
+          {
+            if (typeof node !== "object") {
+              return;
+            }
+            if (isArray(node)) {
+              for (var i = 0; i < node.length; i++) {
+                var child = node[i];
+                if (isValidElement(child)) {
+                  validateExplicitKey(child, parentType);
+                }
+              }
+            } else if (isValidElement(node)) {
+              if (node._store) {
+                node._store.validated = true;
+              }
+            } else if (node) {
+              var iteratorFn = getIteratorFn(node);
+              if (typeof iteratorFn === "function") {
+                if (iteratorFn !== node.entries) {
+                  var iterator = iteratorFn.call(node);
+                  var step;
+                  while (!(step = iterator.next()).done) {
+                    if (isValidElement(step.value)) {
+                      validateExplicitKey(step.value, parentType);
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        function validatePropTypes(element) {
+          {
+            var type = element.type;
+            if (type === null || type === void 0 || typeof type === "string") {
+              return;
+            }
+            var propTypes;
+            if (typeof type === "function") {
+              propTypes = type.propTypes;
+            } else if (typeof type === "object" && (type.$$typeof === REACT_FORWARD_REF_TYPE || // Note: Memo only checks outer props here.
+            // Inner props are checked in the reconciler.
+            type.$$typeof === REACT_MEMO_TYPE)) {
+              propTypes = type.propTypes;
+            } else {
+              return;
+            }
+            if (propTypes) {
+              var name = getComponentNameFromType(type);
+              checkPropTypes(propTypes, element.props, "prop", name, element);
+            } else if (type.PropTypes !== void 0 && !propTypesMisspellWarningShown) {
+              propTypesMisspellWarningShown = true;
+              var _name = getComponentNameFromType(type);
+              error("Component %s declared `PropTypes` instead of `propTypes`. Did you misspell the property assignment?", _name || "Unknown");
+            }
+            if (typeof type.getDefaultProps === "function" && !type.getDefaultProps.isReactClassApproved) {
+              error("getDefaultProps is only used on classic React.createClass definitions. Use a static property named `defaultProps` instead.");
+            }
+          }
+        }
+        function validateFragmentProps(fragment) {
+          {
+            var keys = Object.keys(fragment.props);
+            for (var i = 0; i < keys.length; i++) {
+              var key = keys[i];
+              if (key !== "children" && key !== "key") {
+                setCurrentlyValidatingElement$1(fragment);
+                error("Invalid prop `%s` supplied to `React.Fragment`. React.Fragment can only have `key` and `children` props.", key);
+                setCurrentlyValidatingElement$1(null);
+                break;
+              }
+            }
+            if (fragment.ref !== null) {
+              setCurrentlyValidatingElement$1(fragment);
+              error("Invalid attribute `ref` supplied to `React.Fragment`.");
+              setCurrentlyValidatingElement$1(null);
+            }
+          }
+        }
+        var didWarnAboutKeySpread = {};
+        function jsxWithValidation(type, props, key, isStaticChildren, source, self2) {
+          {
+            var validType = isValidElementType(type);
+            if (!validType) {
+              var info = "";
+              if (type === void 0 || typeof type === "object" && type !== null && Object.keys(type).length === 0) {
+                info += " You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.";
+              }
+              var sourceInfo = getSourceInfoErrorAddendum();
+              if (sourceInfo) {
+                info += sourceInfo;
+              } else {
+                info += getDeclarationErrorAddendum();
+              }
+              var typeString;
+              if (type === null) {
+                typeString = "null";
+              } else if (isArray(type)) {
+                typeString = "array";
+              } else if (type !== void 0 && type.$$typeof === REACT_ELEMENT_TYPE) {
+                typeString = "<" + (getComponentNameFromType(type.type) || "Unknown") + " />";
+                info = " Did you accidentally export a JSX literal instead of a component?";
+              } else {
+                typeString = typeof type;
+              }
+              error("React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: %s.%s", typeString, info);
+            }
+            var element = jsxDEV(type, props, key, source, self2);
+            if (element == null) {
+              return element;
+            }
+            if (validType) {
+              var children = props.children;
+              if (children !== void 0) {
+                if (isStaticChildren) {
+                  if (isArray(children)) {
+                    for (var i = 0; i < children.length; i++) {
+                      validateChildKeys(children[i], type);
+                    }
+                    if (Object.freeze) {
+                      Object.freeze(children);
+                    }
+                  } else {
+                    error("React.jsx: Static children should always be an array. You are likely explicitly calling React.jsxs or React.jsxDEV. Use the Babel transform instead.");
+                  }
+                } else {
+                  validateChildKeys(children, type);
+                }
+              }
+            }
+            {
+              if (hasOwnProperty.call(props, "key")) {
+                var componentName = getComponentNameFromType(type);
+                var keys = Object.keys(props).filter(function(k) {
+                  return k !== "key";
+                });
+                var beforeExample = keys.length > 0 ? "{key: someKey, " + keys.join(": ..., ") + ": ...}" : "{key: someKey}";
+                if (!didWarnAboutKeySpread[componentName + beforeExample]) {
+                  var afterExample = keys.length > 0 ? "{" + keys.join(": ..., ") + ": ...}" : "{}";
+                  error('A props object containing a "key" prop is being spread into JSX:\n  let props = %s;\n  <%s {...props} />\nReact keys must be passed directly to JSX without using spread:\n  let props = %s;\n  <%s key={someKey} {...props} />', beforeExample, componentName, afterExample, componentName);
+                  didWarnAboutKeySpread[componentName + beforeExample] = true;
+                }
+              }
+            }
+            if (type === REACT_FRAGMENT_TYPE) {
+              validateFragmentProps(element);
+            } else {
+              validatePropTypes(element);
+            }
+            return element;
+          }
+        }
+        function jsxWithValidationStatic(type, props, key) {
+          {
+            return jsxWithValidation(type, props, key, true);
+          }
+        }
+        function jsxWithValidationDynamic(type, props, key) {
+          {
+            return jsxWithValidation(type, props, key, false);
+          }
+        }
+        var jsx = jsxWithValidationDynamic;
+        var jsxs = jsxWithValidationStatic;
+        reactJsxRuntime_development.Fragment = REACT_FRAGMENT_TYPE;
+        reactJsxRuntime_development.jsx = jsx;
+        reactJsxRuntime_development.jsxs = jsxs;
+      })();
     }
-})();
-function hasGetUserMedia() {
+    return reactJsxRuntime_development;
+  }
+  var hasRequiredJsxRuntime;
+  function requireJsxRuntime() {
+    if (hasRequiredJsxRuntime) return jsxRuntime.exports;
+    hasRequiredJsxRuntime = 1;
+    if (process.env.NODE_ENV === "production") {
+      jsxRuntime.exports = requireReactJsxRuntime_production_min();
+    } else {
+      jsxRuntime.exports = requireReactJsxRuntime_development();
+    }
+    return jsxRuntime.exports;
+  }
+  var jsxRuntimeExports = requireJsxRuntime();
+  (function polyfillGetUserMedia() {
+    if (typeof window === "undefined") {
+      return;
+    }
+    if (navigator.mediaDevices === void 0) {
+      navigator.mediaDevices = {};
+    }
+    if (navigator.mediaDevices.getUserMedia === void 0) {
+      navigator.mediaDevices.getUserMedia = function(constraints) {
+        const getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+        if (!getUserMedia) {
+          return Promise.reject(
+            new Error("getUserMedia is not implemented in this browser")
+          );
+        }
+        return new Promise(function(resolve, reject) {
+          getUserMedia.call(navigator, constraints, resolve, reject);
+        });
+      };
+    }
+  })();
+  function hasGetUserMedia() {
     return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
-}
-var Webcam = /** @class */ (function (_super) {
-    __extends(Webcam, _super);
-    function Webcam(props) {
-        var _this = _super.call(this, props) || this;
-        _this.canvas = null;
-        _this.ctx = null;
-        _this.requestUserMediaId = 0;
-        _this.unmounted = false;
-        _this.state = {
-            hasUserMedia: false
-        };
-        return _this;
+  }
+  const _Webcam = class _Webcam extends require$$0__namespace.Component {
+    constructor(props) {
+      super(props);
+      this.canvas = null;
+      this.ctx = null;
+      this.requestUserMediaId = 0;
+      this.unmounted = false;
+      this.state = {
+        hasUserMedia: false
+      };
     }
-    Webcam.prototype.componentDidMount = function () {
-        var _a = this, state = _a.state, props = _a.props;
-        this.unmounted = false;
-        if (!hasGetUserMedia()) {
-            props.onUserMediaError("getUserMedia not supported");
-            return;
-        }
-        if (!state.hasUserMedia) {
-            this.requestUserMedia();
-        }
-        if (props.children && typeof props.children != 'function') {
-            console.warn("children must be a function");
-        }
-    };
-    Webcam.prototype.componentDidUpdate = function (nextProps) {
-        var props = this.props;
-        if (!hasGetUserMedia()) {
-            props.onUserMediaError("getUserMedia not supported");
-            return;
-        }
-        var audioConstraintsChanged = JSON.stringify(nextProps.audioConstraints) !==
-            JSON.stringify(props.audioConstraints);
-        var videoConstraintsChanged = JSON.stringify(nextProps.videoConstraints) !==
-            JSON.stringify(props.videoConstraints);
-        var minScreenshotWidthChanged = nextProps.minScreenshotWidth !== props.minScreenshotWidth;
-        var minScreenshotHeightChanged = nextProps.minScreenshotHeight !== props.minScreenshotHeight;
-        if (videoConstraintsChanged ||
-            minScreenshotWidthChanged ||
-            minScreenshotHeightChanged) {
-            this.canvas = null;
-            this.ctx = null;
-        }
-        if (audioConstraintsChanged || videoConstraintsChanged) {
-            this.stopAndCleanup();
-            this.requestUserMedia();
-        }
-    };
-    Webcam.prototype.componentWillUnmount = function () {
-        this.unmounted = true;
+    componentDidMount() {
+      const { state, props } = this;
+      this.unmounted = false;
+      if (!hasGetUserMedia()) {
+        props.onUserMediaError("getUserMedia not supported");
+        return;
+      }
+      if (!state.hasUserMedia) {
+        this.requestUserMedia();
+      }
+      if (props.children && typeof props.children != "function") {
+        console.warn("children must be a function");
+      }
+    }
+    componentDidUpdate(nextProps) {
+      const { props } = this;
+      if (!hasGetUserMedia()) {
+        props.onUserMediaError("getUserMedia not supported");
+        return;
+      }
+      const audioConstraintsChanged = JSON.stringify(nextProps.audioConstraints) !== JSON.stringify(props.audioConstraints);
+      const videoConstraintsChanged = JSON.stringify(nextProps.videoConstraints) !== JSON.stringify(props.videoConstraints);
+      const minScreenshotWidthChanged = nextProps.minScreenshotWidth !== props.minScreenshotWidth;
+      const minScreenshotHeightChanged = nextProps.minScreenshotHeight !== props.minScreenshotHeight;
+      if (videoConstraintsChanged || minScreenshotWidthChanged || minScreenshotHeightChanged) {
+        this.canvas = null;
+        this.ctx = null;
+      }
+      if (audioConstraintsChanged || videoConstraintsChanged) {
         this.stopAndCleanup();
-    };
-    Webcam.stopMediaStream = function (stream) {
-        if (stream) {
-            if (stream.getVideoTracks && stream.getAudioTracks) {
-                stream.getVideoTracks().map(function (track) {
-                    stream.removeTrack(track);
-                    track.stop();
-                });
-                stream.getAudioTracks().map(function (track) {
-                    stream.removeTrack(track);
-                    track.stop();
-                });
-            }
-            else {
-                stream.stop();
-            }
+        this.requestUserMedia();
+      }
+    }
+    componentWillUnmount() {
+      this.unmounted = true;
+      this.stopAndCleanup();
+    }
+    static stopMediaStream(stream) {
+      if (stream) {
+        if (stream.getVideoTracks && stream.getAudioTracks) {
+          stream.getVideoTracks().map((track) => {
+            stream.removeTrack(track);
+            track.stop();
+          });
+          stream.getAudioTracks().map((track) => {
+            stream.removeTrack(track);
+            track.stop();
+          });
+        } else {
+          stream.stop();
         }
-    };
-    Webcam.prototype.stopAndCleanup = function () {
-        var state = this.state;
-        if (state.hasUserMedia) {
-            Webcam.stopMediaStream(this.stream);
-            if (state.src) {
-                window.URL.revokeObjectURL(state.src);
-            }
+      }
+    }
+    stopAndCleanup() {
+      const { state } = this;
+      if (state.hasUserMedia) {
+        _Webcam.stopMediaStream(this.stream);
+        if (state.src) {
+          window.URL.revokeObjectURL(state.src);
         }
-    };
-    Webcam.prototype.getScreenshot = function (screenshotDimensions) {
-        var _a = this, state = _a.state, props = _a.props;
-        if (!state.hasUserMedia)
-            return null;
-        var canvas = this.getCanvas(screenshotDimensions);
-        return (canvas &&
-            canvas.toDataURL(props.screenshotFormat, props.screenshotQuality));
-    };
-    Webcam.prototype.getCanvas = function (screenshotDimensions) {
-        var _a = this, state = _a.state, props = _a.props;
-        if (!this.video) {
-            return null;
+      }
+    }
+    getScreenshot(screenshotDimensions) {
+      const { state, props } = this;
+      if (!state.hasUserMedia) return null;
+      const canvas = this.getCanvas(screenshotDimensions);
+      return canvas && canvas.toDataURL(props.screenshotFormat, props.screenshotQuality);
+    }
+    getCanvas(screenshotDimensions) {
+      const { state, props } = this;
+      if (!this.video) {
+        return null;
+      }
+      if (!state.hasUserMedia || !this.video.videoHeight) return null;
+      if (!this.ctx) {
+        let canvasWidth = this.video.videoWidth;
+        let canvasHeight = this.video.videoHeight;
+        if (!this.props.forceScreenshotSourceSize) {
+          const aspectRatio = canvasWidth / canvasHeight;
+          canvasWidth = props.minScreenshotWidth || this.video.clientWidth;
+          canvasHeight = canvasWidth / aspectRatio;
+          if (props.minScreenshotHeight && canvasHeight < props.minScreenshotHeight) {
+            canvasHeight = props.minScreenshotHeight;
+            canvasWidth = canvasHeight * aspectRatio;
+          }
         }
-        if (!state.hasUserMedia || !this.video.videoHeight)
-            return null;
-        if (!this.ctx) {
-            var canvasWidth = this.video.videoWidth;
-            var canvasHeight = this.video.videoHeight;
-            if (!this.props.forceScreenshotSourceSize) {
-                var aspectRatio = canvasWidth / canvasHeight;
-                canvasWidth = props.minScreenshotWidth || this.video.clientWidth;
-                canvasHeight = canvasWidth / aspectRatio;
-                if (props.minScreenshotHeight &&
-                    canvasHeight < props.minScreenshotHeight) {
-                    canvasHeight = props.minScreenshotHeight;
-                    canvasWidth = canvasHeight * aspectRatio;
-                }
-            }
-            this.canvas = document.createElement("canvas");
-            this.canvas.width = (screenshotDimensions === null || screenshotDimensions === void 0 ? void 0 : screenshotDimensions.width) || canvasWidth;
-            this.canvas.height = (screenshotDimensions === null || screenshotDimensions === void 0 ? void 0 : screenshotDimensions.height) || canvasHeight;
-            this.ctx = this.canvas.getContext("2d");
+        this.canvas = document.createElement("canvas");
+        this.canvas.width = screenshotDimensions?.width || canvasWidth;
+        this.canvas.height = screenshotDimensions?.height || canvasHeight;
+        this.ctx = this.canvas.getContext("2d");
+      }
+      const { ctx, canvas } = this;
+      if (ctx && canvas) {
+        canvas.width = screenshotDimensions?.width || canvas.width;
+        canvas.height = screenshotDimensions?.height || canvas.height;
+        if (props.mirrored) {
+          ctx.translate(canvas.width, 0);
+          ctx.scale(-1, 1);
         }
-        var _b = this, ctx = _b.ctx, canvas = _b.canvas;
-        if (ctx && canvas) {
-            // adjust the height and width of the canvas to the given dimensions
-            canvas.width = (screenshotDimensions === null || screenshotDimensions === void 0 ? void 0 : screenshotDimensions.width) || canvas.width;
-            canvas.height = (screenshotDimensions === null || screenshotDimensions === void 0 ? void 0 : screenshotDimensions.height) || canvas.height;
-            // mirror the screenshot
-            if (props.mirrored) {
-                ctx.translate(canvas.width, 0);
-                ctx.scale(-1, 1);
-            }
-            ctx.imageSmoothingEnabled = props.imageSmoothing;
-            ctx.drawImage(this.video, 0, 0, (screenshotDimensions === null || screenshotDimensions === void 0 ? void 0 : screenshotDimensions.width) || canvas.width, (screenshotDimensions === null || screenshotDimensions === void 0 ? void 0 : screenshotDimensions.height) || canvas.height);
-            // invert mirroring
-            if (props.mirrored) {
-                ctx.scale(-1, 1);
-                ctx.translate(-canvas.width, 0);
-            }
+        ctx.imageSmoothingEnabled = props.imageSmoothing;
+        ctx.drawImage(this.video, 0, 0, screenshotDimensions?.width || canvas.width, screenshotDimensions?.height || canvas.height);
+        if (props.mirrored) {
+          ctx.scale(-1, 1);
+          ctx.translate(-canvas.width, 0);
         }
-        return canvas;
-    };
-    Webcam.prototype.requestUserMedia = function () {
-        var _this = this;
-        var props = this.props;
-        var sourceSelected = function (audioConstraints, videoConstraints) {
-            var constraints = {
-                video: typeof videoConstraints !== "undefined" ? videoConstraints : true
-            };
-            if (props.audio) {
-                constraints.audio =
-                    typeof audioConstraints !== "undefined" ? audioConstraints : true;
-            }
-            _this.requestUserMediaId++;
-            var myRequestUserMediaId = _this.requestUserMediaId;
-            navigator.mediaDevices
-                .getUserMedia(constraints)
-                .then(function (stream) {
-                if (_this.unmounted || myRequestUserMediaId !== _this.requestUserMediaId) {
-                    Webcam.stopMediaStream(stream);
-                }
-                else {
-                    _this.handleUserMedia(null, stream);
-                }
-            })
-                .catch(function (e) {
-                _this.handleUserMedia(e);
-            });
+      }
+      return canvas;
+    }
+    requestUserMedia() {
+      const { props } = this;
+      const sourceSelected = (audioConstraints, videoConstraints) => {
+        const constraints = {
+          video: typeof videoConstraints !== "undefined" ? videoConstraints : true
         };
-        if ("mediaDevices" in navigator) {
-            sourceSelected(props.audioConstraints, props.videoConstraints);
+        if (props.audio) {
+          constraints.audio = typeof audioConstraints !== "undefined" ? audioConstraints : true;
         }
-        else {
-            var optionalSource_1 = function (id) { return ({ optional: [{ sourceId: id }] }); };
-            var constraintToSourceId_1 = function (constraint) {
-                var deviceId = constraint.deviceId;
-                if (typeof deviceId === "string") {
-                    return deviceId;
-                }
-                if (Array.isArray(deviceId) && deviceId.length > 0) {
-                    return deviceId[0];
-                }
-                if (typeof deviceId === "object" && deviceId.ideal) {
-                    return deviceId.ideal;
-                }
-                return null;
-            };
-            // @ts-ignore: deprecated api
-            MediaStreamTrack.getSources(function (sources) {
-                var audioSource = null;
-                var videoSource = null;
-                sources.forEach(function (source) {
-                    if (source.kind === "audio") {
-                        audioSource = source.id;
-                    }
-                    else if (source.kind === "video") {
-                        videoSource = source.id;
-                    }
-                });
-                var audioSourceId = constraintToSourceId_1(props.audioConstraints);
-                if (audioSourceId) {
-                    audioSource = audioSourceId;
-                }
-                var videoSourceId = constraintToSourceId_1(props.videoConstraints);
-                if (videoSourceId) {
-                    videoSource = videoSourceId;
-                }
-                sourceSelected(optionalSource_1(audioSource), optionalSource_1(videoSource));
-            });
-        }
-    };
-    Webcam.prototype.handleUserMedia = function (err, stream) {
-        var props = this.props;
-        if (err || !stream) {
-            this.setState({ hasUserMedia: false });
-            props.onUserMediaError(err);
-            return;
-        }
-        this.stream = stream;
-        try {
-            if (this.video) {
-                this.video.srcObject = stream;
-            }
-            this.setState({ hasUserMedia: true });
-        }
-        catch (error) {
-            this.setState({
-                hasUserMedia: true,
-                src: window.URL.createObjectURL(stream)
-            });
-        }
-        props.onUserMedia(stream);
-    };
-    Webcam.prototype.render = function () {
-        var _this = this;
-        var _a = this, state = _a.state, props = _a.props;
-        var audio = props.audio, forceScreenshotSourceSize = props.forceScreenshotSourceSize, disablePictureInPicture = props.disablePictureInPicture, onUserMedia = props.onUserMedia, onUserMediaError = props.onUserMediaError, screenshotFormat = props.screenshotFormat, screenshotQuality = props.screenshotQuality, minScreenshotWidth = props.minScreenshotWidth, minScreenshotHeight = props.minScreenshotHeight, audioConstraints = props.audioConstraints, videoConstraints = props.videoConstraints, imageSmoothing = props.imageSmoothing, mirrored = props.mirrored, _b = props.style, style = _b === void 0 ? {} : _b, children = props.children, rest = __rest(props, ["audio", "forceScreenshotSourceSize", "disablePictureInPicture", "onUserMedia", "onUserMediaError", "screenshotFormat", "screenshotQuality", "minScreenshotWidth", "minScreenshotHeight", "audioConstraints", "videoConstraints", "imageSmoothing", "mirrored", "style", "children"]);
-        var videoStyle = mirrored ? __assign(__assign({}, style), { transform: "".concat(style.transform || "", " scaleX(-1)") }) : style;
-        var childrenProps = {
-            getScreenshot: this.getScreenshot.bind(this),
+        this.requestUserMediaId++;
+        const myRequestUserMediaId = this.requestUserMediaId;
+        navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
+          if (this.unmounted || myRequestUserMediaId !== this.requestUserMediaId) {
+            _Webcam.stopMediaStream(stream);
+          } else {
+            this.handleUserMedia(null, stream);
+          }
+        }).catch((e) => {
+          this.handleUserMedia(e);
+        });
+      };
+      if ("mediaDevices" in navigator) {
+        sourceSelected(props.audioConstraints, props.videoConstraints);
+      } else {
+        const optionalSource = (id) => ({ optional: [{ sourceId: id }] });
+        const constraintToSourceId = (constraint) => {
+          const { deviceId } = constraint;
+          if (typeof deviceId === "string") {
+            return deviceId;
+          }
+          if (Array.isArray(deviceId) && deviceId.length > 0) {
+            return deviceId[0];
+          }
+          if (typeof deviceId === "object" && deviceId.ideal) {
+            return deviceId.ideal;
+          }
+          return null;
         };
-        return (react__WEBPACK_IMPORTED_MODULE_0__["createElement"](react__WEBPACK_IMPORTED_MODULE_0__["Fragment"], null,
-            react__WEBPACK_IMPORTED_MODULE_0__["createElement"]("video", __assign({ autoPlay: true, disablePictureInPicture: disablePictureInPicture, src: state.src, muted: !audio, playsInline: true, ref: function (ref) {
-                    _this.video = ref;
-                }, style: videoStyle }, rest)),
-            children && children(childrenProps)));
-    };
-    Webcam.defaultProps = {
-        audio: false,
-        disablePictureInPicture: false,
-        forceScreenshotSourceSize: false,
-        imageSmoothing: true,
-        mirrored: false,
-        onUserMedia: function () { return undefined; },
-        onUserMediaError: function () { return undefined; },
-        screenshotFormat: "image/webp",
-        screenshotQuality: 0.92,
-    };
-    return Webcam;
-}(react__WEBPACK_IMPORTED_MODULE_0__["Component"]));
-/* harmony default export */ __webpack_exports__["default"] = (Webcam);
-
-
-/***/ }),
-
-/***/ "react":
-/*!**************************************************************************************!*\
-  !*** external {"root":"React","commonjs2":"react","commonjs":"react","amd":"react"} ***!
-  \**************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = __WEBPACK_EXTERNAL_MODULE_react__;
-
-/***/ })
-
-/******/ })["default"];
-});
+        MediaStreamTrack.getSources((sources) => {
+          let audioSource = null;
+          let videoSource = null;
+          sources.forEach((source) => {
+            if (source.kind === "audio") {
+              audioSource = source.id;
+            } else if (source.kind === "video") {
+              videoSource = source.id;
+            }
+          });
+          const audioSourceId = constraintToSourceId(props.audioConstraints);
+          if (audioSourceId) {
+            audioSource = audioSourceId;
+          }
+          const videoSourceId = constraintToSourceId(props.videoConstraints);
+          if (videoSourceId) {
+            videoSource = videoSourceId;
+          }
+          sourceSelected(
+            optionalSource(audioSource),
+            optionalSource(videoSource)
+          );
+        });
+      }
+    }
+    handleUserMedia(err, stream) {
+      const { props } = this;
+      if (err || !stream) {
+        this.setState({ hasUserMedia: false });
+        props.onUserMediaError(err);
+        return;
+      }
+      this.stream = stream;
+      try {
+        if (this.video) {
+          this.video.srcObject = stream;
+        }
+        this.setState({ hasUserMedia: true });
+      } catch (error) {
+        this.setState({
+          hasUserMedia: true,
+          src: window.URL.createObjectURL(stream)
+        });
+      }
+      props.onUserMedia(stream);
+    }
+    render() {
+      const { state, props } = this;
+      const {
+        audio,
+        forceScreenshotSourceSize,
+        disablePictureInPicture,
+        onUserMedia,
+        onUserMediaError,
+        screenshotFormat,
+        screenshotQuality,
+        minScreenshotWidth,
+        minScreenshotHeight,
+        audioConstraints,
+        videoConstraints,
+        imageSmoothing,
+        mirrored,
+        style = {},
+        children,
+        ...rest
+      } = props;
+      const videoStyle = mirrored ? { ...style, transform: `${style.transform || ""} scaleX(-1)` } : style;
+      const childrenProps = {
+        getScreenshot: this.getScreenshot.bind(this)
+      };
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "video",
+          {
+            autoPlay: true,
+            disablePictureInPicture,
+            src: state.src,
+            muted: !audio,
+            playsInline: true,
+            ref: (ref) => {
+              this.video = ref;
+            },
+            style: videoStyle,
+            ...rest
+          }
+        ),
+        children && children(childrenProps)
+      ] });
+    }
+  };
+  _Webcam.defaultProps = {
+    audio: false,
+    disablePictureInPicture: false,
+    forceScreenshotSourceSize: false,
+    imageSmoothing: true,
+    mirrored: false,
+    onUserMedia: () => void 0,
+    onUserMediaError: () => void 0,
+    screenshotFormat: "image/webp",
+    screenshotQuality: 0.92
+  };
+  let Webcam = _Webcam;
+  return Webcam;
+}));
 //# sourceMappingURL=react-webcam.js.map

@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`renders correctly 1`] = `
 <video
@@ -9,7 +9,7 @@ exports[`renders correctly 1`] = `
   muted={true}
   playsInline={true}
   style={
-    Object {
+    {
       "transform": "rotate(180deg)",
     }
   }

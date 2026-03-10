@@ -11,7 +11,8 @@
     "skipLibCheck": true,
     "declaration": true,
     "noEmit": true,
-    "lib": ["dom", "es5", "scripthost", "es6"]
+    "lib": ["dom", "es5", "scripthost", "es6"],
+    "types": ["vitest/globals"]
   },
   "include": ["./src/"]
 }
